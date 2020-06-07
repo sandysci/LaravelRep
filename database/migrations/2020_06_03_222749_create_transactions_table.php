@@ -16,19 +16,25 @@ class CreateTransactionsTable extends Migration
         Schema::create('transactions', function (Blueprint $table) {
             $table->uuid('id')->primary;
             $table->uuid('user_id');
+            $table->foreign('user_id')->references('id')->on('users');
+            
 	        $table->string('reference');
 	        $table->decimal('amount', 19, 4)->default(0);
 	        $table->nullableUuidMorphs('payment_gateway');
-	        $table->enum('status', ['processing', 'success', 'failed'])->nullable('processing');
+            
+            $table->enum('status', ['processing', 'success', 'failed'])->nullable('processing');
 	        $table->enum('type', ['debit', 'credit']);
             $table->integer('attempt')->nullable()->default(0);
+            
             $table->nullableUuidMorphs('model');
+            
             $table->string('description')->nullable();
         
             
             $table->timestamps();
             $table->softDeletes();
-            // $table->foreign('user_id')->references('id')->on('users');
+            
+            
         });
     }
 

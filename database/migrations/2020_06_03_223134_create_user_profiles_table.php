@@ -16,18 +16,18 @@ class CreateUserProfilesTable extends Migration
         Schema::create('user_profiles', function (Blueprint $table) {
             $table->uuid('id')->primary;
             $table->uuid('user_id')->unique();
-            
-            $table->string("firstname");
-            $table->string("lastname");
-            $table->string("address");
-            $table->string("avatar");
-            $table->string("next_of_kin_name");
-            $table->string("next_of_kin_number");
+            $table->foreign('user_id')->references('id')->on('users');
 
+            $table->string("firstname")->nullable();
+            $table->string("lastname")->nullable();
+            $table->string("address")->nullable();
+            $table->string("avatar")->nullable();
+            $table->string("next_of_kin_name")->nullable();
+            $table->string("next_of_kin_number")->nullable();
+            $table->text('meta')->nullable();
+            
             $table->timestamps();
             $table->softDeletes();
-
-            // $table->foreign('user_id')->references('id')->on('users');
         });
     }
 

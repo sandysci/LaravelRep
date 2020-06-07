@@ -17,12 +17,16 @@ class CreateWithdrawalsTable extends Migration
             $table->uuid('id')->primary;
             $table->uuid('user_id');
 
-            $table->nullableUuidMorphs('model');
+            $table->string('reference');
+            $table->decimal('amount', 19, 4)->default(0);
+	       
+            $table->nullableUuidMorphs('source');
 	       
             $table->enum('status', ['processing', 'success', 'failed'])->nullable('processing');
 	        $table->enum('type', ['debit', 'credit']);
-            
-            $table->string('description');
+            $table->boolean ('authorize')->default (false);
+
+            $table->string('description')->nullable();
             
             $table->timestamps();
             $table->softDeletes();

@@ -15,18 +15,19 @@ class CreateBufferAccountsTable extends Migration
     {
         Schema::create('buffer_accounts', function (Blueprint $table) {
             $table->uuid("id")->primary;
-            $table->uuid("user_id");
+            $table->uuid("user_id")->index();
+            $table->foreign('user_id')->references('id')->on('users');
+
             $table->decimal('amount', 19, 4)->default(0.0000);
             $table->nullableUuidMorphs("model");
             $table->enum('status', ['processing', 'success', 'failed'])->nullable('processing');
 	        $table->enum('type', ['debit', 'credit']);
+            
             $table->string("description");
 
    
             $table->timestamps();
             $table->softDeletes(); 
-                    
-            $table->index(['user_id']);
         });
     }
 

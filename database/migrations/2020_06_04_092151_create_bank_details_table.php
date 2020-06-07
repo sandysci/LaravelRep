@@ -16,6 +16,7 @@ class CreateBankDetailsTable extends Migration
         Schema::create('bank_details', function (Blueprint $table) {
             $table->uuid('id')->primary;
             $table->uuid('user_id');
+            
             $table->bigInteger('account_number')->nullable();
             $table->string('bank_code')->nullable();
             $table->string('recipient_code')->nullable();
