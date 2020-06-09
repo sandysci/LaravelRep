@@ -14,11 +14,11 @@ class CreateSavingCyclesTable extends Migration
     public function up()
     {
         Schema::create('saving_cycles', function (Blueprint $table) {
-            $table->uuid('id')->primary;
+            $table->uuid('id')->primary();
 
             $table->string("name");
             
-            $table->uuid('user_id');
+            $table->uuid('user_id')->index();
             
             $table->decimal('amount', 19, 4)->default(0.0000);
             
@@ -41,7 +41,9 @@ class CreateSavingCyclesTable extends Migration
             $table->timestamps();
             $table->softDeletes();
 
-            // $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('user_id')
+                    ->references('id')
+                    ->on('users');
         });
     }
 

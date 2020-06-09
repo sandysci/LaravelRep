@@ -1,11 +1,11 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use App\Traits\UsesUuid;
 use Illuminate\Database\Eloquent\Model;
 
-class Withdrawal extends Model
+class SavingCycle extends Model
 {
     use UsesUuid;
 }

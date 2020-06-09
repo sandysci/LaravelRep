@@ -14,10 +14,9 @@ class CreateTransactionsTable extends Migration
     public function up()
     {
         Schema::create('transactions', function (Blueprint $table) {
-            $table->uuid('id')->primary;
+            $table->uuid('id')->primary();
             $table->uuid('user_id');
-            $table->foreign('user_id')->references('id')->on('users');
-            
+  
 	        $table->string('reference');
 	        $table->decimal('amount', 19, 4)->default(0);
 	        $table->nullableUuidMorphs('payment_gateway');
@@ -34,7 +33,9 @@ class CreateTransactionsTable extends Migration
             $table->timestamps();
             $table->softDeletes();
             
-            
+            $table->foreign('user_id')
+                  ->references('id')
+                  ->on('users');
         });
     }
 

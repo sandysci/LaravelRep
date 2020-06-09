@@ -1,11 +1,11 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use App\Traits\UsesUuid;
 use Illuminate\Database\Eloquent\Model;
 
-class BufferAccount extends Model
+class Wallet extends Model
 {
     use UsesUuid;
 }

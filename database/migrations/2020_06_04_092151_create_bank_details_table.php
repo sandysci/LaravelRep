@@ -14,7 +14,7 @@ class CreateBankDetailsTable extends Migration
     public function up()
     {
         Schema::create('bank_details', function (Blueprint $table) {
-            $table->uuid('id')->primary;
+            $table->uuid('id')->primary();
             $table->uuid('user_id');
             
             $table->bigInteger('account_number')->nullable();
@@ -25,8 +25,11 @@ class CreateBankDetailsTable extends Migration
             $table->timestamps();
             $table->softDeletes();
             
-            $table->index(['account_number']);
-            // $table->foreign('user_id')->references('id')->on('users');
+            $table->index(['user_id', 'account_number']);
+
+            $table->foreign('user_id')
+                  ->references('id')
+                  ->on('users');
         });
     }
 

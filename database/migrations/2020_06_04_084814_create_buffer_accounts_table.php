@@ -14,9 +14,9 @@ class CreateBufferAccountsTable extends Migration
     public function up()
     {
         Schema::create('buffer_accounts', function (Blueprint $table) {
-            $table->uuid("id")->primary;
+            $table->uuid("id")->primary();
             $table->uuid("user_id")->index();
-            $table->foreign('user_id')->references('id')->on('users');
+   
 
             $table->decimal('amount', 19, 4)->default(0.0000);
             $table->nullableUuidMorphs("model");
@@ -27,7 +27,10 @@ class CreateBufferAccountsTable extends Migration
 
    
             $table->timestamps();
-            $table->softDeletes(); 
+            $table->softDeletes();          
+            $table->foreign('user_id')
+                    ->references('id')
+                    ->on('users');
         });
     }
 

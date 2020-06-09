@@ -14,7 +14,7 @@ class CreateOtpsTable extends Migration
     public function up()
     {
         Schema::create('otps', function (Blueprint $table) {
-            $table->uuid('id')->primary;
+            $table->uuid('id')->primary();
             $table->uuidMorphs('identifier');
 	      
             $table->string ('token');

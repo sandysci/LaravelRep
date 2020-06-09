@@ -14,7 +14,7 @@ class CreatePaymentAuthorizationsTable extends Migration
     public function up()
     {
         Schema::create('payment_authorizations', function (Blueprint $table) {
-            $table->uuid('id')->primary;
+            $table->uuid('id')->primary();
             $table->uuid('user_id');
 
             $table->string('reference')->nullable();
@@ -39,7 +39,7 @@ class CreatePaymentAuthorizationsTable extends Migration
             $table->timestamps();
             $table->softDeletes();
             
-            // $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('user_id')->references('id')->on('users');
         });
     }
 

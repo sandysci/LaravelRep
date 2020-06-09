@@ -14,9 +14,9 @@ class CreateWalletsTable extends Migration
     public function up()
     {
         Schema::create('wallets', function (Blueprint $table) {
-            $table->uuid('id')->primary;
-            $table->uuid('user_id')->unique();
-            $table->foreign('user_id')->references('id')->on('users');
+            $table->uuid('id')->primary();
+            $table->uuid('user_id')->unique()->index();
+
             
             $table->decimal('balance', 19, 4)->default(0.0000);
             
@@ -24,7 +24,9 @@ class CreateWalletsTable extends Migration
             $table->timestamps();
             $table->softDeletes();
 
-           
+            $table->foreign('user_id')
+                  ->references('id')
+                  ->on('users');
         });
     }
 
