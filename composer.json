@@ -34,6 +34,11 @@
     "extra": {
         "laravel": {
             "dont-discover": []
+        },
+        "scripts-dev": {
+            "post-update-cmd": [
+                "php artisan ide-helper:generate"
+            ]
         }
     },
     "autoload": {

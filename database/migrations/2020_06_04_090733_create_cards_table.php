@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreatePaymentAuthorizationsTable extends Migration
+class CreateCardsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreatePaymentAuthorizationsTable extends Migration
      */
     public function up()
     {
-        Schema::create('payment_authorizations', function (Blueprint $table) {
+        Schema::create('cards', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->uuid('user_id');
 
@@ -50,6 +50,6 @@ class CreatePaymentAuthorizationsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('payment_authorizations');
+        Schema::dropIfExists('cards');
     }
 }

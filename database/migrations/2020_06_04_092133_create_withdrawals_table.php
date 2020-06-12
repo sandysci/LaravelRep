@@ -19,7 +19,10 @@ class CreateWithdrawalsTable extends Migration
 
             $table->string('reference');
             $table->decimal('amount', 19, 4)->default(0);
-	       
+           
+            $table->string('current_balance')->nullable();
+            $table->string('last_balance')->nullable();
+            
             $table->nullableUuidMorphs('source');
             $table->uuidMorphs("destination");
             
