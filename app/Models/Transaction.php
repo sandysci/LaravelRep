@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Traits\UsesUuid;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * App\Models\Transaction
@@ -45,5 +46,5 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Transaction extends Model
 {
-    use UsesUuid;
+    use UsesUuid, SoftDeletes;
 }

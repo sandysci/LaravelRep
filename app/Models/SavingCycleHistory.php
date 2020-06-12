@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use App\Traits\UsesUuid;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * App\Models\SavingCycleHistory
@@ -38,5 +40,5 @@ use Illuminate\Database\Eloquent\Model;
  */
 class SavingCycleHistory extends Model
 {
-    //
+    use UsesUuid, SoftDeletes;
 }

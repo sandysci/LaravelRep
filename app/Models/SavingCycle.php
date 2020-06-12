@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Traits\UsesUuid;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * App\Models\SavingCycle
@@ -51,5 +52,5 @@ use Illuminate\Database\Eloquent\Model;
  */
 class SavingCycle extends Model
 {
-    use UsesUuid;
+    use UsesUuid, SoftDeletes;
 }

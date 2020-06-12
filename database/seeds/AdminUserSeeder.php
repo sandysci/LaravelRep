@@ -14,10 +14,9 @@ class AdminUserSeeder extends Seeder
     public function run()
     {
         $userAdmin = User::create([
-            'id' => 2,
             'name' => 'Admin',
             'email' => 'admin@adashi.com',
-            'phone' => '0909909099',
+            'phone' => '09012348990',
             'password' => Hash::make('admin1234'),
             'email_verified_at' => Date::now()
         ]);

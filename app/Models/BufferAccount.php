@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Traits\UsesUuid;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * App\Models\BufferAccount
@@ -37,5 +38,5 @@ use Illuminate\Database\Eloquent\Model;
  */
 class BufferAccount extends Model
 {
-    use UsesUuid;
+    use UsesUuid, SoftDeletes;
 }

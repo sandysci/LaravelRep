@@ -4,9 +4,12 @@ namespace App\Models;
 
 use App\Traits\UsesUuid;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use OwenIt\Auditing\Contracts\Auditable;
+use Spatie\Permission\Traits\HasRoles;
 
 /**
  * App\Models\User
@@ -40,9 +43,9 @@ use Laravel\Sanctum\HasApiTokens;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereUpdatedAt($value)
  * @mixin \Eloquent
  */
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail, Auditable
 {
-    use Notifiable, UsesUuid, HasApiTokens;
+    use Notifiable, UsesUuid, HasApiTokens, HasRoles, SoftDeletes, \OwenIt\Auditing\Auditable;
 
     /**
      * The attributes that are mass assignable.
@@ -59,7 +62,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token',
+        'email_verified_at', 'password', 'remember_token', 'created_at', 'updated_at', 'deleted_at'
     ];
 
     /**
@@ -70,4 +73,33 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    // User Boot
+    protected static function boot() {
+        parent::boot();
+
+        static::created(function ($user) {
+            UserProfile::create(['user_id' => $user->id]);
+            Wallet::create(['user_id' => $user->id, 'balance' => 0.00]);
+        });
+    }
+
+     //Email Mutator
+    public function setEmailAttribute($value){
+        $this->attributes['email'] = strtolower($value);
+    }
+
+     //Phone Mutator
+     public function setPhoneAttribute($value){
+        $this->attributes['phone'] = strtolower($value);
+    }
+
+    public function userProfile() {
+        return $this->hasOne(UserProfile::class);
+    }
+
+    public function wallet() {
+        return $this->hasOne(Wallet::class);
+    }
+
 }

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Traits\UsesUuid;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * App\Models\Card
@@ -57,5 +58,39 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Card extends Model
 {
-    use UsesUuid  ;
+    use UsesUuid, SoftDeletes;
+
+    protected $fillable = [
+		'user_id',
+		'channel',
+		'reference',
+		'gw_customer_id',
+		'gw_customer_code',
+		'gw_authorization_code',
+		'card_type',
+		'last4',
+		'exp_month',
+		'exp_year',
+		'country_code',
+		'bank',
+		'brand',
+		'reusable',
+		'description',
+        'bank_number',
+		'signature'
+    ];
+
+
+     /**
+     * The attributes that should be hidden for arrays.
+     *
+     * @var array
+     */
+    protected $hidden = [
+        'gw_authorization_code',
+    ];
+
+    public function user(){
+        return $this->belongsTo(User::class);
+	}
 }
