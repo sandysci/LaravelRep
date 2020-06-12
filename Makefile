@@ -1,5 +1,5 @@
 dir=${CURDIR}
-project=-p adashi-backend
+project=-p adashi
 service=laravel:latest
 interactive:=$(shell [ -t 0 ] && echo 1)
 ifneq ($(interactive),1)
