@@ -12,30 +12,41 @@ class Controller extends BaseController
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
     // Responses
-    public function successResponse($data = null, $message) {
-        return response()->json([
-            'status' => 'success',
-            'data' => isset($data) ? $data : [],
-            'message' => $message
-        ], 200);
-    }
-
-    public function errorResponse($data = null, $message) {
+    protected function respond(array $data = [], string $status = 'success', string $message = null, int $statusCode = 200, $headers= []) {
         return response ()->json ([
-            'status' => 'error',
-            'data' => isset($data) ? $data : [],
+            'status' => $status,
+            'data' => $data,
             'message' => $message,
-        ], 400);
+        ], $statusCode, $headers);
+    }
+    protected function responseSuccess(array $data = [], string $message) {
+        return $this->respond($data, 'success', $message);
     }
 
-    public function validationError($validator, $message = null) {
-            $data = $validator->errors()->all();
-            $error = collect($data)->unique()->first();
-    
-            return response ()->json ([
-                'status' => 'error',
-                'data' => $data,
-                'message' => $message ?? $error,
-            ], 422);
+    protected function responseCreated(array $data = [], string $message) {
+        return $this->respond($data, 'success', $message, 201);
+    }
+
+    protected function responseNoContent(array $data = [], string $message) {
+        return $this->respond($data, 'success', $message, 204);
+    }
+    protected function responseError(array $data = [], string $message, int $statusCode = 400) {
+        return $this->respond ($data, 'error',$message,$statusCode);
+    }
+
+    protected function respondUnauthorized(string $message = 'Unauthorized') {
+        return $this->respondError([], $message, 401);
+    }
+
+    protected function respondFobidden($message = 'Forbidden') {
+        return $this->respondError([], $message, 403);
+    }
+
+     protected function respondValidationError($validator, $message = null) {
+        $data = $validator->errors()->all();
+        $error = collect($data)->unique()->first();
+        $msg = $message ?? $error;
+        
+        $this->respondError($data, $msg, 422);
     }
 }

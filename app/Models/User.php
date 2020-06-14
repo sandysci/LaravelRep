@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\Filterable;
 use App\Traits\UsesUuid;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -45,6 +46,7 @@ use Spatie\Permission\Traits\HasRoles;
  */
 class User extends Authenticatable implements MustVerifyEmail, Auditable
 {
+    use Filterable;
     use Notifiable, UsesUuid, HasApiTokens, HasRoles, SoftDeletes, \OwenIt\Auditing\Auditable;
 
     /**

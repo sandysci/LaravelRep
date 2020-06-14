@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\Filterable;
 use App\Traits\UsesUuid;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -28,7 +29,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class Wallet extends Model
 {
-    use UsesUuid, SoftDeletes;
+    use UsesUuid, SoftDeletes, Filterable;
 
     protected $guarded = [];
     
