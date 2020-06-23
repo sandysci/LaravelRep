@@ -16,3 +16,14 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+
+Route::fallback(function(){
+    return response()->json([
+        'status' => 'error',
+        'Device Info' => request()->header('User-Agent') ?? '',
+        'Your IP' => request ()->ip () ?? '',
+        'message' => 'Page Not Found. If error persists, contact developer@sfscredit.com'
+    ], 404);
+});
+

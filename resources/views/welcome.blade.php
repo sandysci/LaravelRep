@@ -68,7 +68,7 @@
             
             <div class="content">
                 <div class="title m-b-md">
-                    Adashi Backend Service
+                    Adashi Backend Service 💰
                 </div>
             </div>
         </div>

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Traits\Filterable;
 use App\Traits\UsesUuid;
+use App\Utility\PhoneNumber;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -47,7 +48,8 @@ use Spatie\Permission\Traits\HasRoles;
 class User extends Authenticatable implements MustVerifyEmail, Auditable
 {
     use Filterable;
-    use Notifiable, UsesUuid, HasApiTokens, HasRoles, SoftDeletes, \OwenIt\Auditing\Auditable;
+    use  \OwenIt\Auditing\Auditable;
+    use Notifiable, UsesUuid, HasApiTokens, HasRoles, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -55,7 +57,7 @@ class User extends Authenticatable implements MustVerifyEmail, Auditable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'name', 'email', 'phone' ,'password',
     ];
 
     /**
@@ -80,7 +82,7 @@ class User extends Authenticatable implements MustVerifyEmail, Auditable
     protected static function boot() {
         parent::boot();
 
-        static::created(function ($user) {
+        static::created(function (User $user) {
             UserProfile::create(['user_id' => $user->id]);
             Wallet::create(['user_id' => $user->id, 'balance' => 0.00]);
         });
@@ -91,9 +93,9 @@ class User extends Authenticatable implements MustVerifyEmail, Auditable
         $this->attributes['email'] = strtolower($value);
     }
 
-     //Phone Mutator
+    // Phone Mutator
      public function setPhoneAttribute($value){
-        $this->attributes['phone'] = strtolower($value);
+        $this->attributes['phone'] = PhoneNumber::formatToNGR($value);
     }
 
     public function userProfile() {

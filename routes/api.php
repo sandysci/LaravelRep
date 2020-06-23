@@ -1,5 +1,11 @@
 <?php
 
+use App\Http\Controllers\API\v1\Auth\ForgotPasswordController;
+use App\Http\Controllers\API\v1\Auth\LoginController;
+use App\Http\Controllers\API\v1\Auth\PasswordResetController;
+use App\Http\Controllers\API\v1\Auth\RegisterController;
+use App\Http\Controllers\API\v1\Auth\VerificationController;
+use App\Http\Controllers\API\v1\HomeController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -14,6 +20,35 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+Route::prefix('v1')->group(function () {
+    //Authentication
+    Route::get('/', [HomeController::class, 'index']);
+
+    Route::post('login', [LoginController::class, 'authenticate']);
+    Route::post('register', [RegisterController::class, 'store']);
+   
+    Route::post('verify/otp', [VerificationController::class, 'verifyOTP']);
+    Route::post('verify/resend', [VerificationController::class, 'resendVerificationCode']);
+    //Account Verification via Token
+    Route::post('verify', [VerificationController::class, 'verify'])->middleware('auth:sanctum');
+
+    Route::prefix('password')->group(function() {
+        Route::post('forgot', [ForgotPasswordController::class, 'create']);
+        Route::put('reset', [PasswordResetController::class, 'reset']);
+    });
+
+    Route::group(['middleware' => ['auth:sanctum']], function() {
+        Route::get('/user', [HomeController::class, 'user']);
+    });
+});
+
+
+Route::fallback(function(){
+    return response()->json([
+        'status' => 'error',
+        'data' => [],
+        'Device Info' => request()->header('User-Agent') ?? '',
+        'Your IP' => request ()->ip () ?? '',
+        'message' => 'Page Not Found. If error persists, contact developer@adasi.test'
+    ], 404);
 });

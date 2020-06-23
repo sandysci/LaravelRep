@@ -16,7 +16,7 @@ services:
         - "80"
         - "443"
       ports:
-        - "80:80"
+        - "88:80"
         - "443:443"
       volumes:
         - .:/var/www/html
