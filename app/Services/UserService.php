@@ -12,10 +12,19 @@ use Log;
 class UserService {
     protected $user;
     protected $otpService;
+    protected $mailService;
+    protected $smsService;
 
-    public function __construct(User $user, OtpService $otpService){
+    public function __construct(
+        User $user, 
+        OtpService $otpService,
+        MailService $mailService,
+        SmsService $smsService
+    ){
         $this->user = $user;
         $this->otpService = $otpService;
+        $this->mailService = $mailService;
+        $this->smsService = $smsService;
     }
 
     public function login($request): Object {
@@ -70,12 +79,29 @@ class UserService {
                 $otp = $this->otpService->create (get_class($user), $user->email , '6', '30');
                 Log::info("OTP Token");
                 Log::info($otp->token);
-                // $user->notify(new Ot($user, $otp->token));
+                if ($user->phone) {
+                    $this->smsService->sendSms(
+                                $user->phone, 
+                                "Adashi: Your OTP is " . $otp->token, 
+                                "ADASHI"
+                            );
+                } else {
+                    $this->mailService->sendEmail(
+                        $user->email, 
+                        "OTP from ADASHI", 
+                        "Your OTP is ". $otp->token
+                    );
+                }
             } else {
                 $token = $user->createToken ('authToken')->plainTextToken;
                 Log::info("Registration Token");
                 Log::info($token);
-                // $user->notify(new EmailVerification($user, $callback_url, $token));
+
+                $this->mailService->sendEmail(
+                    $user->email, 
+                    "Verify your account", 
+                    "Your registration token is ". $callback_url . "?token=" .$token
+                );
             }
             DB::commit();
             return (object) [

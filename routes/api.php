@@ -39,6 +39,14 @@ Route::prefix('v1')->group(function () {
 
     Route::group(['middleware' => ['auth:sanctum']], function() {
         Route::get('/user', [HomeController::class, 'user']);
+
+        //Cards
+        Route::prefix('cards')->group(function () {
+            Route::get('/', [CardController::class, 'find']);
+            Route::post('/initialize', [CardController::class, 'initialize']);
+            Route::post('/', [CardController::class, 'store']);
+            // Route::put()
+        });
     });
 });
 
