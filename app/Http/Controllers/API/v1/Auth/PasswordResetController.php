@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\PasswordResetRequest;
 use App\Models\PasswordReset;
 use App\Models\User;
+use App\Services\MailService;
+use App\Services\SmsService;
 use Carbon\Carbon;
 use Hash;
 use Illuminate\Http\JsonResponse;
@@ -14,6 +16,17 @@ use Log;
 class PasswordResetController extends Controller
 {
 
+
+    protected $mailService;
+    protected $smsService;
+    
+    public function __construct(
+        MailService $mailService,
+        SmsService $smsService
+    ){
+        $this->mailService = $mailService;
+        $this->smsService = $smsService;
+    }
     /**
      * Reset password
      *
@@ -41,8 +54,18 @@ class PasswordResetController extends Controller
 
         $token = $user->createToken ('authToken')->plainTextToken;
 
-        //TODO: send email for successful password reset
-        Log::info('Password reset successfully');
+        $this->mailService->sendEmail(
+            $user->email, 
+                "Password reset successfully", [
+                    "introLines" => [ 
+                        "You have successfully, reset your password,", 
+                        "If you don't make this change yourself, Kindly send an email to our support mail 'support@adashi.com' " 
+                    ],
+                    "content" =>   "Thanks, for using Adashi", 
+                    "greeting" => "Hello"
+                ]
+        );
+
         $options = [
             'access_token' => $token,
             'token_type' => 'Bearer'

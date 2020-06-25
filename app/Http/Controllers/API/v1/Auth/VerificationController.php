@@ -4,19 +4,28 @@ namespace App\Http\Controllers\API\v1\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Services\MailService;
 use App\Services\OtpService;
+use App\Services\SmsService;
 use App\Services\UserService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
-use Log;
 
 class VerificationController extends Controller
 {
     protected $userService;
     protected $otpService;
+    protected $mailService;
+    protected $smsService;
 
-    public function __construct(UserService $userService, OtpService $otpService) {
+    public function __construct(
+        UserService $userService, 
+        OtpService $otpService,
+        MailService $mailService,
+        SmsService $smsService
+    ){
         $this->userService = $userService;
         $this->otpService = $otpService;
     }
@@ -33,6 +42,17 @@ class VerificationController extends Controller
             $user->email_verified_at = Carbon::now()->timestamp;
             $user->save();
 
+            $this->mailService->sendEmail(
+                $user->email, 
+                    "Account verified successfully", [
+                        "introLines" => [ 
+                            "You have successfully, verified your account,", 
+                            "Welcome to Adashi" 
+                        ],
+                        "content" =>   "Thanks, for using Adashi", 
+                        "greeting" => "Hello ". $user->name. ","
+                    ]
+            );
             return $this->responseSuccess($user->toArray(), "Your email has been verified");
         } catch(\Exception $e) {
             return $this->responseException($e, 400, $e->getMessage());
@@ -51,10 +71,17 @@ class VerificationController extends Controller
 
             if(!$user->status) { return $this->responseError([], $user->message); }
 
-            //TODO: send email 
-            Log::info("Account verification alert");
-            Log::info($user->message);
-
+            $this->mailService->sendEmail(
+                $user->email, 
+                    "Account verified successfully", [
+                        "introLines" => [ 
+                            "You have successfully, verified your account,", 
+                            "Welcome to Adashi" 
+                        ],
+                        "content" =>   "Thanks, for using Adashi", 
+                        "greeting" => "Hello ". $user->name. ","
+                    ]
+            );
             return $this->responseSuccess($user->data, $user->message);
         } catch(\Exception $e) {
             return $this->responseException($e, 400, $e->getMessage());   

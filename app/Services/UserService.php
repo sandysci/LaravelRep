@@ -216,10 +216,12 @@ class UserService {
 
         if($request->type && $request->type == 'mobile') {
             $otp = $this->otpService->create (get_class($user), $user->email, '6', '30');
-            //TODO: OTP email
-            Log::info('Token for mobile');
-            Log::info($otp->token);
-            
+    
+            $this->smsService->sendSms(
+                        $user->phone, 
+                        "Adashi: Your OTP is " . $otp->token, 
+                        "ADASHI"
+                    );
             return (object) [
                 "status" => true,
                 "message" => "OTP sent"
@@ -235,9 +237,18 @@ class UserService {
         
         $callback_url = preg_replace('{/$}', '', $request->callback_url);
         $token = $user->createToken ('authToken')->plainTextToken;
-        Log::info("Registration Token");
-        Log::info($token);
 
+        $this->mailService->sendEmail(
+            $user->email, 
+            "Verify your account", [
+                "introLines" => [ "Kindly, click the link below to activate your account" ],
+                "content" =>   "Thanks, for using Adashi", 
+                "greeting" => "Hello ".$user->name.",",
+                "level" => "primary",
+                "actionUrl" => $callback_url . "?token=" .$token,
+                "actionText" => "Click to verify your account"
+            ]
+        );
         return (object) [
             "status" => true,
             "message" => "Token sent"

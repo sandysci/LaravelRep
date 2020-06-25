@@ -5,13 +5,24 @@ namespace App\Http\Controllers\API\v1\Auth;
 use App\Models\PasswordReset;
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Services\MailService;
+use App\Services\SmsService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use Log;
 use Str;
 
 class ForgotPasswordController extends Controller
 {
+    protected $mailService;
+    protected $smsService;
+
+    public function __construct(
+        MailService $mailService,
+        SmsService $smsService
+    ){
+        $this->mailService = $mailService;
+        $this->smsService = $smsService;
+    }
      /**
      * Create token password reset
      *
@@ -33,8 +44,11 @@ class ForgotPasswordController extends Controller
         
         if($request->type  && $request->type == 'mobile') {
             $otp = $this->otpService->create ($user->email, '6', '30');
-            Log::info($otp->token);
-            //TODO: otp email
+            $this->smsService->sendSms(
+                $user->phone, 
+                "Adashi: Your OTP is " . $otp->token, 
+                "ADASHI"
+            );
             return $this->responseSuccess([], 'We have send your password reset token!');
         }
 
@@ -45,7 +59,17 @@ class ForgotPasswordController extends Controller
                 'token' => Str::random(60)
              ]);
         if ($passwordReset) {
-            //TODO: token email
+            $this->mailService->sendEmail(
+                $user->email, 
+                    "Password Reset Request", [
+                        "introLines" => [ "Kindly, click the link below to reset your password" ],
+                        "content" =>   "Thanks, for using Adashi", 
+                        "greeting" => "Hello",
+                        "level" => "primary",
+                        "actionUrl" => $callback_url . "?token=" .$passwordReset->token,
+                        "actionText" => "Click to reset your password"
+                    ]
+            );
             return $this->responseSuccess([], 'We have e-mailed your password reset link!');
         }
         return $this->responseError([], 'Unreacheable error!', 400);
