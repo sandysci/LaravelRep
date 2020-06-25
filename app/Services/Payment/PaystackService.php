@@ -90,7 +90,7 @@ class PaystackService extends CardInterface {
     
         $response = Http::withToken($this->paystackSecretKey)->post($url, $data);
 
-        if($response->failed) {
+        if($response->failed()) {
             return (object) [
                 "status" => false,
                 "data" => $response->json(),
@@ -114,7 +114,7 @@ class PaystackService extends CardInterface {
         ];
 
         $response = Http::withToken($this->paystackSecretKey)->get($url, $params);
-        if($response->failed) {
+        if($response->failed()) {
             return (object) [
                 "status" => false,
                 "data" => $response->json(),
@@ -133,7 +133,7 @@ class PaystackService extends CardInterface {
         $url = "https://api.paystack.co/transferrecipient";
 
         $response = Http::withToken($this->paystackSecretKey)->post($url, $payload);
-        if ($response->failed) {
+        if ($response->failed()) {
             return (object) [
                 'status' => false,
                 'data' => $response->json(),

@@ -4,28 +4,30 @@ namespace App\Services;
 
 use App\Services\Mailer\TMNotifyService;
 use App\Services\Message\EmailMessage;
+use ReflectionProperty;
 
 class MailService
 {
     /**
      * @var TMNotifyService
      */
-    private $tMNotifyService;
+    protected $tMNotifyService;
 
     public function __construct(TMNotifyService $tMNotifyService)
     {
         $this->tMNotifyService = $tMNotifyService;
     }
 
-    public function sendEmail(
+    public  function sendEmail(
         string $to,
         string $subject,
-        string $content,
+        $content,
         ?string $cc = null,
         ?string $from = null, 
         ?string $bcc = null
     ) {
         $emailMessage = new EmailMessage($to, $subject, $content, $cc, $from, $bcc);
+
         return $this->tMNotifyService->sendEmail($emailMessage);
     }
 }

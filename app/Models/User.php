@@ -4,7 +4,7 @@ namespace App\Models;
 
 use App\Traits\Filterable;
 use App\Traits\UsesUuid;
-use App\Utility\PhoneNumber;
+use App\Helpers\PhoneNumber;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -79,7 +79,8 @@ class User extends Authenticatable implements MustVerifyEmail, Auditable
     ];
 
     // User Boot
-    protected static function boot() {
+    protected static function boot() 
+    {
         parent::boot();
 
         static::created(function (User $user) {
@@ -89,20 +90,24 @@ class User extends Authenticatable implements MustVerifyEmail, Auditable
     }
 
      //Email Mutator
-    public function setEmailAttribute($value){
+    public function setEmailAttribute($value) 
+    {
         $this->attributes['email'] = strtolower($value);
     }
 
     // Phone Mutator
-     public function setPhoneAttribute($value){
+     public function setPhoneAttribute($value) 
+     {
         $this->attributes['phone'] = PhoneNumber::formatToNGR($value);
     }
 
-    public function userProfile() {
+    public function userProfile() 
+    {
         return $this->hasOne(UserProfile::class);
     }
 
-    public function wallet() {
+    public function wallet() 
+    {
         return $this->hasOne(Wallet::class);
     }
 

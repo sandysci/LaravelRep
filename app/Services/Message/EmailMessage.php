@@ -28,7 +28,7 @@ class EmailMessage
     /**
      * The body of the message
      *
-     * @param string
+     * @param 
      */
     private $body;
 
@@ -47,12 +47,12 @@ class EmailMessage
      *
      * @param string $to
      * @param string $subject
-     * @param string $body
+     * @param  $body
      * @param string cc
      * @param string $from
      * @param string $bcc
      */
-    public function __construct(string $to, string $subject, string $body, ?string $cc, ?string $from, ?string $bcc)
+    public function __construct(string $to, string $subject, $body, ?string $cc, ?string $from, ?string $bcc)
     {
         $this->to = $to;
         $this->from = $from;
@@ -95,7 +95,7 @@ class EmailMessage
     /**
      * Return the body
      *
-     * @return string
+     * @return 
      */
     public function body()
     {

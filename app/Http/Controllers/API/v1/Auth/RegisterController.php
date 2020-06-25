@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\RegisterRequest;
 use App\Services\OtpService;
 use App\Services\UserService;
-use App\Utility\PhoneNumber;
+use App\Helpers\PhoneNumber;
 use Illuminate\Http\Request;
 
 class RegisterController extends Controller

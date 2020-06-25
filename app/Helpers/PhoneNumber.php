@@ -1,5 +1,5 @@
 <?php
-namespace App\Utility;
+namespace App\Helpers;
 
 class PhoneNumber {
     public static function formatToNGR(string $phoneNumber): String {

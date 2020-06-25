@@ -6,7 +6,6 @@ use App\Http\Controllers\API\v1\Auth\PasswordResetController;
 use App\Http\Controllers\API\v1\Auth\RegisterController;
 use App\Http\Controllers\API\v1\Auth\VerificationController;
 use App\Http\Controllers\API\v1\HomeController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*

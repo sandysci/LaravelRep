@@ -2,20 +2,20 @@
 
 namespace App\Services;
 
-use App\Services\Mailer\TMNotifyService;
 use App\Services\Message\SmsMessage;
+use App\Services\SmsMailer\TMNotifySMSService;
 
 class SmsService
 {
-    private $tMNotifyService;
+    private $tMNotifySMSService;
 
-    public function __construct(TMNotifyService $tMNotifyService)
+    public function __construct(TMNotifySMSService $tMNotifySMSService)
     {
-        $this->tMNotifyService = $tMNotifyService;
+        $this->tMNotifySMSService = $tMNotifySMSService;
     }
 
     public function sendSms(string $to, string $content, ?string $from = null)
     {
-        return $this->tMNotifyService->sendSms(new SmsMessage($to, $from ?? 'Adashi', $content));
+        return $this->tMNotifySMSService->sendSms(new SmsMessage($to, $from ?? 'Adashi', $content));
     }
 }

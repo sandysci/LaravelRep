@@ -62,7 +62,8 @@ class UserService {
         ];
     }
 
-    public function register($request): Object {
+    public function register($request): Object 
+    {
         DB::beginTransaction();
         try {
             $callback_url = preg_replace('{/$}', '', $request->callback_url);
@@ -77,8 +78,7 @@ class UserService {
     
             if($request->type && $request->type == 'mobile') {
                 $otp = $this->otpService->create (get_class($user), $user->email , '6', '30');
-                Log::info("OTP Token");
-                Log::info($otp->token);
+ 
                 if ($user->phone) {
                     $this->smsService->sendSms(
                                 $user->phone, 
@@ -88,20 +88,26 @@ class UserService {
                 } else {
                     $this->mailService->sendEmail(
                         $user->email, 
-                        "OTP from ADASHI", 
-                        "Your OTP is ". $otp->token
+                        "Your OTP from Adashi", [
+                            "content" => "Your OTP is ". $otp->token,
+                            "greeting" => "Welcome"
+                        ]
                     );
                 }
             } else {
                 $token = $user->createToken ('authToken')->plainTextToken;
-                Log::info("Registration Token");
-                Log::info($token);
-
-                $this->mailService->sendEmail(
+                $mailStatus = $this->mailService->sendEmail(
                     $user->email, 
-                    "Verify your account", 
-                    "Your registration token is ". $callback_url . "?token=" .$token
+                    "Verify your account", [
+                        "introLines" => [ "Kindly, click the link below to activate your account" ],
+                        "content" =>   "Thanks, for using Adashi", 
+                        "greeting" => "Hello",
+                        "level" => "primary",
+                        "actionUrl" => $callback_url . "?token=" .$token,
+                        "actionText" => "Click to verify your account"
+                    ]
                 );
+                Log::info('Mail status: '.$mailStatus);
             }
             DB::commit();
             return (object) [
