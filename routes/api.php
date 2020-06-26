@@ -5,6 +5,7 @@ use App\Http\Controllers\API\v1\Auth\LoginController;
 use App\Http\Controllers\API\v1\Auth\PasswordResetController;
 use App\Http\Controllers\API\v1\Auth\RegisterController;
 use App\Http\Controllers\API\v1\Auth\VerificationController;
+use App\Http\Controllers\API\v1\CardController;
 use App\Http\Controllers\API\v1\HomeController;
 use Illuminate\Support\Facades\Route;
 
@@ -46,6 +47,8 @@ Route::prefix('v1')->group(function () {
             Route::post('/', [CardController::class, 'store']);
             // Route::put()
         });
+
+        // Route::post('/v')
     });
 });
 

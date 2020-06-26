@@ -6,6 +6,7 @@ use App\Traits\Filterable;
 use App\Traits\UsesUuid;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use OwenIt\Auditing\Contracts\Auditable;
 
 /**
  * App\Models\Transaction
@@ -45,7 +46,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Transaction whereUserId($value)
  * @mixin \Eloquent
  */
-class Transaction extends Model
+class Transaction extends Model implements Auditable
 {
-    use UsesUuid, SoftDeletes,Filterable;
+    use \OwenIt\Auditing\Auditable;
+    use UsesUuid, SoftDeletes, Filterable;
+
+    protected $guarded = [];
 }

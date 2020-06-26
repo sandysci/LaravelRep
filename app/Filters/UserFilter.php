@@ -2,7 +2,8 @@
 
 namespace App\Filters;
 
-class UserFilter extends BaseFilter {
+class UserFilter extends BaseFilter 
+{
 
     
 }

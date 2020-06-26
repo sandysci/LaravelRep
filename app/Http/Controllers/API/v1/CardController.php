@@ -3,9 +3,10 @@
 namespace App\Http\Controllers\API\v1;
 
 use App\Http\Controllers\Controller;
-use App\Models\Transaction;
 use App\Services\CardService;
 use App\Helpers\RandomNumber;
+use App\Http\Requests\PaystackWehookRequest;
+use App\Services\TransactionService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Log;
@@ -14,20 +15,29 @@ class CardController extends Controller
 {
     protected $cardService;
     public function __construct(
-        CardService $cardService
+        CardService $cardService,
+        TransactionService $transactionService
     ){
         $this->cardService = $cardService;
+        $this->transactionService = $transactionService;
     }
     public function initialize(Request $request) {
         $reference = 'CV-'. RandomNumber::generateTransactionRef();
         $amount = config('constants.default_card_amount');
 
+        $request->reference = $reference;
+        $request->description = "Initializing Add Card Transaction";
+        $request->amount = $amount;
+        $request->type = 'debit';
+        $request->status = 'processing';
         //Store Transaction
+        $transaction = $this->transactionService->store($request, $request->user(), null);
 
-        return $this->responseSuccess([], 'Initializing Card Transaction');
+        return $this->responseSuccess($transaction->data, 'Initializing Card Transaction');
     }
 
-    public function store(Request $request)   {
+    public function store(Request $request)   
+    {
         try {
             $validator = Validator::make($request->all(), [
                 'reference' => 'required'
@@ -36,11 +46,11 @@ class CardController extends Controller
             if ($validator->fails()) { return $this->responseValidationError($validator, "Reference Code is needed");}
             
             $reference = $request->reference;
-            $tx = Transaction::where([
-                'reference' => $reference,
-                'user_id' => $request->user()->id,
-                'type' => 'debit'
-            ])->first();
+            $conds = [ 'reference' => $reference,
+                       'user_id' => $request->user()->id,
+                       'type' => 'debit'
+            ];
+            $tx = $this->transactionService->findWhere($conds);
 
             if (!$tx) {
                 return $this->responseError([], 'This transaction doesn\'t exist in our system');
@@ -126,5 +136,27 @@ class CardController extends Controller
                 return $this->errorJsonResponse(null, 'An error occurred');
             }
         }
+    }
+
+    public function handleWebhook(Request $request) 
+    {
+        if (!$request->has('channel'))
+        {
+           return $this->responseError([], 'Wrong channel'); 
+        }
+        
+        $channel = $request->query('channel');
+            if ($channel === "paystack")
+            {
+                return $this->paystackWebhookHandler($request);
+            }
+        
+        return $this->responseError([], 'No available channel');
+    }
+
+    public function paystackWebhookHandler (PaystackWehookRequest $request)
+    {
+        $response = $this->cardService->eventHandler($request);
+        return $response;
     }
 }

@@ -14,7 +14,8 @@ abstract class BaseFilter
     protected $request;
     protected $builder;
 
-    public function __construct(Request $request) {
+    public function __construct(Request $request) 
+    {
         $this->request = $request;
     }
 
@@ -37,7 +38,8 @@ abstract class BaseFilter
         return array_filter($methods);
     }
 
-    public function apply(Builder $builder) {
+    public function apply(Builder $builder) 
+    {
         $this->builder = $builder;
         foreach ($this->filters () as $name => $value) {
             if(method_exists ($this, $name)) {

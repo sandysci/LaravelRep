@@ -3,9 +3,10 @@
 namespace App\Services\Payment;
 
 use Illuminate\Support\Facades\Http;
-use Log;
+use Illuminate\Support\Facades\Log;
 
-class PaystackService extends CardInterface {
+class PaystackService implements CardInterface 
+{
 
     protected $paystackSecretKey;
     protected $paystackPublicKey;
@@ -14,11 +15,12 @@ class PaystackService extends CardInterface {
         $this->paystackSecretKey = config('constants.payment_gateway.paystack.secret_key');
         $this->paystackPublicKey = config('constants.payment_gateway.paystack.public_key');
     }
-    public function initializeTrans() {
+    public function initializeTrans() 
+    {
 
     }
 
-    public function makePayment($payload) {
+    public function makePayment(array $payload): Object {
         try {
             $url = 'https://api.paystack.co/transaction/charge_authorization';
 
@@ -52,8 +54,9 @@ class PaystackService extends CardInterface {
         }
     }
 
-    public function verifyPayment($payload): Object{
-        $reference = $payload->reference;
+    public function verifyPayment(array $payload): Object
+    {
+        $reference = $payload['reference'];
         Log::info("Reference Code: " . $reference);
         if (!$reference) {
             return (object) [
@@ -84,7 +87,8 @@ class PaystackService extends CardInterface {
         ];
     }
 
-    public function transferToBank($data) {
+    public function transferToBank($data) 
+    {
 
         $url = 'https://api.paystack.co/transfer';
     
@@ -129,7 +133,8 @@ class PaystackService extends CardInterface {
         ];
     }
 
-    public function createTransferRecipient($payload) {
+    public function createTransferRecipient($payload) 
+    {
         $url = "https://api.paystack.co/transferrecipient";
 
         $response = Http::withToken($this->paystackSecretKey)->post($url, $payload);
@@ -146,4 +151,5 @@ class PaystackService extends CardInterface {
             'message' => 'Transfer recipient created'
         ];
     }
+
 }
