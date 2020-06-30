@@ -129,10 +129,10 @@ class Handler extends ExceptionHandler
     }
 
     /**
-     * @param Exception $exception
+     * @param Throwable $exception
      * @return JsonResponse
      */
-    public function exceptionError(Throwable $exception, $statusCode= 400 , $message): JsonResponse
+    public function exceptionError(Throwable $exception, int $statusCode= 400 , string $message): JsonResponse
     {
         if (env('APP_ENV') === 'production') {
             return response ()->json ([

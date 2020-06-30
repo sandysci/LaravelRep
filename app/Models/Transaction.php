@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use App\Traits\Filterable;
-use App\Traits\UsesUuid;
+use App\Models\Traits\Filterable;
+use App\Models\Traits\UsesUuid;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use OwenIt\Auditing\Contracts\Auditable;

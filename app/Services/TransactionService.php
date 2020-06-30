@@ -38,7 +38,7 @@ class TransactionService {
         ];
     }
 
-    public function findWhere(array $conds) :Transaction
+    public function findWhere(array $conds): ?Transaction
     {
         return $this->transaction->where($conds)->first();
     }

@@ -77,7 +77,7 @@ class UserService {
             $user->assignRole('user');
     
             if($request->type && $request->type == 'mobile') {
-                $otp = $this->otpService->create (get_class($user), $user->email , '6', '30');
+                $otp = $this->otpService->create (get_class($user), $user->email , 6, 30);
  
                 if ($user->phone) {
                     $this->smsService->sendSms(
@@ -215,7 +215,7 @@ class UserService {
         $user->save(); 
 
         if($request->type && $request->type == 'mobile') {
-            $otp = $this->otpService->create (get_class($user), $user->email, '6', '30');
+            $otp = $this->otpService->create (get_class($user), $user->email, 6, 30);
     
             $this->smsService->sendSms(
                         $user->phone, 

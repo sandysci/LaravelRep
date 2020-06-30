@@ -4,7 +4,6 @@ namespace App\Services\SmsMailer;
 
 use App\Services\Message\SmsMessage;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log;
 
 class TMNotifySMSService implements SmsProviderInterface
 {
@@ -42,11 +41,11 @@ class TMNotifySMSService implements SmsProviderInterface
             $response = Http::withHeaders($headers)->post($this->tmNotifyClient, $params);
             
             if($response->failed()) {
-                throw new \Throwable('Error sending sms');
+                throw new \Exception('Error sending sms');
             }
             return null;
         } catch (\Throwable $exception) {
-
+            //TODO: Log exceptions -GrayLog
             return null;
         }
     }

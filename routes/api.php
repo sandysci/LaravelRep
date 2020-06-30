@@ -37,7 +37,7 @@ Route::prefix('v1')->group(function () {
         Route::put('reset', [PasswordResetController::class, 'reset']);
     });
 
-    Route::group(['middleware' => ['auth:sanctum']], function() {
+    Route::group(['middleware' => ['auth:sanctum', 'verified']], function() {
         Route::get('/user', [HomeController::class, 'user']);
 
         //Cards
@@ -52,6 +52,21 @@ Route::prefix('v1')->group(function () {
     });
 });
 
+
+// Use for making web URLs
+Route::get('login', function(){
+    return response()->json([
+        'status' => 'error',
+        'message' => 'Unauthenticated'
+    ], 401);
+})->name('login');
+
+Route::get('email/verify', function(){
+    return response()->json([
+        'status' => 'error',
+        'message' => 'Account not verified, Kindly verify your account'
+    ], 422);
+})->name('verification.notice');
 
 Route::fallback(function(){
     return response()->json([
