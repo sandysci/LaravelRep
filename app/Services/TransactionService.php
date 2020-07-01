@@ -15,15 +15,15 @@ class TransactionService {
         $this->transaction = $transaction;
     }
 
-    public function store(Request $request, User $user, ?Model $model): Object 
+    public function store($request, User $user, ?Model $model): Object 
     {
         $transaction = $this->transaction->create([
             'user_id' => $user->id,
             'reference' => $request->reference,
             'amount' => $request->amount,
             'description' => $request->description,
-            'payment_gateway_type' => $request->payment_gateway ? get_class($request->payment_gateway) : null,
-            'payment_gateway_id' => $request->payment_gateway->id ?? null,
+            'payment_gateway_type' => isset($request->payment_gateway) ? get_class($request->payment_gateway) : null,
+            'payment_gateway_id' => isset($request->payment_gateway) ? $request->payment_gateway->id : null,
             'status' => $request->status,
             'type' => $request->type,
             'attempt' => $request->attempt ?? 0,

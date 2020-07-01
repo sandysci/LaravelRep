@@ -4,7 +4,6 @@ namespace App\Services;
 
 use App\Services\Mailer\TMNotifyService;
 use App\Services\Message\EmailMessage;
-use ReflectionProperty;
 
 class MailService
 {
