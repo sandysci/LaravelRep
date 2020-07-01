@@ -28,6 +28,8 @@ class VerificationController extends Controller
     ){
         $this->userService = $userService;
         $this->otpService = $otpService;
+        $this->mailService = $mailService;
+        $this->smsService = $smsService;
     }
 
     public function verify(Request $request) {

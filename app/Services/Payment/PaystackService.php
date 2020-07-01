@@ -49,7 +49,7 @@ class PaystackService implements CardInterface
             return (object) [
                 'status' => false,
                 'data' => [],
-                'message' => $e->message
+                'message' => $e->getMessage()
             ];
         }
     }
@@ -68,22 +68,40 @@ class PaystackService implements CardInterface
         $url = 'https://api.paystack.co/transaction/verify/'.$reference;
 
         $response = Http::withToken($this->paystackSecretKey)->get($url);
-        
-        //TODO: Check for insufficient fund, and other related issues
-        Log::info($response);
 
         if ($response->failed()) { 
             return (object) [
                 'status' => false,
                 'data' => $response->json(),
-                'message' => "Failed request"
+                'message' => $response->json()['message'] ?? "Failed Transaction"
             ];
         }
-      
+
+        $data = $response->json()['data'];
+        if ($data) 
+        {
+              //Check for insufficient fund, and other related issues
+            if($data['status'] !== "success")
+            {
+                return (object) [
+                    'status' => false,
+                    'data' => $response->json(),
+                    'message' => $data['gateway_response'] ?? "The transaction was not successful"
+                ];
+            } else {
+                return (object) [
+                    'status' => true,
+                    'data' => $response->json(),
+                    'message' => "Successful request"
+                ];
+            }
+            
+        }
+     
         return (object) [
-            'status' => true,
+            'status' => false,
             'data' => $response->json(),
-            'message' => "Successful request"
+            'message' => $response->json()['message'] ?? "Failed Transaction"
         ];
     }
 

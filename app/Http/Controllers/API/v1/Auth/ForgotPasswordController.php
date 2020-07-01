@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Services\MailService;
 use App\Services\SmsService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Str;
@@ -29,7 +30,7 @@ class ForgotPasswordController extends Controller
      * @param Request $request
      * @return JsonResponse [string] message
      */
-    public function create(Request $request) {
+    public function create(Request $request): JsonResponse {
         $validator = Validator::make($request->all(), [
                 'email' => 'required|string|email',
                 'callback_url' => 'sometimes'
@@ -43,7 +44,7 @@ class ForgotPasswordController extends Controller
         }
         
         if($request->type  && $request->type == 'mobile') {
-            $otp = $this->otpService->create ($user->email, '6', '30');
+            $otp = $this->otpService->create ($user->email, 6, 30);
             $this->smsService->sendSms(
                 $user->phone, 
                 "Adashi: Your OTP is " . $otp->token, 

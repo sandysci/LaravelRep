@@ -12,8 +12,12 @@
 Adashi is a web application 
 
 ### TODO
-- Set up database structure
-- Set Project structure
-- Set up docker
-- Set up Laravel Sanctum
-- Set up Audit trails
+- Set up database structure -done
+- Set Project structure -done
+- Set up docker - done
+- Set up Laravel Sanctum -done
+- Set up Audit trails - done
+- Authentication - done
+- Add Card
+- Create Saving Plan
+- Buffer Account

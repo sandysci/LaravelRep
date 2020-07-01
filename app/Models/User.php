@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use App\Traits\Filterable;
-use App\Traits\UsesUuid;
+use App\Models\Traits\Filterable;
+use App\Models\Traits\UsesUuid;
 use App\Helpers\PhoneNumber;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -85,7 +85,7 @@ class User extends Authenticatable implements MustVerifyEmail, Auditable
 
         static::created(function (User $user) {
             UserProfile::create(['user_id' => $user->id]);
-            Wallet::create(['user_id' => $user->id, 'balance' => 0.00]);
+            Wallet::create(['user_id' => $user->id, 'balance' => 0.0000]);
         });
     }
 
