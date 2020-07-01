@@ -8,18 +8,24 @@ use App\Helpers\RandomNumber;
 use App\Http\Requests\PaystackWehookRequest;
 use App\Http\Requests\StoreCardRequest;
 use App\Services\TransactionService;
+use App\Services\WalletService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
 class CardController extends Controller
 {
     protected $cardService;
+    protected $transactionService;
+    protected $walletService;
+
     public function __construct(
         CardService $cardService,
-        TransactionService $transactionService
+        TransactionService $transactionService,
+        WalletService $walletService
     ){
         $this->cardService = $cardService;
         $this->transactionService = $transactionService;
+        $this->walletService = $walletService;
     }
     public function initialize(Request $request) {
         $reference = 'CV-'. RandomNumber::generateTransactionRef();
@@ -66,16 +72,16 @@ class CardController extends Controller
 
                 return $this->responseError([], $response->message);
             }
-            // FundWallet
-            $this->fundWallet();
 
             if($response->data['data']['customer']['email'] !== $request->user()->email) 
             {
                 return $this->responseError([], "Invalid request");
             }
 
+            // FundWallet
+            $this->walletService->incrementBalance($request->user(), $tx->amount);
+    
             $tx->status = $response->data['data']['status'] ?? $tx->status;
-            $tx->amount = $response->data['data']['amount'] / 100;
             $tx->attempt += 1;
 
             //Check if similar card exist
@@ -139,8 +145,4 @@ class CardController extends Controller
         return $this->responseSuccess([], "Successful request");
     }
 
-    private function fundWallet()
-    {
-        //TODO:
-    }
 }
