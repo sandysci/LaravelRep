@@ -24,5 +24,11 @@ return [
             'secret_key' => env('TMNOTIFY_CLIENT_SECRET'),
             'name' => env('TMNOTIFY_CLIENT_NAME')
         ]
+    ],
+    'date_default' => [ 
+        'day_of_month' => '',
+        'day_of_week' => '',
+        'hour_of_day' => ''
     ]
+
 ];

@@ -24,19 +24,19 @@ class CreateSavingCyclesTable extends Migration
             
             $table->enum( 'plan', [ 'daily', 'weekly', 'monthly'] );
            
-            $table->text('day_of_month')->nullable();
-	        $table->text('day_of_week')->nullable();
-            $table->text('hour_of_day')->nullable();
+            $table->integer('day_of_month')->default(27);
+	        $table->integer('day_of_week')->default(1);
+            $table->integer('hour_of_day')->default(24);
             
             $table->uuidMorphs('payment_gateway');
             
-            $table->date('start_date')->nullable();
-            $table->date('end_date')->nullable();
+            $table->date('start_date');
+            $table->date('end_date');
            
             $table->date('withdrawal_date')->nullable();
 
             $table->enum( 'status', [ 'paused', 'active', 'deactivated'] );
-            $table->text("description");
+            $table->text("description")->nullable();
           
             $table->timestamps();
             $table->softDeletes();

@@ -94,5 +94,16 @@ class CardService
             'bank_number'           => $payload['data']['authorization']['bank_number'] ?? null
         ]);
     }
+
+    public function getCard(string $id): ?Card
+    {
+        return $this->card->find($id);
+    }
+
+    public function getUserCards(User $user): Collection
+    {
+        return $this->card->where('user_id', $user->id)->get();
+    }
+
 }
 

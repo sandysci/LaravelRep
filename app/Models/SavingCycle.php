@@ -54,4 +54,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class SavingCycle extends Model
 {
     use UsesUuid, SoftDeletes, Filterable;
+
+    protected $guarded = [];
 }
