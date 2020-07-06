@@ -6,6 +6,7 @@ use App\Models\Traits\Filterable;
 use App\Models\Traits\UsesUuid;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use OwenIt\Auditing\Contracts\Auditable;
 
 /**
  * App\Models\SavingCycle
@@ -51,9 +52,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SavingCycle whereWithdrawalDate($value)
  * @mixin \Eloquent
  */
-class SavingCycle extends Model
+class SavingCycle extends Model implements Auditable
 {
+    use \OwenIt\Auditing\Auditable;
     use UsesUuid, SoftDeletes, Filterable;
-
-    protected $guarded = [];
 }
