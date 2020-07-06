@@ -56,4 +56,6 @@ class SavingCycle extends Model implements Auditable
 {
     use \OwenIt\Auditing\Auditable;
     use UsesUuid, SoftDeletes, Filterable;
+
+    protected $guarded = [];
 }
