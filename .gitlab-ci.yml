@@ -1,4 +1,4 @@
-ache:
+cache:
   key: docker-cache
 staging-build:
   image: docker:stable
