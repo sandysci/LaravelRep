@@ -11,19 +11,19 @@ staging-build:
     - docker build --pull -t "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHA" -t "$CI_REGISTRY_IMAGE:latest" .
     - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
     - docker push $CI_REGISTRY_IMAGE:latest
+  # only:
+  #   - master
+  #   - staging
+
+deploy-staging:
+  stage: deploy
+  script:
+    - printenv
+    - sed -i "s|{{image}}|$CI_REGISTRY_IMAGE:$CI_COMMIT_SHA|g" kubernetes.yaml
+    - echo $KUBE_CONFIG
+    - echo $KUBE_CONFIG | base64 -d > kubeconfig.yml
+    - cat kubeconfig.yml
+    - cat kubernetes.yaml
+    - kubectl --kubeconfig=kubeconfig.yml -n staging apply -f kubernetes.yaml
   only:
-    - master
     - staging
-    
-# deploy-staging:
-#   stage: deploy
-#   script:
-#     - printenv
-#     - sed -i "s|{{image}}|$CI_REGISTRY_IMAGE:$CI_COMMIT_SHA|g" kubernetes.yaml
-#     - echo $KUBE_CONFIG
-#     - echo $KUBE_CONFIG | base64 -d > kubeconfig.yml
-#     - cat kubeconfig.yml
-#     - cat kubernetes.yaml
-#     - kubectl --kubeconfig=kubeconfig.yml -n staging apply -f kubernetes.yaml
-#   only:
-#     - staging

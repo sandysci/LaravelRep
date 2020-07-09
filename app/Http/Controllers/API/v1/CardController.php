@@ -27,7 +27,9 @@ class CardController extends Controller
         $this->transactionService = $transactionService;
         $this->walletService = $walletService;
     }
-    public function initialize(Request $request) {
+    
+    public function initialize(Request $request) 
+    {
         $reference = 'CV-'. RandomNumber::generateTransactionRef();
         $amount = config('constants.default_card_amount');
 
@@ -40,6 +42,16 @@ class CardController extends Controller
         $transaction = $this->transactionService->store($request, $request->user(), $request->user());
 
         return $this->responseSuccess($transaction->data, 'Initializing Card Transaction');
+    }
+
+    public function index()
+    {
+        $cards = $this->cardService->getUserCards(request()->user());
+        if ($cards)
+        {
+            $cards = $cards->toArray();
+        }
+        return $this->responseSuccess($cards, "User's cards");
     }
 
     public function store(StoreCardRequest $request)   
