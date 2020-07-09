@@ -3,7 +3,6 @@
 namespace App\Services;
 use App\Models\Otp;
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Model;
 
 class OtpService {
     protected $otp;
