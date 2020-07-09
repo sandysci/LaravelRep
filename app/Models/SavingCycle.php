@@ -55,7 +55,9 @@ use OwenIt\Auditing\Contracts\Auditable;
 class SavingCycle extends Model implements Auditable
 {
     use \OwenIt\Auditing\Auditable;
-    use UsesUuid, SoftDeletes, Filterable;
+    use UsesUuid;
+    use SoftDeletes;
+    use Filterable;
 
     protected $guarded = [];
 }

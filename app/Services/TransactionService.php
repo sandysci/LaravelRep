@@ -5,17 +5,17 @@ namespace App\Services;
 use App\Models\Transaction;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Http\Request;
 
-class TransactionService {
+class TransactionService
+{
     protected $transaction;
 
-    public function __construct(Transaction $transaction) 
+    public function __construct(Transaction $transaction)
     {
         $this->transaction = $transaction;
     }
 
-    public function store($request, User $user, ?Model $model): Object 
+    public function store($request, User $user, ?Model $model): object
     {
         $transaction = $this->transaction->create([
             'user_id' => $user->id,

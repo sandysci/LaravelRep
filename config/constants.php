@@ -4,7 +4,7 @@ return [
     'default_error_message' => 'An error occurred, Please try again',
 
     'default_card_amount' => 50,
-    
+
     'payment_gateway' => [
 
         'paystack' => [
@@ -25,7 +25,7 @@ return [
             'name' => env('TMNOTIFY_CLIENT_NAME')
         ]
     ],
-    'date_default' => [ 
+    'date_default' => [
         'day_of_month' => '',
         'day_of_week' => '',
         'hour_of_day' => ''

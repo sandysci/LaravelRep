@@ -35,5 +35,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class BankDetail extends Model
 {
-    use UsesUuid, SoftDeletes, Filterable;
+    use UsesUuid;
+    use SoftDeletes;
+    use Filterable;
 }

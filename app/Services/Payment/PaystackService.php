@@ -2,59 +2,50 @@
 
 namespace App\Services\Payment;
 
+use App\Domain\Dto\Value\Integrations\Paystack\PaystackResponseDto;
+use App\Domain\Dto\Value\PaymentProviderResponseDto;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
-class PaystackService implements CardInterface 
+class PaystackService implements CardInterface
 {
 
     protected $paystackSecretKey;
     protected $paystackPublicKey;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->paystackSecretKey = config('constants.payment_gateway.paystack.secret_key');
         $this->paystackPublicKey = config('constants.payment_gateway.paystack.public_key');
     }
-    public function initializeTrans() 
+    public function initializeTrans()
     {
-
     }
 
-    public function makePayment(array $payload): Object {
+    public function makePayment(array $payload): PaymentProviderResponseDto
+    {
         try {
             $url = 'https://api.paystack.co/transaction/charge_authorization';
 
             $data = [
                 'authorization_code' => $payload['authorization_code'],
                 'email' => $payload['email'],
-                'amount' =>$payload['amount'] * 100,
+                'amount' => $payload['amount'] * 100,
                 'reference' => $payload['reference']
             ];
             $response = Http::withToken($this->paystackSecretKey)->post($url, $data);
-    
-            if($response->failed()) { 
-                return (object) [
-                    "status" => false,
-                    "data" => [],
-                    "message" => "There was an error with this transaction"
-                ];
+
+            if ($response->failed()) {
+                return new PaystackResponseDto(false, [], "There was an error with this transaction");
             }
-    
-            return (object) [
-                'status' => true,
-                'data' => $response->json(),
-                'message' => "Transaction was successful"
-            ];
-        } catch(\Exception $e) {
-            return (object) [
-                'status' => false,
-                'data' => [],
-                'message' => $e->getMessage()
-            ];
+
+            return new PaystackResponseDto(true, $response->json(), "Transaction was successful");
+        } catch (\Exception $e) {
+            return new PaystackResponseDto(false, [], $e->getMessage());
         }
     }
 
-    public function verifyPayment(array $payload): Object
+    public function verifyPayment(array $payload): PaymentProviderResponseDto
     {
         $reference = $payload['reference'];
         Log::info("Reference Code: " . $reference);
@@ -65,70 +56,43 @@ class PaystackService implements CardInterface
                 "message" => "No reference found"
             ];
         }
-        $url = 'https://api.paystack.co/transaction/verify/'.$reference;
+        $url = 'https://api.paystack.co/transaction/verify/' . $reference;
 
         $response = Http::withToken($this->paystackSecretKey)->get($url);
 
-        if ($response->failed()) { 
-            return (object) [
-                'status' => false,
-                'data' => $response->json(),
-                'message' => $response->json()['message'] ?? "Failed Transaction"
-            ];
+        if ($response->failed()) {
+            return new PaystackResponseDto(false, $response->json(), $response->json()['message'] ?? "Failed Transaction");
         }
 
         $data = $response->json()['data'];
-        if ($data) 
-        {
-              //Check for insufficient fund, and other related issues
-            if($data['status'] !== "success")
-            {
-                return (object) [
-                    'status' => false,
-                    'data' => $response->json(),
-                    'message' => $data['gateway_response'] ?? "The transaction was not successful"
-                ];
+        if ($data) {
+            //Check for insufficient fund, and other related issues
+            if ($data['status'] !== "success") {
+                return new PaystackResponseDto(false, $response->json(), $data['gateway_response'] ?? "The transaction was not successful");
             } else {
-                return (object) [
-                    'status' => true,
-                    'data' => $response->json(),
-                    'message' => "Successful request"
-                ];
+                return new PaystackResponseDto(true, $response->json(), "Successful request");
             }
-            
         }
-     
-        return (object) [
-            'status' => false,
-            'data' => $response->json(),
-            'message' => $response->json()['message'] ?? "Failed Transaction"
-        ];
+
+        return new PaystackResponseDto(false, $response->json(), $response->json()['message'] ?? "Failed Transaction");
     }
 
-    public function transferToBank($data) 
+    public function transferToBank($data): PaymentProviderResponseDto
     {
 
         $url = 'https://api.paystack.co/transfer';
-    
+
         $response = Http::withToken($this->paystackSecretKey)->post($url, $data);
 
-        if($response->failed()) {
-            return (object) [
-                "status" => false,
-                "data" => $response->json(),
-                "message" => "There was an error when trying to transfer money to user's account"
-            ];
+        if ($response->failed()) {
+            return new PaystackResponseDto(false, $response->json(), "There was an error when trying to transfer money to user's account");
         }
-        return (object) [
-            'status' => true,
-            'data' =>  $response->json(),
-            'message' => "Money was successfully sent to user's account",
-        ];
+        return new PaystackResponseDto(true, $response->json(), "Money was successfully sent to user's account");
     }
 
-    public function resolveBankDetails ($account, $bank)
+    public function resolveBankDetails($account, $bank): PaymentProviderResponseDto
     {
-     
+
         $url  = 'https://api.paystack.co/bank/resolve';
         $params = [
             'account_number' => $account,
@@ -136,38 +100,21 @@ class PaystackService implements CardInterface
         ];
 
         $response = Http::withToken($this->paystackSecretKey)->get($url, $params);
-        if($response->failed()) {
-            return (object) [
-                "status" => false,
-                "data" => $response->json(),
-                "message" => "There was an error encountered, when trying to get bank's details"
-            ];
+        if ($response->failed()) {
+            return new PaystackResponseDto(false, $response->json(), "There was an error encountered, when trying to get bank's details");
         }
 
-        return (object) [
-            'status' => true,
-            'data' =>  $response->json(),
-            'message' => "User's bank details",
-        ];
+        return new PaystackResponseDto(true, $response->json(), "User's bank details");
     }
 
-    public function createTransferRecipient($payload) 
+    public function createTransferRecipient($payload): PaymentProviderResponseDto
     {
         $url = "https://api.paystack.co/transferrecipient";
 
         $response = Http::withToken($this->paystackSecretKey)->post($url, $payload);
         if ($response->failed()) {
-            return (object) [
-                'status' => false,
-                'data' => $response->json(),
-                'message' => 'Error creating transfer recipient'
-            ];
+            return new PaystackResponseDto(false, $response->json(), 'Error creating transfer recipient');
         }
-        return (object) [
-            'status' => true,
-            'data' => $response->json(),
-            'message' => 'Transfer recipient created'
-        ];
+        return new PaystackResponseDto(true, $response->json(), 'Transfer recipient created');
     }
-
 }
