@@ -51,5 +51,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class Withdrawal extends Model
 {
-    use UsesUuid, SoftDeletes, Filterable;
+    use UsesUuid;
+    use SoftDeletes;
+    use Filterable;
 }

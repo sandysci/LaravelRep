@@ -31,12 +31,14 @@ use OwenIt\Auditing\Contracts\Auditable;
 class Wallet extends Model implements Auditable
 {
     use  \OwenIt\Auditing\Auditable;
-    use UsesUuid, SoftDeletes, Filterable;
+    use UsesUuid;
+    use SoftDeletes;
+    use Filterable;
 
     protected $guarded = [];
-    
-    public function user(){
+
+    public function user()
+    {
         return $this->belongsTo(User::class);
     }
-
 }

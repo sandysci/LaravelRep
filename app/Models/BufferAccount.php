@@ -39,5 +39,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class BufferAccount extends Model
 {
-    use UsesUuid, SoftDeletes, Filterable;
+    use UsesUuid;
+    use SoftDeletes;
+    use Filterable;
 }

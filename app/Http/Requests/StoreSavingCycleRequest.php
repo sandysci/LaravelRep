@@ -34,7 +34,7 @@ class StoreSavingCycleRequest extends FormRequest
             'start_date' => 'required|date|after:today',
             'end_date' => 'required|date|after:start_date',
             'description' => 'string',
-        ]; 
+        ];
     }
 
     protected function getValidatorInstance()
@@ -48,14 +48,16 @@ class StoreSavingCycleRequest extends FormRequest
         $validator->sometimes('day_of_week', 'required|integer|between:1,7', function ($input) {
             return $input->plan === "weekly";
         });
-        
+
         return $validator;
     }
 
-    public function failedValidation(Validator $validator) {
+    public function failedValidation(Validator $validator)
+    {
         $message = $validator->errors()->all();
         $error  = collect($message)->unique()->first();
         throw new HttpResponseException(
-            response()->json(['status' => 'error', 'data' => $message ,'message' => $error], 422));
+            response()->json(['status' => 'error', 'data' => $message, 'message' => $error], 422)
+        );
     }
 }
