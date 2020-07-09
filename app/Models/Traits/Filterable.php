@@ -4,7 +4,8 @@ namespace App\Models\Traits;
 
 use App\Filters\BaseFilter;
 
-trait Filterable {
+trait Filterable
+{
     /**
      * Scope a query to apply given filter.
      *
