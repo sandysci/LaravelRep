@@ -75,7 +75,8 @@ class SavingCycleBillingService
     public function billUser($savingCycles)
     {
         foreach ($savingCycles as $savingCycle) {
-            $reference = 'DSC-' . RandomNumber::generateTransactionRef();
+            $prefix = strtoupper($savingCycle->plan[0] . "SC");
+            $reference = $prefix . '-' . RandomNumber::generateTransactionRef();
             // Charge user
             $payload = [];
             $payload["authorization_code"] = $savingCycle->paymentGateway->gw_authorization_code;
