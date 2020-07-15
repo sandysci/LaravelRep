@@ -17,12 +17,12 @@ class MailService
         $this->tMNotifyService = $tMNotifyService;
     }
 
-    public  function sendEmail(
+    public function sendEmail(
         string $to,
         string $subject,
         $content,
         ?string $cc = null,
-        ?string $from = null, 
+        ?string $from = null,
         ?string $bcc = null
     ) {
         $emailMessage = new EmailMessage($to, $subject, $content, $cc, $from, $bcc);

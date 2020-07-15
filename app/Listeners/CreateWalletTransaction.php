@@ -30,8 +30,8 @@ class CreateWalletTransaction implements ShouldQueue
      */
     public function handle(WalletTransactionEvent $event)
     {
-        $reference = 'WT-'.RandomNumber::generateTransactionRef();
-  
+        $reference = 'WT-' . RandomNumber::generateTransactionRef();
+
         $payload = (object) [
             'reference' => $reference,
             'amount' => $event->payload['amount'],
@@ -46,6 +46,6 @@ class CreateWalletTransaction implements ShouldQueue
             $event->wallet
         );
 
-        Log::info('New wallet transaction occurred, Status: '. $transaction->status);
+        Log::info('New wallet transaction occurred, Status: ' . $transaction->status);
     }
 }

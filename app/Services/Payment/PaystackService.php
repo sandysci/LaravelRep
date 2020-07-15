@@ -2,6 +2,7 @@
 
 namespace App\Services\Payment;
 
+use App\Domain\Dto\Request\PaymentProviderRequestDto;
 use App\Domain\Dto\Value\Integrations\Paystack\PaystackResponseDto;
 use App\Domain\Dto\Value\PaymentProviderResponseDto;
 use Illuminate\Support\Facades\Http;
@@ -22,16 +23,16 @@ class PaystackService implements CardInterface
     {
     }
 
-    public function makePayment(array $payload): PaymentProviderResponseDto
+    public function makePayment(PaymentProviderRequestDto $payload): PaymentProviderResponseDto
     {
         try {
             $url = 'https://api.paystack.co/transaction/charge_authorization';
 
             $data = [
-                'authorization_code' => $payload['authorization_code'],
-                'email' => $payload['email'],
-                'amount' => $payload['amount'] * 100,
-                'reference' => $payload['reference']
+                'authorization_code' => $payload->authorization_code,
+                'email' => $payload->email,
+                'amount' => $payload->amount * 100,
+                'reference' => $payload->reference
             ];
             $response = Http::withToken($this->paystackSecretKey)->post($url, $data);
 

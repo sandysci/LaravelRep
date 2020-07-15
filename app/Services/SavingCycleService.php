@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 
-class SavingCycleService 
+class SavingCycleService
 {
     protected $savingCycle;
 
@@ -40,7 +40,13 @@ class SavingCycleService
     public function getAllUserSavingCycles(): Collection
     {
         return $this->savingCycle->where('user_id', request()->user())->get();
-    } 
+    }
+
+    public function getSavingCycles(array $conditions, array $with = []): Collection
+    {
+        //Add with to avoid N + 1 issues
+        return $this->savingCycle->where($conditions)->with($with)->get();
+    }
 
     public function getAllSavingCycles(): Collection
     {
@@ -50,14 +56,12 @@ class SavingCycleService
     public function updateSavingCycleStatus(string $id): ?SavingCycle
     {
         $savingCycle = $this->savingCycle->find($id);
-       
-        if ($savingCycle)
-        {
+
+        if ($savingCycle) {
             $savingCycle->status = $id;
             $savingCycle->save();
         }
 
         return $savingCycle;
     }
-
 }
