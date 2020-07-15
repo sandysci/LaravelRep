@@ -17,7 +17,7 @@ class OtpResponseDto
      * @param array|null $data
      * @param string|null $token
      */
-    public function __construct(bool $status, string $message, ?array $data = [], $token = null)
+    public function __construct(bool $status, string $message, ?array $data = [], ?string $token = null)
     {
         $this->status = $status;
         $this->message = $message;
