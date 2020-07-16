@@ -15,7 +15,9 @@ use Illuminate\Queue\SerializesModels;
 
 class WalletTransactionEvent
 {
-    use Dispatchable, InteractsWithSockets, SerializesModels;
+    use Dispatchable;
+    use InteractsWithSockets;
+    use SerializesModels;
 
     public $wallet;
     public $payload;
@@ -29,7 +31,7 @@ class WalletTransactionEvent
         Wallet $wallet,
         User $user,
         array $payload
-    ){
+    ) {
         $this->wallet = $wallet;
         $this->user = $user;
         $this->payload = $payload;

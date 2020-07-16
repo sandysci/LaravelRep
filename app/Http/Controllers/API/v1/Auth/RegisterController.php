@@ -18,14 +18,15 @@ class RegisterController extends Controller
         $this->userService = $userService;
     }
 
-    public function store(RegisterRequest $request) {
+    public function store(RegisterRequest $request)
+    {
         try {
             $user = $this->userService->register($request);
-            if(!$user->status) {
+            if (!$user->status) {
                 throw new \Exception($user->message);
             }
             return $this->responseSuccess($user->data, $user->message);
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             return $this->responseException($e, 400, $e->getMessage());
         }
     }

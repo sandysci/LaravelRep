@@ -7,10 +7,10 @@ namespace App\Domain\Dto\Value\Otp;
  */
 class OtpResponseDto
 {
-    protected bool $status;
-    protected string $message;
-    protected ?array $data;
-    protected ?string $token;
+    public bool $status;
+    public string $message;
+    public ?array $data;
+    public ?string $token;
     /**
      * @param boolean $status
      * @param string $message

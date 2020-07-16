@@ -83,7 +83,7 @@ class VerificationController extends Controller
             }
 
             $this->mailService->sendEmail(
-                $user->email,
+                $user->data["email"],
                 "Account verified successfully",
                 [
                     "introLines" => [
@@ -91,7 +91,7 @@ class VerificationController extends Controller
                         "Welcome to Adashi"
                     ],
                     "content" =>   "Thanks, for using Adashi",
-                    "greeting" => "Hello " . $user->name . ","
+                    "greeting" => "Hello " . $user->data["name"] . ","
                 ]
             );
             return $this->responseSuccess($user->data, $user->message);

@@ -31,10 +31,12 @@ class StoreCardRequest extends FormRequest
         ];
     }
 
-    public function failedValidation(Validator $validator) {
+    public function failedValidation(Validator $validator)
+    {
         $message = $validator->errors()->all();
         $error  = collect($message)->unique()->first();
         throw new HttpResponseException(
-            response()->json(['status' => 'error', 'data' => $message ,'message' => $error], 422));
+            response()->json(['status' => 'error', 'data' => $message, 'message' => $error], 422)
+        );
     }
 }

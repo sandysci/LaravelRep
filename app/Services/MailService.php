@@ -17,6 +17,7 @@ class MailService
         $this->tMNotifyService = $tMNotifyService;
     }
 
+    //queue mails
     public function sendEmail(
         string $to,
         string $subject,

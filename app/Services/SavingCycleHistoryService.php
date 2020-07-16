@@ -13,7 +13,6 @@ class SavingCycleHistoryService
     public function __construct(
         SavingCycleService $savingCycleService,
         SavingCycleHistory $savingCycleHistory
-
     ) {
         $this->savingCycleService = $savingCycleService;
         $this->savingCycleHistory = $savingCycleHistory;

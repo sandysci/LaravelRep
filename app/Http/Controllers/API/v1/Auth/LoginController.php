@@ -17,15 +17,16 @@ class LoginController extends Controller
         $this->userService = $userService;
     }
 
-    public function authenticate(LoginRequest $request): JsonResponse {
+    public function authenticate(LoginRequest $request): JsonResponse
+    {
         $user = $this->userService->login($request);
-        if(! $user->status) {
+        if (!$user->status) {
             return $this->responseError([], $user->message);
         }
-        $options = [ 
-                    'access_token' => $user->access_token,
-                    'token_type' => 'Bearer'
+        $options = [
+            'access_token' => $user->access_token,
+            'token_type' => 'Bearer'
         ];
-        return $this->responseSuccess($user->data,  $user->message, $options);
+        return $this->responseSuccess($user->data, $user->message, $options);
     }
 }

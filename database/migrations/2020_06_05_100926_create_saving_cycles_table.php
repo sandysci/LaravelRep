@@ -24,9 +24,9 @@ class CreateSavingCyclesTable extends Migration
 
             $table->enum('plan', ['daily', 'weekly', 'monthly']);
 
-            $table->integer('day_of_month')->default(27);
-            $table->integer('day_of_week')->default(1);
-            $table->integer('hour_of_day')->default(24);
+            $table->integer('day_of_month')->nullable()->default(31);
+            $table->integer('day_of_week')->nullable()->default(1);
+            $table->integer('hour_of_day')->nullable()->default(24);
 
             $table->uuidMorphs('payment_gateway');
 

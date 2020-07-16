@@ -47,13 +47,7 @@ class UserService
             return new UserServiceResponseDto(false, "User logout");
         }
 
-        return (object) [
-            'status' => true,
-            'access_token' => $tokenResult,
-            'token_type' => 'Bearer',
-            'data' => $user->toArray(),
-            'message' => 'User logged in'
-        ];
+        return new UserServiceResponseDto(true, 'User logged in', $user->toArray(), $tokenResult, 'Bearer');
     }
 
     public function register($request): object
