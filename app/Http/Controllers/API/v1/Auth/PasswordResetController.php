@@ -13,17 +13,18 @@ use Hash;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Log;
+
 class PasswordResetController extends Controller
 {
 
 
     protected $mailService;
     protected $smsService;
-    
+
     public function __construct(
         MailService $mailService,
         SmsService $smsService
-    ){
+    ) {
         $this->mailService = $mailService;
         $this->smsService = $smsService;
     }
@@ -33,37 +34,40 @@ class PasswordResetController extends Controller
      * @param Request $request
      * @return JsonResponse [string] message
      */
-    public function reset(PasswordResetRequest $request): JsonResponse {
+    public function reset(PasswordResetRequest $request): JsonResponse
+    {
         $user = User::where('email', $request->email)->first();
         if (!$user) {
             return $this->responseError([], 'We can\'t find a user with that e-mail address.');
         }
 
-        if($request->type  && $request->type == 'mobile') {
-            $response = $this->resetViaOtp ($request, $user);
+        if ($request->type  && $request->type == 'mobile') {
+            $response = $this->resetViaOtp($request, $user);
         } else {
-            $response = $this->resetViaToken ($request);
+            $response = $this->resetViaToken($request);
         }
-        
-        if(!$response->status) {
+
+        if (!$response->status) {
             return $this->responseError([], $response->message, 400);
         }
 
         $user->password = Hash::make($request->password);
         $user->save();
 
-        $token = $user->createToken ('authToken')->plainTextToken;
+        $token = $user->createToken('authToken')->plainTextToken;
 
         $this->mailService->sendEmail(
-            $user->email, 
-                "Password reset successfully", [
-                    "introLines" => [ 
-                        "You have successfully, reset your password,", 
-                        "If you don't make this change yourself, Kindly send an email to our support mail 'support@adashi.com' " 
-                    ],
-                    "content" =>   "Thanks, for using Adashi", 
-                    "greeting" => "Hello"
-                ]
+            $user->email,
+            "Password reset successfully",
+            [
+                "introLines" => [
+                    "You have successfully, reset your password,",
+                    "If you don't make this change yourself, 
+                    Kindly send an email to our support mail 'support@adashi.com' "
+                ],
+                "content" =>   "Thanks, for using Adashi",
+                "greeting" => "Hello"
+            ]
         );
 
         $options = [
@@ -73,12 +77,13 @@ class PasswordResetController extends Controller
         return $this->responseSuccess($user->toArray(), 'Password reset successfully', $options);
     }
 
-    public function resetViaToken(Request $request): Object {
+    public function resetViaToken(Request $request): object
+    {
         $passwordReset = PasswordReset::where([
             ['token', $request->token],
             ['email', $request->email]
         ])->first();
-        if (!$passwordReset) { 
+        if (!$passwordReset) {
             return (object) [
                 "status" => false,
                 "message" => "This password reset token is invalid."
@@ -100,10 +105,11 @@ class PasswordResetController extends Controller
             "message" => "Your password has been reset"
         ];
     }
-    public function resetViaOtp(Request $request, User $user): Object {
-        $validateOtp = $this->otpService->validate (get_class($user), $user->email, $request->token);
+    public function resetViaOtp(Request $request, User $user): object
+    {
+        $validateOtp = $this->otpService->validate(get_class($user), $user->email, $request->token);
 
-        if ( !$validateOtp->status ) {
+        if (!$validateOtp->status) {
             return (object) [
                 "status" => false,
                 "message" => $validateOtp->message
@@ -115,5 +121,4 @@ class PasswordResetController extends Controller
             "message" => "Your password has been reset"
         ];
     }
-
 }

@@ -2,6 +2,9 @@
 
 namespace App\Services;
 
+use App\Domain\Dto\Request\Integrations\Paystack\PaystackPaymentRequestDto;
+use App\Domain\Dto\Value\Card\ChargeCardResponseDto;
+use App\Domain\Dto\Value\PaymentProviderResponseDto;
 use App\Models\Card;
 use App\Models\User;
 use App\Services\Payment\PaystackService;
@@ -26,16 +29,21 @@ class CardService
         $this->card = $card;
     }
 
-    public function pay($payload, ?string $channel = 'paystack'): object
+    public function pay($payload, ?string $channel = 'paystack'): PaymentProviderResponseDto
     {
-        //Format payload
         if ($channel && $channel === 'paystack') {
-            return $this->paystackService->makePayment($payload);
+            //Format payload
+            $paystackRequestDto = new PaystackPaymentRequestDto(
+                $payload["authorization_code"],
+                $payload["reference"],
+                $payload["amount"],
+                $payload["email"]
+            );
+            return $this->paystackService->makePayment($paystackRequestDto);
         }
-        return $this->paystackService->makePayment($payload);
     }
 
-    public function verify(Request $request, ?string $channel = 'paystack'): object
+    public function verify(Request $request, ?string $channel = 'paystack'): PaymentProviderResponseDto
     {
         //Format payload
         $payload = $request->all();
@@ -101,5 +109,24 @@ class CardService
     public function getUserCards(User $user): Collection
     {
         return $this->card->where('user_id', $user->id)->get();
+    }
+
+    public function chargeCard(string $id, array $payload, string $channel = 'paystack'): PaymentProviderResponseDto
+    {
+        $card = $this->getCard($id);
+        if (!$card->gw_authorization_code) {
+            return new ChargeCardResponseDto(false, [], "No authorization token");
+        }
+        $paystackRequestDto = new PaystackPaymentRequestDto(
+            $card->gw_authorization_code,
+            $payload["reference"],
+            $payload["amount"] * 100,
+            $payload["email"]
+        );
+
+        if ($channel && $channel === 'paystack') {
+            return $this->paystackService->makePayment($paystackRequestDto);
+        }
+        return $this->paystackService->makePayment($paystackRequestDto);
     }
 }

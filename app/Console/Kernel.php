@@ -13,7 +13,9 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        //
+        Commands\SavingCycleDailyCharge::class,
+        Commands\SavingCycleWeeklyCharge::class,
+        Commands\SavingCycleMonthlyCharge::class
     ];
 
     /**
@@ -25,6 +27,9 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         // $schedule->command('inspire')->hourly();
+        $schedule->command('saving-cycle:daily')->hourly();
+        $schedule->command('saving-cycle:weekly')->hourly();
+        $schedule->command('saving-cycle:monthly')->hourly();
     }
 
     /**
@@ -34,7 +39,7 @@ class Kernel extends ConsoleKernel
      */
     protected function commands()
     {
-        $this->load(__DIR__.'/Commands');
+        $this->load(__DIR__ . '/Commands');
 
         require base_path('routes/console.php');
     }
