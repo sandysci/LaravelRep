@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Helpers\RandomNumber;
 use App\Models\BufferAccount;
 use App\Models\SavingCycle;
+use Illuminate\Support\Facades\Log;
 
 class SavingCycleBillingService
 {
@@ -41,7 +42,6 @@ class SavingCycleBillingService
             'status' => 'active',
             'hour_of_day' => $hourOfDay
         ];
-
         $plans = $this->savingCycleService->getSavingCycles($conditions, []);
         $this->billUser($plans);
     }
@@ -75,6 +75,7 @@ class SavingCycleBillingService
     public function billUser($savingCycles)
     {
         foreach ($savingCycles as $savingCycle) {
+            //Check payment has been made that day
             $prefix = strtoupper($savingCycle->plan[0] . "SC");
             $reference = $prefix . '-' . RandomNumber::generateTransactionRef();
             // Charge user
@@ -92,10 +93,14 @@ class SavingCycleBillingService
 
             if (!$cardResponse->status) {
                 $payload["status"] = "failed";
+                Log::error('Card failed');
+                Log::info($cardResponse->message);
+                Log::info($cardResponse->data);
                 $failedTransDto = (object) $payload;
                 $this->transactionService->store($failedTransDto, $savingCycle->user, $savingCycle);
                 continue;
             }
+            Log::info('Success');
             $payload["status"] = "success";
             $successTransDto = (object) $payload;
             //TODO: Create successful transaction entry

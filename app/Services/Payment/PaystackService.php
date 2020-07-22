@@ -29,7 +29,7 @@ class PaystackService implements CardInterface
             $url = 'https://api.paystack.co/transaction/charge_authorization';
 
             $data = [
-                'authorization_code' => $payload->authorization_code,
+                'authorization_code' => $payload->authorizationCode,
                 'email' => $payload->email,
                 'amount' => $payload->amount * 100,
                 'reference' => $payload->reference
