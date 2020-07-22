@@ -30,7 +30,7 @@ use OwenIt\Auditing\Contracts\Auditable;
  */
 class Wallet extends Model implements Auditable
 {
-    use  \OwenIt\Auditing\Auditable;
+    use \OwenIt\Auditing\Auditable;
     use UsesUuid;
     use SoftDeletes;
     use Filterable;

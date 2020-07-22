@@ -33,18 +33,20 @@ class RegisterRequest extends FormRequest
             'callback_url' => 'required'
         ];
     }
-    public function messages() {
+    public function messages()
+    {
         return [
             'email.unique' => 'You already have an existing account, Please login',
             'phone.unique' => 'This phone has been used, Please try another'
         ];
     }
 
-    public function failedValidation(Validator $validator) {
+    public function failedValidation(Validator $validator)
+    {
         $message = $validator->errors()->all();
         $error  = collect($message)->unique()->first();
         throw new HttpResponseException(
-            response()->json(['status' => 'error', 'data' => $message ,'message' => $error], 422));
+            response()->json(['status' => 'error', 'data' => $message, 'message' => $error], 422)
+        );
     }
-
 }

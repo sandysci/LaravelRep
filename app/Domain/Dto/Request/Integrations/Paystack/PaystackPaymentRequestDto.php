@@ -6,8 +6,8 @@ use App\Domain\Dto\Request\PaymentProviderRequestDto;
 
 class PaystackPaymentRequestDto extends PaymentProviderRequestDto
 {
-    protected string $authorizationCode;
-    protected string $reference;
+    public string $authorizationCode;
+    public string $reference;
 
     public function __construct(
         string $authorizationCode,

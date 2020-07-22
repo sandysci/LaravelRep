@@ -28,7 +28,7 @@ class EmailMessage
     /**
      * The body of the message
      *
-     * @param 
+     * @param
      */
     private $body;
 
@@ -38,7 +38,7 @@ class EmailMessage
     private $cc;
 
     /**
-     * @var 
+     * @var
      */
     private $bcc;
 
@@ -95,7 +95,7 @@ class EmailMessage
     /**
      * Return the body
      *
-     * @return 
+     * @return
      */
     public function body()
     {

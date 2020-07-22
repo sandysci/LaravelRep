@@ -46,6 +46,7 @@ class CreateWalletTransaction implements ShouldQueue
             $event->wallet
         );
 
-        Log::info('New wallet transaction occurred, Status: ' . $transaction->status);
+        Log::info('New wallet transaction occurred, Status: ');
+        Log::info($transaction->toArray());
     }
 }

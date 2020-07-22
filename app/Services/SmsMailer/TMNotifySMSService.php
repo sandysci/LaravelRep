@@ -15,12 +15,11 @@ class TMNotifySMSService implements SmsProviderInterface
 
     public function __construct()
     {
-       //EN
-       $this->tmNotifyClient = "https://services-staging.tm30.net/alerts/v1/sms";
-       $this->from = config('constants.notification.tmnotify.sms.from');
-       $this->clientId = config('constants.notification.tmnotify.client_id');
-       $this->cliendSecret = config('constants.notification.tmnotify.secret_key');
-
+        //EN
+        $this->tmNotifyClient = "https://services-staging.tm30.net/alerts/v1/sms";
+        $this->from = config('constants.notification.tmnotify.sms.from');
+        $this->clientId = config('constants.notification.tmnotify.client_id');
+        $this->cliendSecret = config('constants.notification.tmnotify.secret_key');
     }
 
     public function sendSms(SmsMessage $message)
@@ -39,8 +38,8 @@ class TMNotifySMSService implements SmsProviderInterface
             ];
 
             $response = Http::withHeaders($headers)->post($this->tmNotifyClient, $params);
-            
-            if($response->failed()) {
+
+            if ($response->failed()) {
                 throw new \Exception('Error sending sms');
             }
             return null;

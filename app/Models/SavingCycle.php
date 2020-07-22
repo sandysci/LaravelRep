@@ -70,4 +70,9 @@ class SavingCycle extends Model implements Auditable
     {
         return $this->hasMany(SavingCycleHistory::class);
     }
+
+    public function paymentGateway()
+    {
+        return $this->belongsTo(Card::class);
+    }
 }

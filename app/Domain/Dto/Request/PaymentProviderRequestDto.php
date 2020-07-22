@@ -4,6 +4,6 @@ namespace App\Domain\Dto\Request;
 
 abstract class PaymentProviderRequestDto
 {
-    protected int $amount;
-    protected string $email;
+    public int $amount;
+    public string $email;
 }

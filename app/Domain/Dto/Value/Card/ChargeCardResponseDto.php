@@ -6,9 +6,9 @@ use App\Domain\Dto\Value\PaymentProviderResponseDto;
 
 class ChargeCardResponseDto extends PaymentProviderResponseDto
 {
-    protected bool $status;
-    protected array $data;
-    protected string $message;
+    public bool $status;
+    public array $data;
+    public string $message;
 
     public function __construct(bool $status, array $data, string $message)
     {
