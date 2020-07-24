@@ -41,12 +41,13 @@ class SavingCycleService
     {
         return $this->savingCycle->where('user_id', request()->user())->get();
     }
-
+  
     public function getSavingCycles(array $conditions, array $with = []): Collection
     {
         //Add with to avoid N + 1 issues
         return $this->savingCycle->where($conditions)->with($with)->get();
     }
+
 
     public function getAllSavingCycles(): Collection
     {
