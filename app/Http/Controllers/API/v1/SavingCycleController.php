@@ -25,6 +25,15 @@ class SavingCycleController extends Controller
         $this->mailService = $mailService;
     }
 
+    public function index()
+    {
+        $condition = [
+            'user_id' => request()->user()->id
+        ];
+        $savingCycles = $this->savingCycleService->getSavingCycles($condition);
+
+        return $this->responseSuccess($savingCycles->toArray(), "User's Saving Cycles");
+    }
     public function store(StoreSavingCycleRequest $request)
     {
         try {

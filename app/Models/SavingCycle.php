@@ -60,4 +60,19 @@ class SavingCycle extends Model implements Auditable
     use Filterable;
 
     protected $guarded = [];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+    
+    public function savingCycleHistories()
+    {
+        return $this->hasMany(SavingCycleHistory::class);
+    }
+
+    public function paymentGateway()
+    {
+        return $this->belongsTo(Card::class);
+    }
 }

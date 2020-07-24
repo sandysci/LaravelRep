@@ -19,8 +19,9 @@ class WalletService
     public function store(User $user): Wallet
     {
         return $this->wallet->firstOrCreate(
-                            ['user_id' => $user->id], 
-                            ['balance' => 0.0000]);
+            ['user_id' => $user->id],
+            ['balance' => 0.0000]
+        );
     }
 
     public function getWallet(User $user): ?Wallet
@@ -33,14 +34,13 @@ class WalletService
         return $this->wallet->get();
     }
 
-    public function incrementBalance(User $user, float $amount): ?Wallet
+    public function incrementBalance(User $user, $amount): ?Wallet
     {
         $wallet = $this->wallet->where('user_id', $user->id)->first();
 
-        if($wallet)
-        {
+        if ($wallet) {
             /**
-             * Trigger a Wallet Transaction event, 
+             * Trigger a Wallet Transaction event,
              * that creates a new entry in the transaction table
              */
             $eventPayload = [
@@ -58,14 +58,13 @@ class WalletService
         return $wallet;
     }
 
-    public function decrementBalance(User $user, float $amount): ?Wallet
+    public function decrementBalance(User $user, $amount): ?Wallet
     {
         $wallet = $this->wallet->where('user_id', $user->id)->first();
 
-        if($wallet)
-        {
+        if ($wallet) {
             /**
-             * Trigger a Wallet Transaction event, 
+             * Trigger a Wallet Transaction event,
              * that creates a new entry in the transaction table
              */
             $eventPayload = [

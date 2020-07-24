@@ -30,21 +30,22 @@ class LoginRequest extends FormRequest
             'password' => 'required|string',
             'remember_me' => 'boolean',
         ];
-
     }
 
-    public function messages() {
+    public function messages()
+    {
         return [
             'email.required' => 'An email is required',
             'password.required' => 'A password is required'
         ];
     }
 
-    public function failedValidation(Validator $validator) {
+    public function failedValidation(Validator $validator)
+    {
         $message = $validator->errors()->all();
         $error  = collect($message)->unique()->first();
         throw new HttpResponseException(
-            response()->json(['status' => 'error', 'data' => $message ,'message' => $error], 422));
+            response()->json(['status' => 'error', 'data' => $message, 'message' => $error], 422)
+        );
     }
-
 }

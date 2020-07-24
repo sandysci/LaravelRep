@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Domain\Dto\Value\Integrations\Paystack;
+namespace App\Domain\Dto\Value\SavingCycleBilling;
 
 use App\Domain\Dto\Value\PaymentProviderResponseDto;
 
-class PaystackResponseDto extends PaymentProviderResponseDto
+class SavingCycleBillingResponseDto extends PaymentProviderResponseDto
 {
     public bool $status;
     public array $data;

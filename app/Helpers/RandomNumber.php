@@ -2,12 +2,15 @@
 
 namespace App\Helpers;
 
-class RandomNumber {
+class RandomNumber
+{
 
-    protected static function crypto_rand_secure($min, $max)
+    protected static function cryptoRandSecure($min, $max)
     {
         $range = $max - $min;
-        if ($range < 1) return $min; // not so random...
+        if ($range < 1) {
+            return $min;
+        } // not so random...
         $log = ceil(log($range, 2));
         $bytes = (int) ($log / 8) + 1; // length in bytes
         $bits = (int) $log + 1; // length in bits
@@ -23,21 +26,22 @@ class RandomNumber {
     {
         $token = "";
         $codeAlphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        $codeAlphabet.= "abcdefghijklmnopqrstuvwxyz";
-        $codeAlphabet.= "0123456789";
+        $codeAlphabet .= "abcdefghijklmnopqrstuvwxyz";
+        $codeAlphabet .= "0123456789";
         $max = strlen($codeAlphabet); // edited
 
-        for ($i=0; $i < $length; $i++) {
-            $token .= $codeAlphabet[self::crypto_rand_secure(0, $max-1)];
+        for ($i = 0; $i < $length; $i++) {
+            $token .= $codeAlphabet[self::cryptoRandSecure(0, $max - 1)];
         }
 
         return $token;
     }
 
-    // Generate Standard Payment Transaction ID 
-	public static function generateTransactionRef() {
-		//generate most suitable transaction ref
-		$ref = date( "Ymd" ) . time().mt_rand(10000,99999);
-		return $ref;
+    // Generate Standard Payment Transaction ID
+    public static function generateTransactionRef()
+    {
+        //generate most suitable transaction ref
+        $ref = date("Ymd") . time() . mt_rand(10000, 99999);
+        return $ref;
     }
 }
