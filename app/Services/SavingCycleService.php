@@ -24,9 +24,9 @@ class SavingCycleService
             'user_id' => $user->id,
             'amount' => $payload->amount,
             'plan' => $payload->plan,
-            'day_of_month' => $payload->day_of_month,
-            'day_of_week' => $payload->day_of_week,
-            'hour_of_day' => $payload->hour_of_day,
+            'day_of_month' => $payload->day_of_month ?? 31,
+            'day_of_week' => $payload->day_of_week ?? 1,
+            'hour_of_day' => $payload->hour_of_day ?? 24,
             'payment_gateway_type' => get_class($paymentGateway),
             'payment_gateway_id' => $paymentGateway->id,
             'start_date' => $payload->start_date,
@@ -40,6 +40,12 @@ class SavingCycleService
     public function getAllUserSavingCycles(): Collection
     {
         return $this->savingCycle->where('user_id', request()->user())->get();
+    }
+
+    public function getSavingCycles(array $conditions, array $with = []): Collection
+    {
+        //Add with to avoid N + 1 issues
+        return $this->savingCycle->where($conditions)->with($with)->get();
     }
 
     public function getAllSavingCycles(): Collection

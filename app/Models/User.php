@@ -48,11 +48,12 @@ use Spatie\Permission\Traits\HasRoles;
 class User extends Authenticatable implements MustVerifyEmail, Auditable
 {
     use Filterable;
-    use  \OwenIt\Auditing\Auditable;
+    use \OwenIt\Auditing\Auditable;
     use UsesUuid;
     use SoftDeletes;
     use HasRoles;
     use HasApiTokens;
+    
     /**
      * The attributes that are mass assignable.
      *
