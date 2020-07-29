@@ -6,6 +6,7 @@ use App\Models\PasswordReset;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Services\MailService;
+use App\Services\OtpService;
 use App\Services\SmsService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -16,13 +17,16 @@ class ForgotPasswordController extends Controller
 {
     protected $mailService;
     protected $smsService;
+    protected $otpService;
 
     public function __construct(
         MailService $mailService,
-        SmsService $smsService
+        SmsService $smsService,
+        OtpService $otpService,
     ) {
         $this->mailService = $mailService;
         $this->smsService = $smsService;
+        $this->otpService = $otpService;
     }
     /**
      * Create token password reset
