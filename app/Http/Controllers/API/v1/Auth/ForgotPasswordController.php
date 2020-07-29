@@ -22,7 +22,7 @@ class ForgotPasswordController extends Controller
     public function __construct(
         MailService $mailService,
         SmsService $smsService,
-        OtpService $otpService,
+        OtpService $otpService
     ) {
         $this->mailService = $mailService;
         $this->smsService = $smsService;
