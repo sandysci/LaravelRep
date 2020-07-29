@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Domain\Dto\Value\User\UserServiceResponseDto;
+use App\Helpers\PhoneNumber;
 use App\Models\User;
 use Auth;
 use Carbon\Carbon;
@@ -31,14 +32,17 @@ class UserService
 
     public function login($request): UserServiceResponseDto
     {
-        // if(is_numeric($request->get('email'))){
-        //     return ['phone'=>$request->get('email'),'password'=>$request->get('password')];
-        //   }
-        //   elseif (filter_var($request->get('email'), FILTER_VALIDATE_EMAIL)) {
-        //     return ['email' => $request->get('email'), 'password'=>$request->get('password')];
-        //   }
-
-        $credentials = $request->only('email', 'password');
+        if (is_numeric($request->get('email'))) {
+            $credentials = [
+                'phone' => PhoneNumber::formatToNGR($request->get('email')),
+                'password' => $request->get('password')
+            ];
+        } elseif (filter_var($request->get('email'), FILTER_VALIDATE_EMAIL)) {
+            $credentials = ['email' => $request->get('email'), 'password' => $request->get('password')];
+        } else {
+            $credentials = $request->only('email', 'password');
+        }
+        
         if (!Auth::attempt($credentials)) {
             return new UserServiceResponseDto(false, "Wrong Login Credentials");
         }
