@@ -39,7 +39,7 @@ Route::prefix('v1')->group(function () {
         Route::put('reset', [PasswordResetController::class, 'reset']);
     });
 
-    Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
+    Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::get('/user', [HomeController::class, 'user']);
 
         //Cards
