@@ -7,6 +7,7 @@ use App\Http\Requests\PasswordResetRequest;
 use App\Models\PasswordReset;
 use App\Models\User;
 use App\Services\MailService;
+use App\Services\OtpService;
 use App\Services\SmsService;
 use Carbon\Carbon;
 use Hash;
@@ -20,13 +21,16 @@ class PasswordResetController extends Controller
 
     protected $mailService;
     protected $smsService;
+    protected $otpService;
 
     public function __construct(
         MailService $mailService,
-        SmsService $smsService
+        SmsService $smsService,
+        OtpService $otpService
     ) {
         $this->mailService = $mailService;
         $this->smsService = $smsService;
+        $this->otpService = $otpService;
     }
     /**
      * Reset password
