@@ -45,19 +45,22 @@ use Spatie\Permission\Traits\HasRoles;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User whereUpdatedAt($value)
  * @mixin \Eloquent
  */
-class User extends Authenticatable implements MustVerifyEmail, Auditable
+class User extends Authenticatable implements Auditable
 {
     use Filterable;
-    use  \OwenIt\Auditing\Auditable;
-    use Notifiable, UsesUuid, HasApiTokens, HasRoles, SoftDeletes;
-
+    use \OwenIt\Auditing\Auditable;
+    use UsesUuid;
+    use SoftDeletes;
+    use HasRoles;
+    use HasApiTokens;
+    
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'phone' ,'password',
+        'name', 'email', 'phone', 'password',
     ];
 
     /**
@@ -79,7 +82,7 @@ class User extends Authenticatable implements MustVerifyEmail, Auditable
     ];
 
     // User Boot
-    protected static function boot() 
+    protected static function boot()
     {
         parent::boot();
 
@@ -89,26 +92,25 @@ class User extends Authenticatable implements MustVerifyEmail, Auditable
         });
     }
 
-     //Email Mutator
-    public function setEmailAttribute($value) 
+    //Email Mutator
+    public function setEmailAttribute($value)
     {
         $this->attributes['email'] = strtolower($value);
     }
 
     // Phone Mutator
-     public function setPhoneAttribute($value) 
-     {
+    public function setPhoneAttribute($value)
+    {
         $this->attributes['phone'] = PhoneNumber::formatToNGR($value);
     }
 
-    public function userProfile() 
+    public function userProfile()
     {
         return $this->hasOne(UserProfile::class);
     }
 
-    public function wallet() 
+    public function wallet()
     {
         return $this->hasOne(Wallet::class);
     }
-
 }

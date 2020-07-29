@@ -59,30 +59,32 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class Card extends Model
 {
-    use UsesUuid, SoftDeletes, Filterable;
+    use UsesUuid;
+    use SoftDeletes;
+    use Filterable;
 
     protected $fillable = [
-		'user_id',
-		'channel',
-		'reference',
-		'gw_customer_id',
-		'gw_customer_code',
-		'gw_authorization_code',
-		'card_type',
-		'last4',
-		'exp_month',
-		'exp_year',
-		'country_code',
-		'bank',
-		'brand',
-		'reusable',
-		'description',
+        'user_id',
+        'channel',
+        'reference',
+        'gw_customer_id',
+        'gw_customer_code',
+        'gw_authorization_code',
+        'card_type',
+        'last4',
+        'exp_month',
+        'exp_year',
+        'country_code',
+        'bank',
+        'brand',
+        'reusable',
+        'description',
         'bank_number',
-		'signature'
+        'signature'
     ];
 
 
-     /**
+    /**
      * The attributes that should be hidden for arrays.
      *
      * @var array
@@ -91,7 +93,8 @@ class Card extends Model
         'gw_authorization_code',
     ];
 
-    public function user(){
+    public function user()
+    {
         return $this->belongsTo(User::class);
-	}
+    }
 }

@@ -41,14 +41,17 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class UserProfile extends Model
 {
-    use UsesUuid, SoftDeletes, Filterable;
+    use UsesUuid;
+    use SoftDeletes;
+    use Filterable;
 
     protected $guarded = [];
     protected $touches = [
         'user'
     ];
 
-    public function user(){
+    public function user()
+    {
         return $this->belongsTo(User::class);
     }
 }

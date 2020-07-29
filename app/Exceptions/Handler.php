@@ -35,7 +35,7 @@ class Handler extends ExceptionHandler
     ];
 
     // protected $environment = { return } ;
- 
+
 
     /**
      * Report or log an exception.
@@ -62,64 +62,63 @@ class Handler extends ExceptionHandler
     public function render($request, Throwable $exception)
     {
         //Removed all instances of  $request->wantsJson() to ensure only json is returned
-        if ( $exception instanceof \Spatie\Permission\Exceptions\UnauthorizedException) {
-            $message =  (env('APP_ENV') === 'production') ? 
-                            'Unauthorised Request' :
-                            'Unauthorised: '. $exception->getMessage ();
-            return $this->exceptionError ($exception, 400, $message);
-	    }
+        if ($exception instanceof \Spatie\Permission\Exceptions\UnauthorizedException) {
+            $message =  (env('APP_ENV') === 'production') ?
+                'Unauthorised Request' :
+                'Unauthorised: ' . $exception->getMessage();
+            return $this->exceptionError($exception, $message, 400);
+        }
         if ($exception instanceof \InvalidArgumentException) {
-            $message =  (env('APP_ENV') === 'production') ? 
-                                            config('constants.default_error_message') :
-                                            'Exception: '. $exception->getMessage ();
-            return $this->exceptionError ($exception, 400, $message);
+            $message =  (env('APP_ENV') === 'production') ?
+                config('constants.default_error_message') :
+                'Exception: ' . $exception->getMessage();
+            return $this->exceptionError($exception, $message, 400);
         }
 
-        if($exception instanceof TypeError) {
-            $message =  (env('APP_ENV') === 'production') ? 
-                                    'Type Error, Please try again' :
-                                'Type Error: '. $exception->getMessage ();
-            return $this->exceptionError ($exception, 400, $message);
+        if ($exception instanceof TypeError) {
+            $message =  (env('APP_ENV') === 'production') ?
+                'Type Error, Please try again' :
+                'Type Error: ' . $exception->getMessage();
+            return $this->exceptionError($exception, $message, 400);
         }
 
-        if($exception instanceof ErrorException) {
-            $message =  (env('APP_ENV') === 'production') ? 
-                                    'Error Exception, Please try again' :
-                                'Error Exception: '. $exception->getMessage ();
-            return $this->exceptionError ($exception, 400, $message);
+        if ($exception instanceof ErrorException) {
+            $message =  (env('APP_ENV') === 'production') ?
+                'Error Exception, Please try again' :
+                'Error Exception: ' . $exception->getMessage();
+            return $this->exceptionError($exception, $message, 400);
         }
-        if($exception instanceof BadMethodCallException) {
-            $message =  (env('APP_ENV') === 'production') ? 
-                                'Error with a method call' :
-                                'Error with a method call: '. $exception->getMessage ();
-            return $this->exceptionError ($exception, 500, $message);
+        if ($exception instanceof BadMethodCallException) {
+            $message =  (env('APP_ENV') === 'production') ?
+                'Error with a method call' :
+                'Error with a method call: ' . $exception->getMessage();
+            return $this->exceptionError($exception, $message, 500);
         }
         if ($exception instanceof AuthenticationException) {
-            $message =  (env('APP_ENV') === 'production') ? 
-                                                'Unauthenticated' :
-                                                'Unauthenticated: '. $exception->getMessage ();
-            return $this->exceptionError ($exception, 401, $message);
+            $message =  (env('APP_ENV') === 'production') ?
+                'Unauthenticated' :
+                'Unauthenticated: ' . $exception->getMessage();
+            return $this->exceptionError($exception, $message, 401);
         }
 
         if ($exception instanceof MethodNotAllowedHttpException) {
-            $message =  (env('APP_ENV') === 'production') ? 
-                                config('constants.default_error_message') :
-                                'Exception: '. $exception->getMessage ();
+            $message =  (env('APP_ENV') === 'production') ?
+                config('constants.default_error_message') :
+                'Exception: ' . $exception->getMessage();
 
-            return $this->exceptionError ($exception, 405, $message);
+            return $this->exceptionError($exception, $message, 405);
         }
         // dd($request->expectsJson());
-        if($exception instanceof BindingResolutionException) {
-            
-            $message =  (env('APP_ENV') === 'production') ? 
-                                config('constants.default_error_message') :
-                                'Exception: '. $exception->getMessage ();
+        if ($exception instanceof BindingResolutionException) {
+            $message =  (env('APP_ENV') === 'production') ?
+                config('constants.default_error_message') :
+                'Exception: ' . $exception->getMessage();
 
-            return $this->exceptionError ($exception, 405, $message);
+            return $this->exceptionError($exception, $message, 405);
         }
-        
-        if (in_array ('api', $request->route ()->middleware ())) {
-            $request->headers->set ('Accept', 'application/json');
+
+        if (in_array('api', $request->route()->middleware())) {
+            $request->headers->set('Accept', 'application/json');
         }
         // if (App::environment('testing')) {
         //     throw $exception;
@@ -132,21 +131,20 @@ class Handler extends ExceptionHandler
      * @param Throwable $exception
      * @return JsonResponse
      */
-    public function exceptionError(Throwable $exception, int $statusCode= 400 , string $message): JsonResponse
+    public function exceptionError(Throwable $exception, string $message, int $statusCode = 400): JsonResponse
     {
         if (env('APP_ENV') === 'production') {
-            return response ()->json ([
-                    'status' => 'error',
-                    'data' => [],
-                    'message' => $message
-                ], $statusCode);
+            return response()->json([
+                'status' => 'error',
+                'data' => [],
+                'message' => $message
+            ], $statusCode);
         }
-        return response ()->json ([
+        return response()->json([
             'status' => 'error',
             'data' => [],
             'message' => $message,
             'trace' => $exception->getTrace()
-        ], $statusCode);  
+        ], $statusCode);
     }
-
 }

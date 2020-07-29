@@ -25,8 +25,8 @@ return [
     | not expire. This won't tweak the lifetime of first-party sessions.
     |
     */
-
-    'expiration' => 60,
+    //TODO: Change to 60minutes
+    'expiration' => null,
 
     /*
     |--------------------------------------------------------------------------

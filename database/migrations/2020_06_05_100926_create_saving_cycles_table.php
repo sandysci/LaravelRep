@@ -17,33 +17,33 @@ class CreateSavingCyclesTable extends Migration
             $table->uuid('id')->primary();
 
             $table->string("name");
-            
+
             $table->uuid('user_id')->index();
-            
+
             $table->decimal('amount', 19, 4)->default(0.0000);
-            
-            $table->enum( 'plan', [ 'daily', 'weekly', 'monthly'] );
-           
-            $table->text('day_of_month')->nullable();
-	        $table->text('day_of_week')->nullable();
-            $table->text('hour_of_day')->nullable();
-            
+
+            $table->enum('plan', ['daily', 'weekly', 'monthly']);
+
+            $table->integer('day_of_month')->nullable()->default(31);
+            $table->integer('day_of_week')->nullable()->default(1);
+            $table->integer('hour_of_day')->nullable()->default(24);
+
             $table->uuidMorphs('payment_gateway');
-            
-            $table->date('start_date')->nullable();
-            $table->date('end_date')->nullable();
-           
+
+            $table->date('start_date');
+            $table->date('end_date');
+
             $table->date('withdrawal_date')->nullable();
 
-            $table->enum( 'status', [ 'paused', 'active', 'deactivated'] );
-            $table->text("description");
-          
+            $table->enum('status', ['paused', 'active', 'deactivated']);
+            $table->text("description")->nullable();
+
             $table->timestamps();
             $table->softDeletes();
 
             $table->foreign('user_id')
-                    ->references('id')
-                    ->on('users');
+                ->references('id')
+                ->on('users');
         });
     }
 

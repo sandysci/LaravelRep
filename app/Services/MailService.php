@@ -4,7 +4,6 @@ namespace App\Services;
 
 use App\Services\Mailer\TMNotifyService;
 use App\Services\Message\EmailMessage;
-use ReflectionProperty;
 
 class MailService
 {
@@ -18,12 +17,13 @@ class MailService
         $this->tMNotifyService = $tMNotifyService;
     }
 
-    public  function sendEmail(
+    //queue mails
+    public function sendEmail(
         string $to,
         string $subject,
         $content,
         ?string $cc = null,
-        ?string $from = null, 
+        ?string $from = null,
         ?string $bcc = null
     ) {
         $emailMessage = new EmailMessage($to, $subject, $content, $cc, $from, $bcc);

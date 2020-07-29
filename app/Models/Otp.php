@@ -35,8 +35,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class Otp extends Model
 {
-    use SoftDeletes, Filterable, UsesUuid;
+    use UsesUuid;
+    use SoftDeletes;
+    use Filterable;
 
     protected $guarded = [];
-
 }
