@@ -36,9 +36,9 @@ class UserService
             return new UserServiceResponseDto(false, "Wrong Login Credentials");
         }
         $user = $request->user();
-        if ($user->email_verified_at === null) {
-            return new UserServiceResponseDto(false, "Please verify your account");
-        }
+        // if ($user->email_verified_at === null) {
+        //     return new UserServiceResponseDto(false, "Please verify your account");
+        // }
 
         $tokenResult = $user->createToken('authToken')->plainTextToken;
 
