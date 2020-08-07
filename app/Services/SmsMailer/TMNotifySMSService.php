@@ -28,7 +28,6 @@ class TMNotifySMSService implements SmsProviderInterface
 
         try {
             $params = [
-                'provider' => 'multitexter',
                 'send' => $from,
                 'recipients' => $message->to(),
                 'message' => $message->body(),
