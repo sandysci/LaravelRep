@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\API\v1\Auth;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\ApiController;
 use App\Http\Requests\PasswordResetRequest;
 use App\Models\PasswordReset;
 use App\Models\User;
@@ -15,7 +15,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Log;
 
-class PasswordResetController extends Controller
+class PasswordResetController extends ApiController
 {
 
 

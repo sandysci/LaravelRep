@@ -2,17 +2,15 @@
 
 namespace App\Http\Controllers\API\v1;
 
-use App\Http\Controllers\Controller;
 use App\Services\CardService;
-use App\Helpers\RandomNumber;
+use App\Http\Controllers\ApiController;
 use App\Http\Requests\PaystackWehookRequest;
 use App\Http\Requests\StoreCardRequest;
 use App\Services\TransactionService;
 use App\Services\WalletService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 
-class CardController extends Controller
+class CardController extends ApiController
 {
     protected $cardService;
     protected $transactionService;

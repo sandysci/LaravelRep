@@ -9,19 +9,17 @@ interface Message
      *
      * @return string
      */
-    public function to();
+    public function to(): string;
 
     /**
      * Return the sender
      *
      * @return string
      */
-    public function from();
+    public function from(): ?string;
 
     /**
      * Return the body
-     *
-     * @return string
      */
     public function body();
 }

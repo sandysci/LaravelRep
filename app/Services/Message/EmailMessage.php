@@ -4,53 +4,16 @@ namespace App\Services\Message;
 
 class EmailMessage
 {
-    /**
-     * The recipient
-     *
-     * @param string
-     */
-    private $to;
 
-    /**
-     * The sender
-     *
-     * @param string
-     */
-    private $from;
-
-    /**
-     * The subject
-     *
-     * @param string
-     */
-    private $subject;
-
-    /**
-     * The body of the message
-     *
-     * @param
-     */
+    private string $to;
+    private ?string $from;
+    private string $subject;
     private $body;
-
-    /**
-     * @var
-     */
-    private $cc;
-
-    /**
-     * @var
-     */
-    private $bcc;
+    private ?string $cc;
+    private ?string $bcc;
 
     /**
      * Create a new Email Message
-     *
-     * @param string $to
-     * @param string $subject
-     * @param  $body
-     * @param string cc
-     * @param string $from
-     * @param string $bcc
      */
     public function __construct(string $to, string $subject, $body, ?string $cc, ?string $from, ?string $bcc)
     {
@@ -64,30 +27,24 @@ class EmailMessage
 
     /**
      * Return the recipient
-     *
-     * @return string
      */
-    public function to()
+    public function to(): string
     {
         return $this->to;
     }
 
     /**
      * Return the sender
-     *
-     * @return string
      */
-    public function from()
+    public function from(): ?string
     {
         return $this->from;
     }
 
     /**
      * Return the subject
-     *
-     * @return string
      */
-    public function subject()
+    public function subject(): string
     {
         return $this->subject;
     }
@@ -104,20 +61,16 @@ class EmailMessage
 
     /**
      * Return the cc
-     *
-     * @return string
      */
-    public function cc()
+    public function cc(): ?string
     {
         return $this->cc;
     }
 
     /**
      * Return the bcc
-     *
-     * @return string
      */
-    public function bcc()
+    public function bcc(): ?string
     {
         return $this->bcc;
     }

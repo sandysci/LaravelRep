@@ -48,5 +48,6 @@ class SavingCycleDailyCharge extends Command
         $hour = (int) Carbon::now()->format('H');
         $this->savingCycleBillingService->dailyBilling($hour);
         Log::info('Done with saving-cycle:daily command');
+        return;
     }
 }

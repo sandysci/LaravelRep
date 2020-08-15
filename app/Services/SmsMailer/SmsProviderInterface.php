@@ -8,5 +8,5 @@ interface SmsProviderInterface
 {
     public function sendSms(
         SmsMessage $message
-    );
+    ): bool;
 }

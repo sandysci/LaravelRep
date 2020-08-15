@@ -98,12 +98,6 @@ class User extends Authenticatable implements Auditable
         $this->attributes['email'] = strtolower($value);
     }
 
-    // Phone Mutator
-    public function setPhoneAttribute($value)
-    {
-        $this->attributes['phone'] = PhoneNumber::formatToNGR($value);
-    }
-
     public function userProfile()
     {
         return $this->hasOne(UserProfile::class);

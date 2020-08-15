@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers\API\v1;
 
-use App\Http\Controllers\Controller;
-use App\Services\UserService;
+use App\Http\Controllers\ApiController;
 use Illuminate\Http\Request;
 
-class HomeController extends Controller
+class HomeController extends ApiController
 {
     public function index()
     {

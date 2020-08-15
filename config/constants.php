@@ -14,6 +14,10 @@ return [
     ],
     'notification' => [
         'tmnotify' => [
+            'url' => [
+                'email' => env('TMNOTIFY_EMAIL_URL', 'https://services-staging.tm30.net/notifications/v1/email'),
+                'sms' => env('TMNOTIFY_SMS_URL', 'https://services-staging.tm30.net/alerts/v1/sms')
+            ],
             'mail' => [
                 'from'  => env('TMNOTIFY_MAIL_FROM', 'no-reply@adashi.com')
             ],

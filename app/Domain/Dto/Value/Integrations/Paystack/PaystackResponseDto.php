@@ -6,7 +6,6 @@ use App\Domain\Dto\Value\PaymentProviderResponseDto;
 
 class PaystackResponseDto extends PaymentProviderResponseDto
 {
-    public bool $status;
     public array $data;
     public string $message;
 

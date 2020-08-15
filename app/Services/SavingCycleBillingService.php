@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Helpers\RandomNumber;
 use App\Models\BufferAccount;
 use App\Models\SavingCycle;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 
 class SavingCycleBillingService
@@ -72,7 +73,7 @@ class SavingCycleBillingService
         $this->billUser($plans);
     }
 
-    public function billUser($savingCycles)
+    public function billUser(Collection $savingCycles)
     {
         foreach ($savingCycles as $savingCycle) {
             //Check payment has been made that day
@@ -103,7 +104,7 @@ class SavingCycleBillingService
             Log::info('Success');
             $payload["status"] = "success";
             $successTransDto = (object) $payload;
-            //TODO: Create successful transaction entry
+            //Create successful transaction entry
             $this->transactionService->store($successTransDto, $savingCycle->user, $savingCycle);
 
             $this->fundWalletOrBufferAccount($savingCycle);
@@ -122,7 +123,7 @@ class SavingCycleBillingService
         }
     }
 
-    public function fundWalletOrBufferAccount(SavingCycle $savingCycle)
+    public function fundWalletOrBufferAccount(SavingCycle $savingCycle): void
     {
         if (count($savingCycle->savingCycleHistories) > 0) {
             $this->walletService->incrementBalance($savingCycle->user, $savingCycle->amount);
@@ -141,7 +142,7 @@ class SavingCycleBillingService
         }
     }
 
-    public function emailNotification(SavingCycle $savingCycle)
+    public function emailNotification(SavingCycle $savingCycle): void
     {
         $this->mailService->sendEmail(
             $savingCycle->user->email,

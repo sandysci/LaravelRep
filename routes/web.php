@@ -18,12 +18,11 @@ Route::get('/', function () {
 });
 
 
-Route::fallback(function(){
+Route::fallback(function () {
     return response()->json([
         'status' => 'error',
         'Device Info' => request()->header('User-Agent') ?? '',
-        'Your IP' => request ()->ip () ?? '',
-        'message' => 'Page Not Found. If error persists, contact developer@sfscredit.com'
+        'Your IP' => request()->ip() ?? '',
+        'message' => 'Page Not Found. If error persists, contact developer@adashi.com'
     ], 404);
 });
-
