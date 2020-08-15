@@ -2,18 +2,19 @@
 
 namespace App\Http\Controllers\API\v1\Auth;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\ApiController;
 use App\Models\User;
 use App\Services\MailService;
 use App\Services\OtpService;
 use App\Services\SmsService;
 use App\Services\UserService;
 use Carbon\Carbon;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
-class VerificationController extends Controller
+class VerificationController extends ApiController
 {
     protected $userService;
     protected $otpService;
@@ -32,7 +33,7 @@ class VerificationController extends Controller
         $this->smsService = $smsService;
     }
 
-    public function verify(Request $request)
+    public function verify(Request $request): JsonResponse
     {
         try {
             $user = User::find(request()->user()->id);

@@ -6,7 +6,6 @@ use App\Domain\Dto\Request\PaymentProviderRequestDto;
 use App\Domain\Dto\Value\Integrations\Paystack\PaystackResponseDto;
 use App\Domain\Dto\Value\PaymentProviderResponseDto;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log;
 
 class PaystackService implements CardInterface
 {
@@ -34,6 +33,7 @@ class PaystackService implements CardInterface
                 'amount' => $payload->amount * 100,
                 'reference' => $payload->reference
             ];
+
             $response = Http::withToken($this->paystackSecretKey)->post($url, $data);
 
             if ($response->failed()) {
@@ -49,14 +49,11 @@ class PaystackService implements CardInterface
     public function verifyPayment(array $payload): PaymentProviderResponseDto
     {
         $reference = $payload['reference'];
-        Log::info("Reference Code: " . $reference);
+
         if (!$reference) {
-            return (object) [
-                "status" => false,
-                "data" => [],
-                "message" => "No reference found"
-            ];
+            return new PaystackResponseDto(false, [], "No reference found");
         }
+
         $url = 'https://api.paystack.co/transaction/verify/' . $reference;
 
         $response = Http::withToken($this->paystackSecretKey)->get($url);
@@ -66,16 +63,16 @@ class PaystackService implements CardInterface
         }
 
         $data = $response->json()['data'];
-        if ($data) {
-            //Check for insufficient fund, and other related issues
-            if ($data['status'] !== "success") {
-                return new PaystackResponseDto(false, $response->json(), $data['gateway_response'] ?? "The transaction was not successful");
-            } else {
-                return new PaystackResponseDto(true, $response->json(), "Successful request");
-            }
+        if (!$data) {
+            return new PaystackResponseDto(false, $response->json(), $response->json()['message'] ?? "Failed Transaction");
         }
 
-        return new PaystackResponseDto(false, $response->json(), $response->json()['message'] ?? "Failed Transaction");
+        //Check for insufficient fund, and other related issues
+        if ($data['status'] !== "success") {
+            return new PaystackResponseDto(false, $response->json(), $data['gateway_response'] ?? "The transaction was not successful");
+        }
+
+        return new PaystackResponseDto(true, $response->json(), "Successful request");
     }
 
     public function transferToBank($data): PaymentProviderResponseDto

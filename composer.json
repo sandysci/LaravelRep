@@ -16,6 +16,8 @@
         "laravel/sanctum": "^2.3",
         "laravel/tinker": "^2.0",
         "owen-it/laravel-auditing": "^10.0",
+        "propaganistas/laravel-disposable-email": "^2.0",
+        "propaganistas/laravel-phone": "^4.2",
         "spatie/laravel-permission": "^3.13"
     },
     "require-dev": {

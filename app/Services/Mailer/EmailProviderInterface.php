@@ -8,5 +8,5 @@ interface EmailProviderInterface
 {
     public function sendEmail(
         EmailMessage $message
-    );
+    ): bool;
 }

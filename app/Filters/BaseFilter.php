@@ -36,7 +36,7 @@ abstract class BaseFilter
         return array_filter($methods);
     }
 
-    public function apply(Builder $builder)
+    public function apply(Builder $builder): Builder
     {
         $this->builder = $builder;
         foreach ($this->filters() as $name => $value) {
@@ -48,7 +48,7 @@ abstract class BaseFilter
         return $this->builder;
     }
 
-    public function filters()
+    public function filters(): ?array
     {
         return $this->request->all();
     }

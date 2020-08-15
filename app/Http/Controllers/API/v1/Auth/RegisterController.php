@@ -2,14 +2,12 @@
 
 namespace App\Http\Controllers\API\v1\Auth;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\ApiController;
 use App\Http\Requests\RegisterRequest;
 use App\Services\OtpService;
 use App\Services\UserService;
-use App\Helpers\PhoneNumber;
-use Illuminate\Http\Request;
 
-class RegisterController extends Controller
+class RegisterController extends ApiController
 {
     protected $userService;
 

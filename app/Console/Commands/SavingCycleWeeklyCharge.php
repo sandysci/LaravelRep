@@ -45,7 +45,6 @@ class SavingCycleWeeklyCharge extends Command
         //Get current hour
         $hour = (int) Carbon::now()->format('H');
         $day = (int) Carbon::now()->format('d');
-
         $this->savingCycleBillingService->weeklyBilling($hour, $day);
         Log::info('Done with saving-cycle:weekly command');
         return;

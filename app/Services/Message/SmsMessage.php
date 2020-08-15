@@ -11,35 +11,15 @@ namespace App\Services\Message;
  */
 class SmsMessage implements Message
 {
-    /**
-     * The recipient
-     *
-     * @param string
-     */
-    public $to;
 
-    /**
-     * The sender
-     *
-     * @param string
-     */
-    public $from;
-
-    /**
-     * The body of the message
-     *
-     * @param string
-     */
-    public $body;
+    public string $to;
+    public string $from;
+    public string $body;
 
     /**
      * Create a new Sms Message
-     *
-     * @param string $to
-     * @param string $from
-     * @param string $body
      */
-    public function __construct($to, $from, $body)
+    public function __construct(string $to, string $from, string $body)
     {
         $this->to = $to;
         $this->from = $from;
@@ -48,20 +28,16 @@ class SmsMessage implements Message
 
     /**
      * Return the recipient
-     *
-     * @return string
      */
-    public function to()
+    public function to(): string
     {
         return $this->to;
     }
 
     /**
      * Return the sender
-     *
-     * @return string
      */
-    public function from()
+    public function from(): string
     {
         return $this->from;
     }
@@ -69,9 +45,9 @@ class SmsMessage implements Message
     /**
      * Return the body
      *
-     * @return string
+     * @return
      */
-    public function body()
+    public function body(): string
     {
         return $this->body;
     }

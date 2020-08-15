@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\API\v1\Auth;
 
+use App\Http\Controllers\ApiController;
 use App\Models\PasswordReset;
-use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Services\MailService;
 use App\Services\OtpService;
@@ -13,7 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Str;
 
-class ForgotPasswordController extends Controller
+class ForgotPasswordController extends ApiController
 {
     protected $mailService;
     protected $smsService;
