@@ -9,6 +9,7 @@ use App\Domain\Dto\Value\Card\CreateCardDto;
 use App\Domain\Dto\Value\PaymentProviderResponseDto;
 use App\Helpers\RandomNumber;
 use App\Models\Card;
+use App\Models\Transaction;
 use App\Models\User;
 use App\Services\Payment\PaystackService;
 use Illuminate\Http\Request;
@@ -17,13 +18,8 @@ use Illuminate\Support\Facades\Log;
 
 class CardService
 {
-    /**
-     * @var PaystackService
-     */
-    private $paystackService;
-
+    private PaystackService $paystackService;
     protected $transactionService;
-
     protected $walletService;
 
 
@@ -59,28 +55,29 @@ class CardService
 
     public function pay($payload, ?string $channel = 'paystack'): PaymentProviderResponseDto
     {
-        if ($channel && $channel === 'paystack') {
-            //Format payload
-            $paystackRequestDto = new PaystackPaymentRequestDto(
-                $payload["authorization_code"],
-                $payload["reference"],
-                $payload["amount"],
-                $payload["email"]
-            );
-            return $this->paystackService->makePayment($paystackRequestDto);
+        if ($channel !== 'paystack') {
+            return new PaymentProviderResponseDto(false, [], "Wrong payment channel");
         }
+        //Format payload
+        $paystackRequestDto = new PaystackPaymentRequestDto(
+            $payload["authorization_code"],
+            $payload["reference"],
+            $payload["amount"],
+            $payload["email"]
+        );
+        return $this->paystackService->makePayment($paystackRequestDto);
     }
 
     public function verify(Request $request, ?string $channel = 'paystack'): PaymentProviderResponseDto
     {
+        if ($channel !== 'paystack') {
+            return new PaymentProviderResponseDto(false, [], "Wrong payment channel");
+        }
         //Format payload
         $payload = $request->all();
-        if ($channel && $channel === 'paystack') {
-            $payload = [
-                "reference" => $request->reference
-            ];
-            return $this->paystackService->verifyPayment($payload);
-        }
+        $payload = [
+            "reference" => $request->reference
+        ];
         return $this->paystackService->verifyPayment($payload);
     }
 
@@ -91,19 +88,6 @@ class CardService
 
         // return $this->paystackEventHandler->eventHandler($formattedPayload->event, $formattedPayload->payload);
         return null;
-    }
-
-    public function getExistingSimilarCards(array $conditions): Collection
-    {
-        $cards = $this->card->where([
-            'last4'            => $conditions['data']['authorization']['last4'],
-            'gw_customer_code' => $conditions['data']['customer']['customer_code'],
-            'bank'             => $conditions['data']['authorization']['bank'],
-            'country_code'     => $conditions['data']['authorization']['country_code'],
-            'exp_month'        => $conditions['data']['authorization']['exp_month'],
-            'exp_year'         => $conditions['data']['authorization']['exp_year'],
-        ])->get();
-        return $cards;
     }
 
     public function store(User $user, string $reference, array $payload): Card
@@ -137,25 +121,21 @@ class CardService
             'user_id' => $request->user()->id,
             'type' => 'debit'
         ];
-        $tx = $this->transactionService->findWhere($conds);
+        $transaction = $this->transactionService->findWhere($conds);
 
-        if (!$tx) {
+        if (!$transaction) {
             return new CreateCardDto(false, 'This transaction doesn\'t exist in our system');
         }
 
-        if ($tx->status == 'success') {
+        if ($transaction->status == 'success') {
             return new CreateCardDto(false, 'This transaction has been recorded in our system');
         }
 
-
         $response = $this->verify($request, $request->channel);
-        Log::info("Check Status of Reference Code");
-        
 
         if (!$response->status) {
-            $tx->status = 'failed';
-            $tx->attempt += 1;
-
+            $transaction->status = 'failed';
+            $transaction->attempt += 1;
             return new CreateCardDto(false, $response->message);
         }
 
@@ -164,40 +144,20 @@ class CardService
         }
 
         // FundWallet
-        $this->walletService->incrementBalance($request->user(), $tx->amount);
+        $this->walletService->incrementBalance($request->user(), $transaction->amount);
 
-        $tx->status = $response->data['data']['status'] ?? $tx->status;
-        $tx->attempt += 1;
+        $transaction->status = $response->data['data']['status'] ?? $transaction->status;
+        $transaction->attempt += 1;
 
-        //Check if similar card exist
-        if (!$response->data['data']['authorization']) {
-            $tx->save();
-            return new CreateCardDto(false, "Unable to get an authorization code for this card");
-        }
-
-        if (!$response->data['data']['authorization']['reusable']) {
-            $tx->save();
-            return new CreateCardDto(false, "Card is not reusable");
-        }
-
-        $checkCard = $this->getExistingSimilarCards($response->data);
-
-        if (count($checkCard) > 0 && App::environment('production')) {
-            $tx->payment_gateway_type = get_class($checkCard->first());
-            $tx->payment_gateway_id = $checkCard->first()->id;
-            $tx->description = 'Existing Card Used for the transaction';
-            $tx->save();
-
-            return new CreateCardDto(false, "Card already in the system");
-        }
-
+        //Run card validation
+        $this->addCardValidation($transaction, $response);
 
         $paymentAuth = $this->store($request->user(), $reference, $response->data);
 
-        $tx->payment_gateway_type = get_class($paymentAuth);
-        $tx->payment_gateway_id = $paymentAuth->id;
-        $tx->description = 'New Card added';
-        $tx->save();
+        $transaction->payment_gateway_type = get_class($paymentAuth);
+        $transaction->payment_gateway_id = $paymentAuth->id;
+        $transaction->description = 'New Card added';
+        $transaction->save();
 
         return new CreateCardDto(true, "Card was created successfully");
     }
@@ -214,6 +174,10 @@ class CardService
 
     public function chargeCard(string $id, array $payload, string $channel = 'paystack'): PaymentProviderResponseDto
     {
+        if ($channel !== 'paystack') {
+            return new PaymentProviderResponseDto(false, [], "Wrong payment channel");
+        }
+
         $card = $this->getCard($id);
         if (!$card->gw_authorization_code) {
             return new ChargeCardResponseDto(false, [], "No authorization token");
@@ -225,9 +189,42 @@ class CardService
             $payload["email"]
         );
 
-        if ($channel && $channel === 'paystack') {
-            return $this->paystackService->makePayment($paystackRequestDto);
-        }
         return $this->paystackService->makePayment($paystackRequestDto);
+    }
+
+    protected function addCardValidation(Transaction $transaction, $response): ?CreateCardDto
+    {
+        if (!$response->data['data']['authorization']) {
+            $transaction->save();
+            return new CreateCardDto(false, "Unable to get an authorization code for this card");
+        }
+
+        if (!$response->data['data']['authorization']['reusable']) {
+            $transaction->save();
+            return new CreateCardDto(false, "Card is not reusable");
+        }
+
+        $checkCard = $this->getExistingSimilarCards($response->data);
+
+        if (count($checkCard) > 0 && App::environment('production')) {
+            $transaction->payment_gateway_type = get_class($checkCard->first());
+            $transaction->payment_gateway_id = $checkCard->first()->id;
+            $transaction->description = 'Existing Card Used for the transaction';
+            $transaction->save();
+
+            return new CreateCardDto(false, "Card is already in the system");
+        }
+    }
+
+    protected function getExistingSimilarCards(array $conditions): Collection
+    {
+        return $this->card->where([
+            'last4'            => $conditions['data']['authorization']['last4'],
+            'gw_customer_code' => $conditions['data']['customer']['customer_code'],
+            'bank'             => $conditions['data']['authorization']['bank'],
+            'country_code'     => $conditions['data']['authorization']['country_code'],
+            'exp_month'        => $conditions['data']['authorization']['exp_month'],
+            'exp_year'         => $conditions['data']['authorization']['exp_year'],
+        ])->get();
     }
 }

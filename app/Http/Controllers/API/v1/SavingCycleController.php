@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers\API\v1;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\ApiController;
 use App\Http\Requests\StoreSavingCycleRequest;
 use App\Services\CardService;
 use App\Services\MailService;
 use App\Services\SavingCycleService;
-use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 
-class SavingCycleController extends Controller
+class SavingCycleController extends ApiController
 {
     protected $savingCycleService;
     protected $cardService;
@@ -25,7 +25,7 @@ class SavingCycleController extends Controller
         $this->mailService = $mailService;
     }
 
-    public function index()
+    public function index(): JsonResponse
     {
         $condition = [
             'user_id' => request()->user()->id
@@ -34,7 +34,8 @@ class SavingCycleController extends Controller
 
         return $this->responseSuccess($savingCycles->toArray(), "User's Saving Cycles");
     }
-    public function store(StoreSavingCycleRequest $request)
+
+    public function store(StoreSavingCycleRequest $request): JsonResponse
     {
         try {
             //Find Payment Gateway

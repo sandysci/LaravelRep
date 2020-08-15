@@ -108,7 +108,7 @@ class Handler extends ExceptionHandler
 
             return $this->exceptionError($exception, $message, 405);
         }
-        // dd($request->expectsJson());
+    
         if ($exception instanceof BindingResolutionException) {
             $message =  (env('APP_ENV') === 'production') ?
                 config('constants.default_error_message') :
@@ -120,9 +120,6 @@ class Handler extends ExceptionHandler
         if (in_array('api', $request->route()->middleware())) {
             $request->headers->set('Accept', 'application/json');
         }
-        // if (App::environment('testing')) {
-        //     throw $exception;
-        // }
 
         return parent::render($request, $exception);
     }

@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Domain\Dto\Value\User\UserServiceResponseDto;
+use App\Helpers\PhoneNumber;
 use App\Models\User;
 use Auth;
 use Carbon\Carbon;
@@ -31,7 +32,17 @@ class UserService
 
     public function login($request): UserServiceResponseDto
     {
-        $credentials = $request->only('email', 'password');
+        if (is_numeric($request->get('email'))) {
+            $credentials = [
+                'phone' => $request->get('email'),
+                'password' => $request->get('password')
+            ];
+        } elseif (filter_var($request->get('email'), FILTER_VALIDATE_EMAIL)) {
+            $credentials = ['email' => $request->get('email'), 'password' => $request->get('password')];
+        } else {
+            $credentials = $request->only('email', 'password');
+        }
+        
         if (!Auth::attempt($credentials)) {
             return new UserServiceResponseDto(false, "Wrong Login Credentials");
         }
@@ -54,6 +65,7 @@ class UserService
     {
         DB::beginTransaction();
         try {
+            //$country_code
             $callback_url = preg_replace('{/$}', '', $request->callback_url);
             $user = $this->user->create([
                 'name' => $request->name,
@@ -66,23 +78,11 @@ class UserService
 
             if ($request->type && $request->type == 'mobile') {
                 $otp = $this->otpService->create(get_class($user), $user->email, 6, 30);
-
-                if ($user->phone) {
-                    $this->smsService->sendSms(
-                        $user->phone,
-                        "Adashi: Your OTP is " . $otp->token,
-                        "ADASHI"
-                    );
-                } else {
-                    $this->mailService->sendEmail(
-                        $user->email,
-                        "Your OTP from Adashi",
-                        [
-                            "content" => "Your OTP is " . $otp->token,
-                            "greeting" => "Welcome"
-                        ]
-                    );
-                }
+                $this->smsService->sendSms(
+                    $user->phone,
+                    "Adashi: Your OTP is " . $otp->token,
+                    "ADASHI"
+                );
             } else {
                 $token = $user->createToken('authToken')->plainTextToken;
                 $mailStatus = $this->mailService->sendEmail(

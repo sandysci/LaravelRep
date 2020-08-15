@@ -10,17 +10,6 @@ use App\Http\Controllers\API\v1\HomeController;
 use App\Http\Controllers\API\v1\SavingCycleController;
 use Illuminate\Support\Facades\Route;
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| is assigned the "api" middleware group. Enjoy building your API!
-|
-*/
-
 Route::prefix('v1')->group(function () {
     //Authentication
     Route::get('/', [HomeController::class, 'index']);
@@ -39,7 +28,7 @@ Route::prefix('v1')->group(function () {
         Route::put('reset', [PasswordResetController::class, 'reset']);
     });
 
-    Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
+    Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::get('/user', [HomeController::class, 'user']);
 
         //Cards
@@ -58,7 +47,7 @@ Route::prefix('v1')->group(function () {
 });
 
 
-// Use for making web URLs
+// Default web URLs
 Route::get('login', function () {
     return response()->json([
         'status' => 'error',

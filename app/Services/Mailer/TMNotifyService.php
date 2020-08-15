@@ -15,13 +15,12 @@ class TMNotifyService implements EmailProviderInterface
 
     public function __construct()
     {
-        //EN
-        $this->tmNotifyClient = "https://services-staging.tm30.net/notifications/v1/email";
+        $this->tmNotifyClient = config('constants.notification.tmnotify.url.email');
         $this->from = config('constants.notification.tmnotify.mail.from');
         $this->clientId = config('constants.notification.tmnotify.client_id');
         $this->cliendSecret = config('constants.notification.tmnotify.secret_key');
     }
-    public function messageFormat($payload)
+    public function messageFormat(array $payload): ?array
     {
         return  [
             "content" => $payload['content'] ?? "",
@@ -40,7 +39,7 @@ class TMNotifyService implements EmailProviderInterface
         ];
     }
 
-    public function sendEmail(EmailMessage $message)
+    public function sendEmail(EmailMessage $message): bool
     {
         $from = $this->from ?? $message->from();
 
@@ -64,6 +63,7 @@ class TMNotifyService implements EmailProviderInterface
             } else {
                 $params['body'] = $message->body();
             }
+
             $headers = [
                 'client-id' => $this->clientId
             ];
