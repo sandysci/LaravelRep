@@ -4,13 +4,11 @@ namespace App\Models;
 
 use App\Models\Traits\Filterable;
 use App\Models\Traits\UsesUuid;
-use App\Helpers\PhoneNumber;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use OwenIt\Auditing\Contracts\Auditable;
+use Propaganistas\LaravelPhone\PhoneNumber;
 use Spatie\Permission\Traits\HasRoles;
 
 /**
@@ -19,7 +17,8 @@ use Spatie\Permission\Traits\HasRoles;
  * @property string $id
  * @property string $name
  * @property string $email
- * @property string|null $phone
+ * @property string $phone
+ * @property string|null $phone_country
  * @property \Illuminate\Support\Carbon|null $email_verified_at
  * @property string $password
  * @property string|null $remember_token
@@ -53,14 +52,14 @@ class User extends Authenticatable implements Auditable
     use SoftDeletes;
     use HasRoles;
     use HasApiTokens;
-    
+
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'phone', 'password',
+        'name' ,'email' ,'phone' ,'phone_country' ,'password',
     ];
 
     /**
@@ -96,6 +95,15 @@ class User extends Authenticatable implements Auditable
     public function setEmailAttribute($value)
     {
         $this->attributes['email'] = strtolower($value);
+    }
+
+    public function setPhoneAttribute($value)
+    {
+        $phoneCountry = $this->attributes['phone_country'];
+        if (strlen($phoneCountry) !== 2) {
+            return;
+        }
+        $this->attributes['phone'] = PhoneNumber::make($value, $this->phone_country)->formatE164();
     }
 
     public function userProfile()

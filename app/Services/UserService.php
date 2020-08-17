@@ -65,17 +65,19 @@ class UserService
     {
         DB::beginTransaction();
         try {
-            //$country_code
             $callback_url = preg_replace('{/$}', '', $request->callback_url);
-            $user = $this->user->create([
-                'name' => $request->name,
-                'email' => $request->email,
-                'phone' => $request->phone,
-                'password' => Hash::make($request->password)
-            ]);
+
+            $user = new User();
+
+            $user->name = $request->name;
+            $user->email = $request->email;
+            $user->phone_country = $request->phone_country;
+            $user->phone = $request->phone;
+            $user->password = Hash::make($request->password);
+            $user->save();
 
             $user->assignRole('user');
-
+            
             if ($request->type && $request->type == 'mobile') {
                 $otp = $this->otpService->create(get_class($user), $user->email, 6, 30);
                 $this->smsService->sendSms(
