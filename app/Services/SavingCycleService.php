@@ -39,19 +39,19 @@ class SavingCycleService
 
     public function getAllUserSavingCycles(): Collection
     {
-        return $this->savingCycle->where('user_id', request()->user())->get();
+        return $this->savingCycle->where('user_id', request()->user())->with('savingCycleHistories')->get();
     }
   
     public function getSavingCycles(array $conditions, array $with = []): Collection
     {
         //Add with to avoid N + 1 issues
-        return $this->savingCycle->where($conditions)->with($with)->get();
+        return $this->savingCycle->where($conditions)->with('savingCycleHistories')->get();
     }
 
 
     public function getAllSavingCycles(): Collection
     {
-        return $this->savingCycle->get();
+        return $this->savingCycle->with('savingCycleHistories')->get();
     }
 
     public function updateSavingCycleStatus(string $id): ?SavingCycle

@@ -25,7 +25,7 @@ class CreateTransactionsTable extends Migration
 	        $table->enum('type', ['debit', 'credit']);
             $table->integer('attempt')->default(0);
             
-            $table->nullableUuidMorphs('model');
+            $table->nullableUuidMorphs('transactionable');
             
             $table->string('description')->nullable();
         

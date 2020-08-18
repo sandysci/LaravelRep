@@ -15,13 +15,13 @@ class BufferAccountService
         $this->bufferAccount = $bufferAccount;
     }
 
-    public function store(User $user, $amount, Model $model, array $payload): BufferAccount
+    public function store(User $user, $amount, Model $bufferable, array $payload): BufferAccount
     {
         $bufferAccount = new BufferAccount();
         $bufferAccount->user_id = $user->id;
         $bufferAccount->amount = $amount;
-        $bufferAccount->model_id = $model->id;
-        $bufferAccount->model_type = get_class($model);
+        $bufferAccount->bufferable_id = $bufferable->id;
+        $bufferAccount->bufferable_type = get_class($bufferable);
         $bufferAccount->status = $payload["status"];
         $bufferAccount->type = $payload["type"];
         $bufferAccount->description = $payload["description"];

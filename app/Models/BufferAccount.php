@@ -13,8 +13,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property string $id
  * @property string $user_id
  * @property float $amount
- * @property string|null $model_type
- * @property string|null $model_id
+ * @property string|null $bufferable_type
+ * @property string|null $bufferable_id
  * @property string|null $status
  * @property string $type
  * @property string $description

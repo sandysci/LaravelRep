@@ -75,4 +75,9 @@ class SavingCycle extends Model implements Auditable
     {
         return $this->belongsTo(Card::class);
     }
+
+    public function transactions()
+    {
+        return $this->morphMany(Transactions::class, 'transactionable');
+    }
 }

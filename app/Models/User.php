@@ -59,7 +59,7 @@ class User extends Authenticatable implements Auditable
      * @var array
      */
     protected $fillable = [
-        'name' ,'email' ,'phone' ,'phone_country' ,'password',
+        'name', 'email', 'phone', 'phone_country', 'password',
     ];
 
     /**
@@ -91,6 +91,26 @@ class User extends Authenticatable implements Auditable
         });
     }
 
+    public function userProfile()
+    {
+        return $this->hasOne(UserProfile::class);
+    }
+
+    public function wallet()
+    {
+        return $this->hasOne(Wallet::class);
+    }
+
+    public function savingCycle()
+    {
+        return $this->hasMany(SavingCycle::class);
+    }
+
+    public function bankDetail()
+    {
+        return $this->hasMany(BankDetail::class);
+    }
+
     //Email Mutator
     public function setEmailAttribute($value)
     {
@@ -106,13 +126,8 @@ class User extends Authenticatable implements Auditable
         $this->attributes['phone'] = PhoneNumber::make($value, $this->phone_country)->formatE164();
     }
 
-    public function userProfile()
+    public function transactions()
     {
-        return $this->hasOne(UserProfile::class);
-    }
-
-    public function wallet()
-    {
-        return $this->hasOne(Wallet::class);
+        return $this->hasMany(Transactions::class);
     }
 }

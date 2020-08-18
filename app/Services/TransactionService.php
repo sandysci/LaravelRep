@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Transaction;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 
 class TransactionService
 {
@@ -28,15 +29,15 @@ class TransactionService
         $transaction->status = $request->status;
         $transaction->type = $request->type;
         $transaction->attempt = $request->attempt ?? 0;
-        $transaction->model_type = $model ? get_class($model) : null;
-        $transaction->model_id = $model->id ?? null;
+        $transaction->transactionable_type = $model ? get_class($model) : null;
+        $transaction->transactionable_id = $model->id ?? null;
 
         $transaction->save();
         return $transaction;
     }
 
-    public function findWhere(array $conds): ?Transaction
+    public function getUserTransactions(User $user): Collection
     {
-        return $this->transaction->where($conds)->first();
+        return $this->transaction->where('user_id', $user->id)->with('transactionable')->get();
     }
 }

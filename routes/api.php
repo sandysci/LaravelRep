@@ -8,6 +8,7 @@ use App\Http\Controllers\API\v1\Auth\VerificationController;
 use App\Http\Controllers\API\v1\CardController;
 use App\Http\Controllers\API\v1\HomeController;
 use App\Http\Controllers\API\v1\SavingCycleController;
+use App\Http\Controllers\API\v1\TransactionController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->group(function () {
@@ -42,6 +43,11 @@ Route::prefix('v1')->group(function () {
         Route::prefix('saving-plans')->group(function () {
             Route::get('/', [SavingCycleController::class, 'index']);
             Route::post('/', [SavingCycleController::class, 'store']);
+        });
+
+        // Transaction
+        Route::prefix('transactions')->group(function () {
+            Route::get('/', [TransactionController::class, 'index']);
         });
     });
 });

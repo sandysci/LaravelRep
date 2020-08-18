@@ -27,7 +27,7 @@ class StoreSavingCycleRequest extends FormRequest
     {
         return [
             'name' => 'required|string',
-            'amount' => 'required|numeric',
+            'amount' => 'required|integer',
             'plan' => 'required|in:daily,weekly,monthly',
             'hour_of_day' => 'required|integer|between:1,24',
             'payment_auth' => 'required|string',

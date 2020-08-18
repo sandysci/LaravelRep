@@ -20,8 +20,8 @@ use OwenIt\Auditing\Contracts\Auditable;
  * @property string|null $status
  * @property string $type
  * @property int|null $attempt
- * @property string|null $model_type
- * @property string|null $model_id
+ * @property string|null $transactionable_type
+ * @property string|null $transactionable_id
  * @property string|null $description
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
@@ -54,4 +54,14 @@ class Transaction extends Model implements Auditable
     use Filterable;
 
     protected $guarded = [];
+
+    public function transactionable()
+    {
+        return $this->morphTo();
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }
