@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers\API\v1\Auth;
 
-use App\Http\Controllers\ApiController;
+use App\Helpers\ApiResponse;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\PasswordResetRequest;
 use App\Models\PasswordReset;
 use App\Models\User;
@@ -13,9 +14,8 @@ use Carbon\Carbon;
 use Hash;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Log;
 
-class PasswordResetController extends ApiController
+class PasswordResetController extends Controller
 {
 
 
@@ -42,7 +42,7 @@ class PasswordResetController extends ApiController
     {
         $user = User::where('email', $request->email)->first();
         if (!$user) {
-            return $this->responseError([], 'We can\'t find a user with that e-mail address.');
+            return ApiResponse::responseError([], 'We can\'t find a user with that e-mail address.');
         }
 
         if ($request->type  && $request->type == 'mobile') {
@@ -52,7 +52,7 @@ class PasswordResetController extends ApiController
         }
 
         if (!$response->status) {
-            return $this->responseError([], $response->message, 400);
+            return ApiResponse::responseError([], $response->message, 400);
         }
 
         $user->password = Hash::make($request->password);
@@ -78,7 +78,7 @@ class PasswordResetController extends ApiController
             'access_token' => $token,
             'token_type' => 'Bearer'
         ];
-        return $this->responseSuccess($user->toArray(), 'Password reset successfully', $options);
+        return ApiResponse::responseSuccess($user->toArray(), 'Password reset successfully', $options);
     }
 
     public function resetViaToken(Request $request): object

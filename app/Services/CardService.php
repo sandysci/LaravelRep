@@ -6,6 +6,7 @@ use App;
 use App\Domain\Dto\Request\Integrations\Paystack\PaystackPaymentRequestDto;
 use App\Domain\Dto\Value\Card\ChargeCardResponseDto;
 use App\Domain\Dto\Value\Card\CreateCardDto;
+use App\Domain\Dto\Value\PaymentProviderDto;
 use App\Domain\Dto\Value\PaymentProviderResponseDto;
 use App\Helpers\RandomNumber;
 use App\Models\Card;
@@ -56,7 +57,7 @@ class CardService
     public function pay($payload, ?string $channel = 'paystack'): PaymentProviderResponseDto
     {
         if ($channel !== 'paystack') {
-            return new PaymentProviderResponseDto(false, [], "Wrong payment channel");
+            return new PaymentProviderDto(false, [], "Wrong payment channel");
         }
         //Format payload
         $paystackRequestDto = new PaystackPaymentRequestDto(
@@ -70,8 +71,9 @@ class CardService
 
     public function verify(Request $request, ?string $channel = 'paystack'): PaymentProviderResponseDto
     {
+  
         if ($channel !== 'paystack') {
-            return new PaymentProviderResponseDto(false, [], "Wrong payment channel");
+            return new PaymentProviderDto(false, [], "Wrong payment channel");
         }
         //Format payload
         $payload = $request->all();
@@ -175,7 +177,7 @@ class CardService
     public function chargeCard(string $id, array $payload, string $channel = 'paystack'): PaymentProviderResponseDto
     {
         if ($channel !== 'paystack') {
-            return new PaymentProviderResponseDto(false, [], "Wrong payment channel");
+            return new PaymentProviderDto(false, [], "Wrong payment channel");
         }
 
         $card = $this->getCard($id);

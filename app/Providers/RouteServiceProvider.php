@@ -72,9 +72,24 @@ class RouteServiceProvider extends ServiceProvider
      */
     protected function mapApiRoutes()
     {
+        $this->mapApiRoute('/api/users.php', '/api/v1/users');
+        $this->mapApiRoute('/api/user.php', '/api/v1/user');
+        $this->mapApiRoute('/api/cards.php', '/api/v1/cards');
+        $this->mapApiRoute('/api/saving-plans.php', '/api/v1/saving-plans');
+        $this->mapApiRoute('/api/verify.php', '/api/v1/verify');
+        $this->mapApiRoute('/api/password.php', '/api/v1/password');
+        
         Route::prefix('api')
             ->middleware('api')
             ->namespace($this->namespace)
             ->group(base_path('routes/api.php'));
+    }
+
+    protected function mapApiRoute(string $file, string $prefix = '')
+    {
+        Route::prefix($prefix)
+            ->middleware('api')
+            ->namespace($this->namespace)
+            ->group(base_path('routes/' . $file));
     }
 }

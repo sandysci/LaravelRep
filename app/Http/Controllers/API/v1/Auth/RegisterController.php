@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers\API\v1\Auth;
 
-use App\Http\Controllers\ApiController;
+use App\Helpers\ApiResponse;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\RegisterRequest;
 use App\Services\OtpService;
 use App\Services\UserService;
 
-class RegisterController extends ApiController
+class RegisterController extends Controller
 {
     protected $userService;
 
@@ -23,9 +24,9 @@ class RegisterController extends ApiController
             if (!$user->status) {
                 throw new \Exception($user->message);
             }
-            return $this->responseSuccess($user->data, $user->message);
+            return ApiResponse::responseSuccess($user->data, $user->message);
         } catch (\Exception $e) {
-            return $this->responseException($e, 400, $e->getMessage());
+            return ApiResponse::responseException($e, 400, $e->getMessage());
         }
     }
 }

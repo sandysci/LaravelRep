@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers\API\v1\Auth;
 
-use App\Http\Controllers\ApiController;
+use App\Helpers\ApiResponse;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
 use App\Services\UserService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
-class LoginController extends ApiController
+class LoginController extends Controller
 {
     protected $userService;
 
@@ -21,12 +22,12 @@ class LoginController extends ApiController
     {
         $user = $this->userService->login($request);
         if (!$user->status) {
-            return $this->responseError([], $user->message);
+            return ApiResponse::responseError([], $user->message);
         }
         $options = [
             'access_token' => $user->access_token,
             'token_type' => 'Bearer'
         ];
-        return $this->responseSuccess($user->data, $user->message, $options);
+        return ApiResponse::responseSuccess($user->data, $user->message, $options);
     }
 }

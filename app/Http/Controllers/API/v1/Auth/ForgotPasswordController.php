@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers\API\v1\Auth;
 
-use App\Http\Controllers\ApiController;
+use App\Helpers\ApiResponse;
+use App\Http\Controllers\Controller;
 use App\Models\PasswordReset;
 use App\Models\User;
 use App\Services\MailService;
@@ -13,7 +14,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Str;
 
-class ForgotPasswordController extends ApiController
+class ForgotPasswordController extends Controller
 {
     protected $mailService;
     protected $smsService;
@@ -42,13 +43,13 @@ class ForgotPasswordController extends ApiController
         ]);
 
         if ($validator->fails()) {
-            return $this->responseValidationError($validator);
+            return ApiResponse::responseValidationError($validator);
         }
 
         $response = $this->userService->requestPasswordResetToken($request);
         if (!$response->status) {
-            return $this->responseError([], $response->message);
+            return ApiResponse::responseError([], $response->message);
         }
-        return $this->responseSuccess($response->data, $response->message);
+        return ApiResponse::responseSuccess($response->data, $response->message);
     }
 }

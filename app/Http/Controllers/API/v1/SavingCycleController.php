@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers\API\v1;
 
-use App\Http\Controllers\ApiController;
+use App\Helpers\ApiResponse;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreSavingCycleRequest;
 use App\Services\CardService;
 use App\Services\MailService;
 use App\Services\SavingCycleService;
 use Illuminate\Http\JsonResponse;
 
-class SavingCycleController extends ApiController
+class SavingCycleController extends Controller
 {
     protected $savingCycleService;
     protected $cardService;
@@ -32,7 +33,7 @@ class SavingCycleController extends ApiController
         ];
         $savingCycles = $this->savingCycleService->getSavingCycles($condition);
 
-        return $this->responseSuccess($savingCycles->toArray(), "User's Saving Cycles");
+        return ApiResponse::responseSuccess($savingCycles->toArray(), "User's Saving Cycles");
     }
 
     public function store(StoreSavingCycleRequest $request): JsonResponse
@@ -41,11 +42,11 @@ class SavingCycleController extends ApiController
             //Find Payment Gateway
             $paymentGateway = $this->cardService->getCard($request->payment_auth);
             if (!$paymentGateway) {
-                return $this->responseError([], "The payment card is not in our system");
+                return ApiResponse::responseError([], "The payment card is not in our system");
             }
 
             if (!$paymentGateway->reusable) {
-                return $this->responseError([], "The card is not reusable");
+                return ApiResponse::responseError([], "The card is not reusable");
             }
 
             $request->status = "paused";
@@ -61,9 +62,9 @@ class SavingCycleController extends ApiController
                     "greeting" => "Hello," . $request->user()->name,
                 ]
             );
-            return $this->responseSuccess($savingCycle->toArray(), "New saving cycle created");
+            return ApiResponse::responseSuccess($savingCycle->toArray(), "New saving cycle created");
         } catch (\Exception $e) {
-            return $this->responseException($e, 400, $e->getMessage());
+            return ApiResponse::responseException($e, 400, $e->getMessage());
         }
     }
 }

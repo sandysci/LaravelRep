@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers\API\v1\Auth;
 
-use App\Http\Controllers\ApiController;
+use App\Helpers\ApiResponse;
+use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Services\MailService;
 use App\Services\OtpService;
@@ -11,10 +12,9 @@ use App\Services\UserService;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
-class VerificationController extends ApiController
+class VerificationController extends Controller
 {
     protected $userService;
     protected $otpService;
@@ -42,7 +42,7 @@ class VerificationController extends ApiController
             }
 
             if ($user->email_verified_at) {
-                return $this->responseSuccess([], "Account already verified");
+                return ApiResponse::responseSuccess([], "Account already verified");
             }
 
             $user->email_verified_at = Carbon::now()->timestamp;
@@ -60,9 +60,9 @@ class VerificationController extends ApiController
                     "greeting" => "Hello " . $user->name . ","
                 ]
             );
-            return $this->responseSuccess($user->toArray(), "Your email has been verified");
+            return ApiResponse::responseSuccess($user->toArray(), "Your email has been verified");
         } catch (\Exception $e) {
-            return $this->responseException($e, 400, $e->getMessage());
+            return ApiResponse::responseException($e, 400, $e->getMessage());
         }
     }
     public function verifyOTP(Request $request)
@@ -74,13 +74,13 @@ class VerificationController extends ApiController
             ]);
 
             if ($validator->fails()) {
-                return $this->responseValidationError($validator);
+                return ApiResponse::responseValidationError($validator);
             }
 
             $user = $this->userService->verifyViaOTP($request);
 
             if (!$user->status) {
-                return $this->responseError([], $user->message);
+                return ApiResponse::responseError([], $user->message);
             }
 
             $this->mailService->sendEmail(
@@ -95,9 +95,9 @@ class VerificationController extends ApiController
                     "greeting" => "Hello " . $user->data["name"] . ","
                 ]
             );
-            return $this->responseSuccess($user->data, $user->message);
+            return ApiResponse::responseSuccess($user->data, $user->message);
         } catch (\Exception $e) {
-            return $this->responseException($e, 400, $e->getMessage());
+            return ApiResponse::responseException($e, 400, $e->getMessage());
         }
     }
 
@@ -108,13 +108,13 @@ class VerificationController extends ApiController
             'callback_url' => 'sometimes'
         ]);
         if ($validator->fails()) {
-            return $this->responseValidationError($validator);
+            return ApiResponse::responseValidationError($validator);
         }
         $user = $this->userService->resendCode($request);
         if (!$user->status) {
-            return $this->responseError([], $user->message, 400);
+            return ApiResponse::responseError([], $user->message, 400);
         }
 
-        return $this->responseSuccess([], $user->message);
+        return ApiResponse::responseSuccess([], $user->message);
     }
 }

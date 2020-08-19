@@ -2,18 +2,29 @@
 
 namespace App\Http\Controllers\API\v1;
 
-use App\Http\Controllers\ApiController;
+use App\Helpers\ApiResponse;
+use App\Http\Controllers\Controller;
+use App\Services\UserService;
 use Illuminate\Http\Request;
 
-class HomeController extends ApiController
+class HomeController extends Controller
 {
+    protected $userService;
+
+    public function __construct(
+        UserService $userService
+    ) {
+        $this->userService = $userService;
+    }
     public function index()
     {
-        return $this->responseSuccess([], 'Welcome to Adashi');
+        return ApiResponse::responseSuccess([], 'Welcome to Adashi');
     }
 
     public function user(Request $request)
     {
-        return $this->responseSuccess($request->user()->toArray(), 'Welcome');
+        $conds = [ 'id' => $request->user()->id ];
+        $user = $this->userService->findOne($conds);
+        return ApiResponse::responseSuccess($user->data, $user->message);
     }
 }

@@ -40,4 +40,8 @@ class TransactionService
     {
         return $this->transaction->where('user_id', $user->id)->with('transactionable')->get();
     }
+
+    public function verifyTransaction()
+    {
+    }
 }

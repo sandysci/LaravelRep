@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\API\v1;
 
-use App\Http\Controllers\ApiController;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class UserController extends ApiController
+class UserController extends Controller
 {
     //
 }

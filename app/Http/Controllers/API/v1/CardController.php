@@ -2,15 +2,16 @@
 
 namespace App\Http\Controllers\API\v1;
 
+use App\Helpers\ApiResponse;
 use App\Services\CardService;
-use App\Http\Controllers\ApiController;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\PaystackWehookRequest;
 use App\Http\Requests\StoreCardRequest;
 use App\Services\TransactionService;
 use App\Services\WalletService;
 use Illuminate\Http\Request;
 
-class CardController extends ApiController
+class CardController extends Controller
 {
     protected $cardService;
     protected $transactionService;
@@ -29,8 +30,8 @@ class CardController extends ApiController
     public function initialize(Request $request)
     {
         $response = $this->cardService->initializeCardTrans($request);
-        
-        return $this->responseSuccess($response->data, 'Initializing Card Transaction');
+
+        return ApiResponse::responseSuccess($response->data, 'Initializing Card Transaction');
     }
 
     public function index()
@@ -39,7 +40,7 @@ class CardController extends ApiController
         if ($cards) {
             $cards = $cards->toArray();
         }
-        return $this->responseSuccess($cards, "User's cards");
+        return ApiResponse::responseSuccess($cards, "User's cards");
     }
 
     public function store(StoreCardRequest $request)
@@ -47,18 +48,18 @@ class CardController extends ApiController
         try {
             $storeCard = $this->cardService->storeCard($request);
             if (!$storeCard->status) {
-                return $this->responseError($storeCard->data, $storeCard->message);
+                return ApiResponse::responseError($storeCard->data, $storeCard->message);
             }
-            return $this->responseSuccess($storeCard->data, $storeCard->message);
+            return ApiResponse::responseSuccess($storeCard->data, $storeCard->message);
         } catch (\Exception $error) {
-            return $this->responseError([], 'An error occurred Details: ' . $error->getMessage());
+            return ApiResponse::responseError([], 'An error occurred Details: ' . $error->getMessage());
         }
     }
 
     public function handleWebhook(Request $request)
     {
         if (!$request->has('channel')) {
-            return $this->responseError([], 'Wrong channel');
+            return ApiResponse::responseError([], 'Wrong channel');
         }
 
         $channel = $request->query('channel');
@@ -66,12 +67,21 @@ class CardController extends ApiController
             return $this->paystackWebhookHandler($request);
         }
 
-        return $this->responseError([], 'No available channel');
+        return ApiResponse::responseError([], 'No available channel');
     }
 
     public function paystackWebhookHandler(PaystackWehookRequest $request)
     {
         $response = $this->cardService->eventHandler($request);
-        return $this->responseSuccess([], "Successful request");
+        return ApiResponse::responseSuccess([], "Successful request");
+    }
+
+    public function verify(Request $request)
+    {
+        $response = $this->cardService->verify($request, $request->channel);
+        if (!$response->status) {
+            return ApiResponse::responseError([], $response->message);
+        }
+        return ApiResponse::responseSuccess($response->data, $response->message);
     }
 }
