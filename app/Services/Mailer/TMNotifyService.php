@@ -22,7 +22,7 @@ class TMNotifyService implements EmailProviderInterface
     }
     public function messageFormat(array $payload): ?array
     {
-        return  [
+        $arr = [
             "content" => $payload['content'] ?? "",
             "body" => [
                 "content" => $payload['content'] ?? "",
@@ -30,13 +30,22 @@ class TMNotifyService implements EmailProviderInterface
                 "introLines" => $payload['introLines'] ?? [],
                 "outroLines" => $payload['outroLines'] ?? []
             ],
+            "attachments" => $payload['attachments'] ?? ""
+        ];
+
+        if (!$payload['actionUrl']) {
+            return $arr;
+        }
+
+        $withButton = [
             "button" => [
                 "level" => $payload["level"] ?? "primary", //Can be primary, success or error
                 "actionUrl" => $payload['actionUrl'] ?? env('APP_URL'),
                 "actionText" => $payload['actionText'] ?? "Click here"
-            ],
-            "attachments" => $payload['attachments'] ?? ""
+            ]
         ];
+        
+        return array_merge($arr, $withButton);
     }
 
     public function sendEmail(EmailMessage $message): bool

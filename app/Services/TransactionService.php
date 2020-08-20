@@ -44,4 +44,9 @@ class TransactionService
     public function verifyTransaction()
     {
     }
+
+    public function findWhere(array $conds): ?Transaction
+    {
+        return $this->transaction->where($conds)->first();
+    }
 }
