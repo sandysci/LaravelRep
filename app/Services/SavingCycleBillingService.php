@@ -124,21 +124,21 @@ class SavingCycleBillingService
 
     public function fundWalletOrBufferAccount(SavingCycle $savingCycle): void
     {
-        if (count($savingCycle->savingCycleHistories) > 0) {
+        // if (count($savingCycle->savingCycleHistories) > 0) {
             $this->walletService->incrementBalance($savingCycle->user, $savingCycle->amount);
-        } else {
-            $bufferAccountDto = [
-                "status" => "success",
-                "type" => "credit",
-                "description" => "First deduction from daily saving plan into buffer account"
-            ];
-            $this->bufferAccountService->store(
-                $savingCycle->user,
-                $savingCycle->amount,
-                $savingCycle,
-                $bufferAccountDto
-            );
-        }
+        // } else {
+        //     $bufferAccountDto = [
+        //         "status" => "success",
+        //         "type" => "credit",
+        //         "description" => "First deduction from daily saving plan into buffer account"
+        //     ];
+        //     $this->bufferAccountService->store(
+        //         $savingCycle->user,
+        //         $savingCycle->amount,
+        //         $savingCycle,
+        //         $bufferAccountDto
+        //     );
+        // }
     }
 
     public function emailNotification(SavingCycle $savingCycle): void
