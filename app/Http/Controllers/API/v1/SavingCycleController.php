@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API\v1;
 
 use App\Helpers\ApiResponse;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\SavingCycle\CreateRequest;
 use App\Http\Requests\StoreSavingCycleRequest;
 use App\Services\CardService;
 use App\Services\MailService;
@@ -36,11 +37,11 @@ class SavingCycleController extends Controller
         return ApiResponse::responseSuccess($savingCycles->toArray(), "User's Saving Cycles");
     }
 
-    public function store(StoreSavingCycleRequest $request): JsonResponse
+    public function store(CreateRequest $request): JsonResponse
     {
         try {
             //Find Payment Gateway
-            $paymentGateway = $this->cardService->getCard($request->payment_auth);
+            $paymentGateway = $this->cardService->getCard($request->convertToDto()->payment_auth);
             if (!$paymentGateway) {
                 return ApiResponse::responseError([], "The payment card is not in our system");
             }
@@ -51,18 +52,9 @@ class SavingCycleController extends Controller
 
             $request->status = "paused";
 
-            $savingCycle = $this->savingCycleService->store($request->user(), $request, $paymentGateway);
+            $savingCycle = $this->savingCycleService->store(request()->user(), $request->convertToDto(), $paymentGateway);
 
-            $this->mailService->sendEmail(
-                $request->user()->email,
-                "You have created a new savings plan",
-                [
-                    "introLines" => ["Kindly, You just created a new savings plan, you will be debited #" . $request->amount],
-                    "content" =>   "Thanks, for using Adashi",
-                    "greeting" => "Hello," . $request->user()->name,
-                ]
-            );
-            return ApiResponse::responseSuccess($savingCycle->toArray(), "New saving cycle created");
+            return ApiResponse::responseCreated($savingCycle->toArray(), "New saving cycle created");
         } catch (\Exception $e) {
             return ApiResponse::responseException($e, 400, $e->getMessage());
         }

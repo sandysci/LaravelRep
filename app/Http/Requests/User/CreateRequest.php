@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\User;
 
+use App\Domain\Dto\Request\User\CreateDto;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class RegisterRequest extends FormRequest
+class CreateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -48,6 +49,18 @@ class RegisterRequest extends FormRequest
         $error  = collect($message)->unique()->first();
         throw new HttpResponseException(
             response()->json(['status' => 'error', 'data' => $message, 'message' => $error], 422)
+        );
+    }
+
+    public function convertToDto(): CreateDto
+    {
+        return new CreateDto(
+            $this->name,
+            $this->email,
+            $this->phone,
+            $this->phone_country,
+            $this->password,
+            $this->callback_url
         );
     }
 }

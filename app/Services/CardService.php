@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App;
+use App\Domain\Dto\Request\Card\CreateDto;
 use App\Domain\Dto\Request\Integrations\Paystack\PaystackPaymentRequestDto;
 use App\Domain\Dto\Value\Card\ChargeCardResponseDto;
 use App\Domain\Dto\Value\Card\CreateCardDto;
@@ -13,9 +14,7 @@ use App\Models\Card;
 use App\Models\Transaction;
 use App\Models\User;
 use App\Services\Payment\PaystackService;
-use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Log;
 
 class CardService
 {
@@ -29,13 +28,11 @@ class CardService
     public function __construct(
         PaystackService $paystackService,
         TransactionService $transactionService,
-        WalletService $walletService,
-        Card $card
+        WalletService $walletService
     ) {
         $this->paystackService = $paystackService;
         $this->transactionService = $transactionService;
         $this->walletService = $walletService;
-        $this->card = $card;
     }
 
     public function initializeCardTrans($request): CreateCardDto
@@ -69,32 +66,23 @@ class CardService
         return $this->paystackService->makePayment($paystackRequestDto);
     }
 
-    public function verify(Request $request, ?string $channel = 'paystack'): PaymentProviderResponseDto
+    public function verify(string $reference, ?string $channel = 'paystack'): PaymentProviderResponseDto
     {
   
         if ($channel !== 'paystack') {
             return new PaymentProviderDto(false, [], "Wrong payment channel");
         }
         //Format payload
-        $payload = $request->all();
         $payload = [
-            "reference" => $request->reference
+            "reference" => $reference
         ];
         return $this->paystackService->verifyPayment($payload);
     }
 
-    public function eventHandler($data)
-    {
-        //Format Payload
-        // $formattedPayload = $this->paystackEventHandler->formatPayload($data);
-
-        // return $this->paystackEventHandler->eventHandler($formattedPayload->event, $formattedPayload->payload);
-        return null;
-    }
 
     public function store(User $user, string $reference, array $payload): Card
     {
-        return $this->card->create([
+        return Card::create([
             'user_id'               => $user->id,
             'reference'             => $reference,
             'channel'               => $payload['data']['authorization']['channel'] ?? null,
@@ -115,12 +103,12 @@ class CardService
         ]);
     }
 
-    public function storeCard($request): CreateCardDto
+    public function storeCard(CreateDto $request, User $user): CreateCardDto
     {
         $reference = $request->reference;
         $conds = [
             'reference' => $reference,
-            'user_id' => $request->user()->id,
+            'user_id' => $user->id,
             'type' => 'debit'
         ];
         $transaction = $this->transactionService->findWhere($conds);
@@ -133,7 +121,7 @@ class CardService
             return new CreateCardDto(false, 'This transaction has been recorded in our system');
         }
 
-        $response = $this->verify($request, $request->channel);
+        $response = $this->verify($request->reference, $request->channel);
 
         if (!$response->status) {
             $transaction->status = 'failed';
@@ -141,12 +129,12 @@ class CardService
             return new CreateCardDto(false, $response->message);
         }
 
-        if ($response->data['data']['customer']['email'] !== $request->user()->email) {
+        if ($response->data['data']['customer']['email'] !== $user->email) {
             return new CreateCardDto(false, "Invalid request");
         }
 
         // FundWallet
-        $this->walletService->incrementBalance($request->user(), $transaction->amount);
+        $this->walletService->incrementBalance($user, $transaction->amount);
 
         $transaction->status = $response->data['data']['status'] ?? $transaction->status;
         $transaction->attempt += 1;
@@ -154,7 +142,7 @@ class CardService
         //Run card validation
         $this->addCardValidation($transaction, $response);
 
-        $paymentAuth = $this->store($request->user(), $reference, $response->data);
+        $paymentAuth = $this->store($user, $reference, $response->data);
 
         $transaction->payment_gateway_type = get_class($paymentAuth);
         $transaction->payment_gateway_id = $paymentAuth->id;
@@ -166,12 +154,12 @@ class CardService
 
     public function getCard(string $id): ?Card
     {
-        return $this->card->find($id);
+        return Card::find($id);
     }
 
     public function getUserCards(User $user): Collection
     {
-        return $this->card->where('user_id', $user->id)->get();
+        return Card::where('user_id', $user->id)->get();
     }
 
     public function chargeCard(string $id, array $payload, string $channel = 'paystack'): PaymentProviderResponseDto
@@ -220,7 +208,7 @@ class CardService
 
     protected function getExistingSimilarCards(array $conditions): Collection
     {
-        return $this->card->where([
+        return Card::where([
             'last4'            => $conditions['data']['authorization']['last4'],
             'gw_customer_code' => $conditions['data']['customer']['customer_code'],
             'bank'             => $conditions['data']['authorization']['bank'],

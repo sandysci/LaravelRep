@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Domain\Dto\Request\User\CreateDto;
 use App\Domain\Dto\Value\User\UserServiceResponseDto;
 use App\Helpers\PhoneNumber;
 use App\Models\PasswordReset;
@@ -16,18 +17,15 @@ use Str;
 
 class UserService
 {
-    protected $user;
     protected $otpService;
     protected $mailService;
     protected $smsService;
 
     public function __construct(
-        User $user,
         OtpService $otpService,
         MailService $mailService,
         SmsService $smsService
     ) {
-        $this->user = $user;
         $this->otpService = $otpService;
         $this->mailService = $mailService;
         $this->smsService = $smsService;
@@ -61,7 +59,7 @@ class UserService
             return new UserServiceResponseDto(false, "User logout");
         }
 
-        $userInfo = $this->user->where('id', $user->id)->with(
+        $userInfo = User::where('id', $user->id)->with(
             'userProfile',
             'wallet',
             'savingCycle',
@@ -71,7 +69,7 @@ class UserService
         return new UserServiceResponseDto(true, 'User logged in', $userInfo->toArray(), $tokenResult, 'Bearer');
     }
 
-    public function register($request): object
+    public function register(CreateDto $request): UserServiceResponseDto
     {
         DB::beginTransaction();
         try {
@@ -109,11 +107,10 @@ class UserService
                         "actionText" => "Click to verify your account"
                     ]
                 );
-                Log::info('Mail status: ' . $mailStatus);
             }
             DB::commit();
 
-            $userInfo = $this->user->where('id', $user->id)->with(
+            $userInfo = User::where('id', $user->id)->with(
                 'userProfile',
                 'wallet',
                 'savingCycle',
@@ -131,7 +128,7 @@ class UserService
     {
         DB::beginTransaction();
         try {
-            $user = $this->user->where($conds)
+            $user = User::where($conds)
                 ->update($request);
             DB::commit();
             return new UserServiceResponseDto(true, "Account was updated successfully", $user->toArray());
@@ -144,7 +141,7 @@ class UserService
 
     public function findOne($conds): UserServiceResponseDto
     {
-        $user = $this->user->where($conds)
+        $user = User::where($conds)
             ->with(
                 'userProfile',
                 'wallet',
@@ -162,7 +159,7 @@ class UserService
     {
         $email = $request->email;
         $otp = $request->otp;
-        $user = $this->user->where("email", $email)
+        $user = User::where("email", $email)
             ->with(
                 'userProfile',
                 'wallet',
@@ -188,7 +185,7 @@ class UserService
     public function resendCode($request): UserServiceResponseDto
     {
 
-        $user = $this->user->where('email', $request->email)->first();
+        $user = User::where('email', $request->email)->first();
 
         if (!$user) {
             return new UserServiceResponseDto(false, "User's doesn't exist on this platform");

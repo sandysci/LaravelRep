@@ -56,6 +56,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Card whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Card whereUserId($value)
  * @mixin \Eloquent
+ * @property-read \App\Models\User $user
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Card filter(\App\Filters\BaseFilter $filter)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Card onlyTrashed()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Card withTrashed()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Card withoutTrashed()
  */
 class Card extends Model
 {

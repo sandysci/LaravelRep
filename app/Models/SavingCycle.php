@@ -51,6 +51,18 @@ use OwenIt\Auditing\Contracts\Auditable;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SavingCycle whereUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SavingCycle whereWithdrawalDate($value)
  * @mixin \Eloquent
+ * @property-read \Illuminate\Database\Eloquent\Collection|\OwenIt\Auditing\Models\Audit[] $audits
+ * @property-read int|null $audits_count
+ * @property-read \App\Models\Card $paymentGateway
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\SavingCycleHistory[] $savingCycleHistories
+ * @property-read int|null $saving_cycle_histories_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Transaction[] $transactions
+ * @property-read int|null $transactions_count
+ * @property-read \App\Models\User $user
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SavingCycle filter(\App\Filters\BaseFilter $filter)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\SavingCycle onlyTrashed()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\SavingCycle withTrashed()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\SavingCycle withoutTrashed()
  */
 class SavingCycle extends Model implements Auditable
 {
@@ -78,6 +90,6 @@ class SavingCycle extends Model implements Auditable
 
     public function transactions()
     {
-        return $this->morphMany(Transactions::class, 'transactionable');
+        return $this->morphMany(Transaction::class, 'transactionable');
     }
 }

@@ -38,6 +38,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserProfile whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserProfile whereUserId($value)
  * @mixin \Eloquent
+ * @property-read \App\Models\User $user
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserProfile filter(\App\Filters\BaseFilter $filter)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\UserProfile onlyTrashed()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\UserProfile withTrashed()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\UserProfile withoutTrashed()
  */
 class UserProfile extends Model
 {

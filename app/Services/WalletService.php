@@ -9,16 +9,9 @@ use Illuminate\Support\Collection;
 
 class WalletService
 {
-    protected $wallet;
-
-    public function __construct(Wallet $wallet)
-    {
-        $this->wallet = $wallet;
-    }
-
     public function store(User $user): Wallet
     {
-        return $this->wallet->firstOrCreate(
+        return Wallet::firstOrCreate(
             ['user_id' => $user->id],
             ['balance' => 0.0000]
         );
@@ -26,17 +19,17 @@ class WalletService
 
     public function getWallet(User $user): ?Wallet
     {
-        return $this->wallet->where('user_id', $user->id)->first();
+        return Wallet::where('user_id', $user->id)->first();
     }
 
     public function getWallets(): Collection
     {
-        return $this->wallet->get();
+        return Wallet::get();
     }
 
     public function incrementBalance(User $user, $amount): ?Wallet
     {
-        $wallet = $this->wallet->where('user_id', $user->id)->first();
+        $wallet = Wallet::where('user_id', $user->id)->first();
 
         if ($wallet) {
             /**
@@ -60,7 +53,7 @@ class WalletService
 
     public function decrementBalance(User $user, $amount): ?Wallet
     {
-        $wallet = $this->wallet->where('user_id', $user->id)->first();
+        $wallet = Wallet::where('user_id', $user->id)->first();
 
         if ($wallet) {
             /**

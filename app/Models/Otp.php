@@ -32,6 +32,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Otp whereValid($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Otp whereValidity($value)
  * @mixin \Eloquent
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Otp filter(\App\Filters\BaseFilter $filter)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Otp onlyTrashed()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Otp withTrashed()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Otp withoutTrashed()
  */
 class Otp extends Model
 {

@@ -45,6 +45,16 @@ use OwenIt\Auditing\Contracts\Auditable;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Transaction whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Transaction whereUserId($value)
  * @mixin \Eloquent
+ * @property-read \Illuminate\Database\Eloquent\Collection|\OwenIt\Auditing\Models\Audit[] $audits
+ * @property-read int|null $audits_count
+ * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $transactionable
+ * @property-read \App\Models\User $user
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Transaction filter(\App\Filters\BaseFilter $filter)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Transaction onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Transaction whereTransactionableId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Transaction whereTransactionableType($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Transaction withTrashed()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Transaction withoutTrashed()
  */
 class Transaction extends Model implements Auditable
 {

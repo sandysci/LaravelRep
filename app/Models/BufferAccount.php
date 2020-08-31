@@ -36,6 +36,12 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BufferAccount whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BufferAccount whereUserId($value)
  * @mixin \Eloquent
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BufferAccount filter(\App\Filters\BaseFilter $filter)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\BufferAccount onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BufferAccount whereBufferableId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BufferAccount whereBufferableType($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\BufferAccount withTrashed()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\BufferAccount withoutTrashed()
  */
 class BufferAccount extends Model
 {

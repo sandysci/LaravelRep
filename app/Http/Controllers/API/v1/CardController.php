@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API\v1;
 use App\Helpers\ApiResponse;
 use App\Services\CardService;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Card\CreateRequest;
 use App\Http\Requests\PaystackWehookRequest;
 use App\Http\Requests\StoreCardRequest;
 use App\Services\TransactionService;
@@ -43,14 +44,16 @@ class CardController extends Controller
         return ApiResponse::responseSuccess($cards, "User's cards");
     }
 
-    public function store(StoreCardRequest $request)
+    public function store(CreateRequest $request)
     {
         try {
-            $storeCard = $this->cardService->storeCard($request);
+            $storeCard = $this->cardService->storeCard($request->convertToDto(), request()->user());
+
             if (!$storeCard->status) {
                 return ApiResponse::responseError($storeCard->data, $storeCard->message);
             }
-            return ApiResponse::responseSuccess($storeCard->data, $storeCard->message);
+
+            return ApiResponse::responseCreated($storeCard->data, $storeCard->message);
         } catch (\Exception $error) {
             return ApiResponse::responseError([], 'An error occurred Details: ' . $error->getMessage());
         }
@@ -70,15 +73,10 @@ class CardController extends Controller
         return ApiResponse::responseError([], 'No available channel');
     }
 
-    public function paystackWebhookHandler(PaystackWehookRequest $request)
-    {
-        $response = $this->cardService->eventHandler($request);
-        return ApiResponse::responseSuccess([], "Successful request");
-    }
 
-    public function verify(Request $request)
+    public function verify(CreateRequest $request)
     {
-        $response = $this->cardService->verify($request, $request->channel);
+        $response = $this->cardService->verify($request->convertToDto()->reference, $request->convertToDto()->channel);
         if (!$response->status) {
             return ApiResponse::responseError([], $response->message);
         }
