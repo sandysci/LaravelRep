@@ -204,6 +204,7 @@ class CardService
 
             return new CreateCardDto(false, "Card is already in the system");
         }
+        return null;
     }
 
     protected function getExistingSimilarCards(array $conditions): Collection
