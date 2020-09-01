@@ -75,7 +75,8 @@ class CreateRequest extends FormRequest
             $this->day_of_week,
             $this->day_of_month,
             $this->withdrawal_date,
-            $this->description
+            $this->description,
+            $this->status
         );
     }
 }

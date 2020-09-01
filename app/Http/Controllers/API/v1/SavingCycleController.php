@@ -50,9 +50,11 @@ class SavingCycleController extends Controller
                 return ApiResponse::responseError([], "The card is not reusable");
             }
 
-            $request->status = "paused";
-
-            $savingCycle = $this->savingCycleService->store(request()->user(), $request->convertToDto(), $paymentGateway);
+            $savingCycle = $this->savingCycleService->store(
+                request()->user(),
+                $request->convertToDto(),
+                $paymentGateway
+            );
 
             return ApiResponse::responseCreated($savingCycle->toArray(), "New saving cycle created");
         } catch (\Exception $e) {

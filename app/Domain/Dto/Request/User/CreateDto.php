@@ -10,6 +10,7 @@ class CreateDto
     public string $phone_country;
     public string $password;
     public string $callback_url;
+    public ?string $type;
 
     public function __construct(
         string $name,
@@ -17,7 +18,8 @@ class CreateDto
         string $phone,
         string $phone_country,
         string $password,
-        string $callback_url
+        string $callback_url,
+        ?string $type
     ) {
         $this->name = $name;
         $this->email = $email;
@@ -25,5 +27,6 @@ class CreateDto
         $this->phone_country = $phone_country;
         $this->password = $password;
         $this->callback_url = $callback_url;
+        $this->type = $type;
     }
 }

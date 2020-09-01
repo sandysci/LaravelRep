@@ -6,6 +6,9 @@ use App\Domain\Dto\Request\User\CreateDto;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\Rule;
+use Propaganistas\LaravelPhone\PhoneNumber;
 
 class CreateRequest extends FormRequest
 {
@@ -29,8 +32,12 @@ class CreateRequest extends FormRequest
         return [
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|indisposable|max:255|unique:users',
-            'phone' => 'required|phone|unique:users',
-            'phone_country' => 'required_with:phone',
+            'phone' => ['required', 'phone'],
+            'phone_country' => ['required_with:phone',
+                Rule::unique('users')->where(function ($query) {
+                    return $query->where('phone', PhoneNumber::make($this->phone, $this->phone_country)->formatE164());
+                })
+            ],
             'password' => 'required',
             'callback_url' => 'required'
         ];
@@ -39,7 +46,7 @@ class CreateRequest extends FormRequest
     {
         return [
             'email.unique' => 'You already have an existing account, Please login',
-            'phone.unique' => 'This phone has been used, Please try another'
+            'phone_country.unique' => 'This phone number has been registered, Please try another'
         ];
     }
 
@@ -60,7 +67,8 @@ class CreateRequest extends FormRequest
             $this->phone,
             $this->phone_country,
             $this->password,
-            $this->callback_url
+            $this->callback_url,
+            $this->type
         );
     }
 }

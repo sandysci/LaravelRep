@@ -5,7 +5,7 @@ namespace App\Domain\Dto\Request\GroupSaving;
 class CreateDto
 {
     public string $name;
-    public int $amount;
+    public float $amount;
     public string $plan;
     public int $no_of_participant;
     public ?int $hour_of_day;
@@ -16,7 +16,7 @@ class CreateDto
 
     public function __construct(
         string $name,
-        int $amount,
+        float $amount,
         string $plan,
         int $no_of_participant,
         ?int $hour_of_day,

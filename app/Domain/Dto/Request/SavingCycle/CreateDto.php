@@ -5,7 +5,7 @@ namespace App\Domain\Dto\Request\SavingCycle;
 class CreateDto
 {
     public string $name;
-    public int $amount;
+    public float $amount;
     public string $plan;
     public string $payment_auth;
     public string $start_date;
@@ -15,11 +15,12 @@ class CreateDto
     public ?int $day_of_month;
     public ?string $withdrawal_date;
     public ?string $description;
+    public ?string $status;
 
 
     public function __construct(
         string $name,
-        int $amount,
+        float $amount,
         string $plan,
         string $payment_auth,
         string $start_date,
@@ -28,7 +29,8 @@ class CreateDto
         ?int $day_of_week,
         ?int $day_of_month,
         ?string $withdrawal_date,
-        ?string $description
+        ?string $description,
+        ?string $status
     ) {
         $this->name = $name;
         $this->amount = $amount;
@@ -41,5 +43,6 @@ class CreateDto
         $this->day_of_month = $day_of_month;
         $this->withdrawal_date = $withdrawal_date;
         $this->description = $description;
+        $this->status = $status;
     }
 }
