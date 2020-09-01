@@ -27,7 +27,7 @@ class WalletService
         return Wallet::get();
     }
 
-    public function incrementBalance(User $user, $amount): ?Wallet
+    public function incrementBalance(User $user, float $amount): ?Wallet
     {
         $wallet = Wallet::where('user_id', $user->id)->first();
 
@@ -51,7 +51,7 @@ class WalletService
         return $wallet;
     }
 
-    public function decrementBalance(User $user, $amount): ?Wallet
+    public function decrementBalance(User $user, float $amount): ?Wallet
     {
         $wallet = Wallet::where('user_id', $user->id)->first();
 

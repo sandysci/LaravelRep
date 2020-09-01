@@ -37,7 +37,10 @@ class GroupSavingService
 
     public function getAllUserGroupSavings(): Collection
     {
-        return $this->savingCycle->where('user_id', request()->user())->with('savingCycleHistories')->get();
+        return GroupSaving::where('owner_id', request()->user()->id)->with(
+            'groupSavingHistories',
+            'groupSavingParticipants'
+        )->get();
     }
 
     public function getGroupSavings(array $conditions, array $with = []): Collection
@@ -56,10 +59,10 @@ class GroupSavingService
     {
 
         $this->mailService->sendEmail(
-            $groupSaving->user()->email,
+            $groupSaving->user->email,
             "You have created a new group savings plan",
             [
-                "greeting" => "Hello," . $groupSaving->user()->name,
+                "greeting" => "Hello," . $groupSaving->user->name,
                 "introLines" => [
                     "Kindly, You just created a new group savings plan",
                     "You will be required to add the ' .$groupSaving->no_of_participant. ' emails of the other participants",

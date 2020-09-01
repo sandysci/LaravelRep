@@ -72,7 +72,7 @@ class GroupSaving extends Model
         return $this->hasMany(GroupSavingHistory::class);
     }
 
-    public function groupSavingUser()
+    public function groupSavingParticipants()
     {
         return $this->hasMany(GroupSavingUser::class);
     }

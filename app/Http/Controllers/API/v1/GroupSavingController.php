@@ -23,6 +23,8 @@ class GroupSavingController extends Controller
     }
     public function index()
     {
+        $groupSavingPlans = $this->groupSavingService->getAllUserGroupSavings();
+        return ApiResponse::responseSuccess($groupSavingPlans->toArray(), 'List of Group saving plans for current user');
     }
 
     public function store(CreateRequest $request)
