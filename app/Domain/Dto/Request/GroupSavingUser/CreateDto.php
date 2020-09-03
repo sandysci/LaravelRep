@@ -4,14 +4,11 @@ namespace App\Domain\Dto\Request\GroupSavingUser;
 
 class CreateDto
 {
-    public string $groupSavingId;
-    public string $email;
+    public array $emails;
 
     public function __construct(
-        string $groupSavingId,
-        string $email
+        array $emails
     ) {
-        $this->groupSavingId = $groupSavingId;
-        $this->email = $email;
+        $this->emails = $emails;
     }
 }

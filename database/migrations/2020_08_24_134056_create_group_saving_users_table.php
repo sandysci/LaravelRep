@@ -29,10 +29,6 @@ class CreateGroupSavingUsersTable extends Migration
             $table->softDeletes();
 
             $table->timestamps();
-            
-            $table->foreign('participant_email')
-                    ->references('email')
-                    ->on('users');
 
             $table->foreign('group_saving_id')
                     ->references('id')

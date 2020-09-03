@@ -50,6 +50,8 @@ class GroupSavingHistory extends Model
     use SoftDeletes;
     use Filterable;
 
+    protected $guarded = [];
+
     public function groupSaving()
     {
         return $this->belongsTo(GroupSaving::class);

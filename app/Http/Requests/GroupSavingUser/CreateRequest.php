@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests\GroupSavingUser;
 
-use App\Domain\Dto\Request\SavingCycle\CreateDto;
+use App\Domain\Dto\Request\GroupSavingUser\CreateDto;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
@@ -27,25 +27,11 @@ class CreateRequest extends FormRequest
     public function rules()
     {
         return [
-            'email' => 'required|string',
-            'group_saving_Id' => 'required|integer',
+            'emails' => 'required|array',
+            'emails.*' => 'required|string|email|indisposable|max:255'
         ];
     }
 
-    protected function getValidatorInstance()
-    {
-        $validator = parent::getValidatorInstance();
-
-        $validator->sometimes('day_of_month', 'required|integer|between:1,31', function ($input) {
-            return $input->plan === "monthly";
-        });
-
-        $validator->sometimes('day_of_week', 'required|integer|between:1,7', function ($input) {
-            return $input->plan === "weekly";
-        });
-
-        return $validator;
-    }
 
     public function failedValidation(Validator $validator)
     {
@@ -59,17 +45,7 @@ class CreateRequest extends FormRequest
     public function convertToDto(): CreateDto
     {
         return new CreateDto(
-            $this->name,
-            $this->amount,
-            $this->plan,
-            $this->payment_auth,
-            $this->start_date,
-            $this->end_date,
-            $this->hour_of_day,
-            $this->day_of_week,
-            $this->day_of_month,
-            $this->withdrawal_date,
-            $this->description
+            $this->emails
         );
     }
 }

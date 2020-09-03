@@ -6,6 +6,7 @@ use App\Models\Traits\Filterable;
 use App\Models\Traits\UsesUuid;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use OwenIt\Auditing\Contracts\Auditable;
 
 /**
  * App\Models\GroupSaving
@@ -56,13 +57,16 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\GroupSaving withoutTrashed()
  * @mixin \Eloquent
  */
-class GroupSaving extends Model
+class GroupSaving extends Model implements Auditable
 {
     use UsesUuid;
     use SoftDeletes;
     use Filterable;
+    use \OwenIt\Auditing\Auditable;
 
-    public function user()
+    protected $guarded = [];
+
+    public function owner()
     {
         return $this->belongsTo(User::class, 'owner_id');
     }

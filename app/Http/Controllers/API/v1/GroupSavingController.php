@@ -23,8 +23,11 @@ class GroupSavingController extends Controller
     }
     public function index()
     {
-        $groupSavingPlans = $this->groupSavingService->getAllUserGroupSavings();
-        return ApiResponse::responseSuccess($groupSavingPlans->toArray(), 'List of Group saving plans for current user');
+        $groupSavingPlans = $this->groupSavingService->getAllUserGroupSavings(request()->user());
+        return ApiResponse::responseSuccess(
+            $groupSavingPlans->toArray(),
+            'List of Group saving plans for current user'
+        );
     }
 
     public function store(CreateRequest $request)
@@ -33,7 +36,7 @@ class GroupSavingController extends Controller
             $groupSaving = $this->groupSavingService->store($request->convertToDto(), request()->user());
             return ApiResponse::responseCreated($groupSaving->toArray(), 'New Group saving created');
         } catch (\Exception $e) {
-            return ApiResponse::responseException($e, 400, $e->getMessage);
+            return ApiResponse::responseException($e, 400, $e->getMessage());
         }
     }
 }

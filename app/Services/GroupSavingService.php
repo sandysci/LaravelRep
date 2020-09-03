@@ -6,66 +6,89 @@ use App\Domain\Dto\Request\GroupSaving\CreateDto;
 use App\Models\GroupSaving;
 use App\Models\User;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 
 class GroupSavingService
 {
-    protected $groupSaving;
+    protected $groupSavingUserService;
+    protected $mailService;
 
-    public function __construct(GroupSaving $groupSaving)
-    {
-        $this->groupSaving = $groupSaving;
+    public function __construct(
+        GroupSavingUserService $groupSavingUserService,
+        MailService $mailService
+    ) {
+        $this->groupSavingUserService = $groupSavingUserService;
+        $this->mailService = $mailService;
     }
 
-    public function store(CreateDto $request, User $user): GroupSaving
+    public function store(CreateDto $dto, User $user): GroupSaving
     {
         $groupSaving =  GroupSaving::create([
-            'name' => $request->name,
-            'user_id' => $user->id,
-            'amount' => $request->amount,
-            'plan' => $request->plan,
-            'day_of_month' => $request->day_of_month ?? 31,
-            'day_of_week' => $request->day_of_week ?? 1,
-            'hour_of_day' => $request->hour_of_day ?? 24,
-            'status' => $request->status,
-            'description' => $request->description
+            'name' => $dto->name,
+            'owner_id' => $user->id,
+            'amount' => $dto->amount,
+            'plan' => $dto->plan,
+            'no_of_participants' => $dto->noOfParticipants,
+            'day_of_month' => $dto->dayOfMonth ?? 31,
+            'day_of_week' => $dto->dayOfWeek ?? 1,
+            'hour_of_day' => $dto->hourOfDay ?? 24,
+            'description' => $dto->description
         ]);
 
         $this->sendEmailToGroupOwner($groupSaving);
 
+        $this->groupSavingUserService->store($groupSaving, $user->email, $dto->callbackUrl);
+
         return $groupSaving;
     }
 
-    public function getAllUserGroupSavings(): Collection
+    public function addUsersToGroupSaving(User $user, string $groupSavingId, array $emails): GroupSaving
     {
-        return GroupSaving::where('owner_id', request()->user()->id)->with(
+        $groupSaving = GroupSaving::with('groupSavingParticipants')->where([
+            'owner_id' => $user->id,
+            'id' => $groupSavingId
+        ])->first();
+    
+        if (!$groupSaving) {
+            return collect([]);
+        }
+
+        foreach ($emails as $email) {
+            $this->groupSavingUserService->store($groupSaving, $email);
+        }
+        return $groupSaving;
+    }
+
+    public function getAllUserGroupSavings(User $user): Collection
+    {
+        return GroupSaving::with(
             'groupSavingHistories',
             'groupSavingParticipants'
-        )->get();
+        )->where('owner_id', $user->id)->get();
     }
 
     public function getGroupSavings(array $conditions, array $with = []): Collection
     {
         //Add with to avoid N + 1 issues
-        return $this->savingCycle->where($conditions)->with('savingCycleHistories')->get();
+        return GroupSaving::where($conditions)->with('savingCycleHistories')->get();
     }
 
 
     public function getAllGroupSavings(): Collection
     {
-        return $this->savingCycle->with('savingCycleHistories')->get();
+        return GroupSaving::with('savingCycleHistories')->get();
     }
 
     public function sendEmailToGroupOwner(GroupSaving $groupSaving): void
     {
-
         $this->mailService->sendEmail(
-            $groupSaving->user->email,
+            $groupSaving->owner->email,
             "You have created a new group savings plan",
             [
-                "greeting" => "Hello," . $groupSaving->user->name,
+                "greeting" => "Hello,", $groupSaving->owner->name,
                 "introLines" => [
                     "Kindly, You just created a new group savings plan",
-                    "You will be required to add the ' .$groupSaving->no_of_participant. ' emails of the other participants",
+                    "You will be required to add the $groupSaving->no_of_participants emails of the other participants",
                     "After adding a user, the user will be send a notification, that will prompt the user to accept the request",
                     "Please, note that the saving plan will only start if all members accept the request to join the group"
                 ],

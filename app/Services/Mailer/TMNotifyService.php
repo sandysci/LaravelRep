@@ -33,7 +33,7 @@ class TMNotifyService implements EmailProviderInterface
             "attachments" => $payload['attachments'] ?? ""
         ];
 
-        if (!$payload['actionUrl']) {
+        if (!isset($payload['actionUrl'])) {
             return $arr;
         }
 
@@ -78,12 +78,13 @@ class TMNotifyService implements EmailProviderInterface
             ];
 
             $response = Http::withHeaders($headers)->post($this->tmNotifyClient, $params);
-
+            Log::alert('Mail sent');
             if ($response->failed()) {
                 throw new \Exception('Error sending email');
             }
             return true;
         } catch (\Exception $exception) {
+            Log::alert($exception->getMessage());
             return false;
         }
     }
