@@ -30,9 +30,9 @@ class CreateGroupSavingsTable extends Migration
             $table->date('start_date')->nullable();
             $table->date('end_date')->nullable();
             
-            $table->date('no_of_participant');
+            $table->integer('no_of_participants');
 
-            $table->enum('status', ['paused', 'active', 'deactivated', 'matured']);
+            $table->enum('status', ['paused', 'active', 'deactivated', 'matured'])->default('paused');
 
             $table->text("description")->nullable();
             $table->timestamps();

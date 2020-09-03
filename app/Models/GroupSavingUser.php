@@ -49,6 +49,8 @@ class GroupSavingUser extends Model
     use SoftDeletes;
     use Filterable;
 
+    protected $guarded = [];
+    
     public function user()
     {
         return $this->belongsTo(User::class, 'participant_email', 'email');

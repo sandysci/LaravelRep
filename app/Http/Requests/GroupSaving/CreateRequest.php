@@ -30,9 +30,10 @@ class CreateRequest extends FormRequest
             'name' => 'required|string',
             'amount' => 'required|integer',
             'plan' => 'required|in:daily,weekly,monthly',
-            'no_of_participant' => 'required|integer|min:2',
-            'hour_of_day' => 'required|integer|between:1,24',
-            'description' => 'string'
+            'noOfParticipants' => 'required|integer|min:2',
+            'hourOfDay' => 'required|integer|between:1,24',
+            'description' => 'string',
+            'callbackUrl' => 'required|string'
         ];
     }
 
@@ -40,11 +41,11 @@ class CreateRequest extends FormRequest
     {
         $validator = parent::getValidatorInstance();
 
-        $validator->sometimes('day_of_month', 'required|integer|between:1,31', function ($input) {
+        $validator->sometimes('dayOfMonth', 'required|integer|between:1,31', function ($input) {
             return $input->plan === "monthly";
         });
 
-        $validator->sometimes('day_of_week', 'required|integer|between:1,7', function ($input) {
+        $validator->sometimes('dayOfWeek', 'required|integer|between:1,7', function ($input) {
             return $input->plan === "weekly";
         });
 
@@ -67,10 +68,11 @@ class CreateRequest extends FormRequest
             $this->name,
             $this->amount,
             $this->plan,
-            $this->no_of_participant,
-            $this->hour_of_day,
-            $this->day_of_week,
-            $this->day_of_month,
+            $this->noOfParticipants,
+            $this->callbackUrl,
+            $this->hourOfDay,
+            $this->dayOfWeek,
+            $this->dayOfMonth,
             $this->description
         );
     }
