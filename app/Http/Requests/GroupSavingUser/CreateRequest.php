@@ -28,7 +28,8 @@ class CreateRequest extends FormRequest
     {
         return [
             'emails' => 'required|array',
-            'emails.*' => 'required|string|email|indisposable|max:255'
+            'emails.*' => 'required|string|email|indisposable|max:255',
+            'callbackUrl' => 'required|string'
         ];
     }
 
@@ -45,7 +46,8 @@ class CreateRequest extends FormRequest
     public function convertToDto(): CreateDto
     {
         return new CreateDto(
-            $this->emails
+            $this->emails,
+            $this->callbackUrl
         );
     }
 }

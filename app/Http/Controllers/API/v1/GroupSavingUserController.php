@@ -26,12 +26,16 @@ class GroupSavingUserController extends Controller
     {
         $dto = $request->convertToDto();
 
-        $groupSaving = $this->groupSavingService->addUsersToGroupSaving(
+        $response = $this->groupSavingUserService->addUsersToGroupSaving(
             request()->user(),
             $groupSavingId,
-            $dto->emails
+            $dto
         );
 
-        return ApiResponse::responseSuccess($groupSaving->toArray(), 'Group Savings');
+        if (!$response->status) {
+            return ApiResponse::responseError([], $response->message);
+        }
+
+        return ApiResponse::responseSuccess($response->data, $response->message);
     }
 }
