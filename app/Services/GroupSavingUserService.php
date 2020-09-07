@@ -39,7 +39,8 @@ class GroupSavingUserService
             if ($getGroupSaving < $noOfParticipants) {
                 $groupSavingUser = GroupSavingUser::firstOrCreate([
                     'group_saving_id' => $groupSaving->id,
-                    'participant_email' => $participantEmail
+                    'participant_email' => $participantEmail,
+                    'group_owner_approval' => 'approved'
                 ]);
 
                 $this->sendEmailToGroupParticipant($groupSaving, $participantEmail, $callbackUrl);
