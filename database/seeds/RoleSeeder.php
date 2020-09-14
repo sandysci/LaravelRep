@@ -1,5 +1,7 @@
 <?php
 
+namespace Database\Seeders;
+
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role;
 
@@ -12,10 +14,10 @@ class RoleSeeder extends Seeder
      */
     public function run()
     {
-            // Reset cached roles and permissions
-		app()['cache']->forget( 'spatie.permission.cache' );
-        
-        Role::create( [ 'name' => 'admin' ] );
-        Role::create( [ 'name' => 'user' ] );
+        // Reset cached roles and permissions
+        app()['cache']->forget('spatie.permission.cache');
+
+        Role::create(['name' => 'admin']);
+        Role::create(['name' => 'user']);
     }
 }
