@@ -4,7 +4,9 @@ namespace App\Services;
 
 use App\Domain\Dto\Request\GroupSaving\CreateDto;
 use App\Models\GroupSaving;
+use App\Models\GroupSavingUser;
 use App\Models\User;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 
@@ -48,7 +50,7 @@ class GroupSavingService
             'owner_id' => $user->id,
             'id' => $groupSavingId
         ])->first();
-    
+
         if (!$groupSaving) {
             return collect([]);
         }
@@ -70,16 +72,45 @@ class GroupSavingService
     public function getGroupSavings(array $conditions, array $with = []): Collection
     {
         //Add with to avoid N + 1 issues
-        return GroupSaving::where($conditions)->with('savingCycleHistories')->get();
+        return GroupSaving::where($conditions)->with('groupSavingHistories')->get();
     }
 
+    public function getGroupSaving(string $id, array $with = []): ?GroupSaving
+    {
+        return GroupSaving::where('id', $id)->with($with)->first();
+    }
 
     public function getAllGroupSavings(): Collection
     {
-        return GroupSaving::with('savingCycleHistories')->get();
+        return GroupSaving::with('groupSavingHistories')->get();
     }
 
-    public function sendEmailToGroupOwner(GroupSaving $groupSaving): void
+    public function startGroupSaving(string $groupSavingId): ?GroupSaving
+    {
+        $groupSaving = GroupSaving::where('id', $groupSavingId)->first();
+        if (!$groupSaving) {
+            return null;
+        }
+
+        $groupSavingUsers = GroupSavingUser::where([
+            'id' => $groupSavingId,
+            'status' => 'approved',
+            'group_owner_approval' => 'approved'
+        ])->count();
+
+        if ($groupSavingUsers !== $groupSaving->no_of_participants) {
+            return null;
+        }
+
+        $groupSaving->start_date = Carbon::now();
+        $groupSaving->save();
+
+        //Send email to all participants
+        
+        return $groupSaving;
+    }
+
+    protected function sendEmailToGroupOwner(GroupSaving $groupSaving): void
     {
         $this->mailService->sendEmail(
             $groupSaving->owner->email,

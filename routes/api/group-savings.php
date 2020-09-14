@@ -11,4 +11,5 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/{groupSavingId}/participants', [GroupSavingUserController::class, 'index']);
     Route::post('/{groupSavingId}/participants', [GroupSavingUserController::class, 'batchStore']);
     Route::put('/{groupSavingId}/participants/{participantEmail}', [GroupSavingUserController::class, 'update']);
+    Route::put('/{groupSavingId}/join', [GroupSavingUserController::class, 'changeStatus']);
 });

@@ -50,7 +50,10 @@ class GroupSavingUser extends Model
     use Filterable;
 
     protected $guarded = [];
-    
+    public const MONTHLY_PLAN_CARD_VALIDATION = 3;
+    public const WEEKLY_PLAN_CARD_VALIDATION = 3;
+    public const DAILY_PLAN_CARD_VALIDATION = 14;
+
     public function user()
     {
         return $this->belongsTo(User::class, 'participant_email', 'email');
