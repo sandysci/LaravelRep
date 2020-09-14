@@ -68,7 +68,7 @@ class CardService
 
     public function verify(string $reference, ?string $channel = 'paystack'): PaymentProviderResponseDto
     {
-  
+
         if ($channel !== 'paystack') {
             return new PaymentProviderDto(false, [], "Wrong payment channel");
         }
@@ -160,6 +160,11 @@ class CardService
     public function getUserCards(User $user): Collection
     {
         return Card::where('user_id', $user->id)->get();
+    }
+
+    public function getUserCard(User $user, string $id): ?Card
+    {
+        return Card::where(['user_id' => $user->id, 'id' => $id])->with('user', 'user.userProfle')->first();
     }
 
     public function chargeCard(string $id, array $payload, string $channel = 'paystack'): PaymentProviderResponseDto

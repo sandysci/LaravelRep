@@ -2,12 +2,12 @@
 
 namespace App\Http\Requests\GroupSavingUser;
 
-use App\Domain\Dto\Request\GroupSavingUser\CreateDto;
+use App\Domain\Dto\Request\GroupSavingUser\EditGroupSavingUserStatusDto;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class CreateRequest extends FormRequest
+class UpdateStatusRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -27,9 +27,9 @@ class CreateRequest extends FormRequest
     public function rules()
     {
         return [
-            'emails' => 'required|array',
-            'emails.*' => 'required|string|email|indisposable|max:255',
-            'callbackUrl' => 'required|string'
+            'status' => 'required|boolean',
+            'groupSavingId' => 'required|string',
+            'paymentAuth' => 'string'
         ];
     }
 
@@ -43,11 +43,12 @@ class CreateRequest extends FormRequest
         );
     }
 
-    public function convertToDto(): CreateDto
+    public function convertToDto(): EditGroupSavingUserStatusDto
     {
-        return new CreateDto(
-            $this->emails,
-            $this->callbackUrl
+        return new EditGroupSavingUserStatusDto(
+            $this->status,
+            $this->groupSavingId,
+            $this->paymentAuth
         );
     }
 }

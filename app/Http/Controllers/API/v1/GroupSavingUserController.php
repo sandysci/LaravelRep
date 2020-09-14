@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API\v1;
 use App\Helpers\ApiResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\GroupSavingUser\CreateRequest;
+use App\Http\Requests\GroupSavingUser\UpdateStatusRequest;
 use App\Services\GroupSavingService;
 use App\Services\GroupSavingUserService;
 use Illuminate\Http\Request;
@@ -26,12 +27,32 @@ class GroupSavingUserController extends Controller
     {
         $dto = $request->convertToDto();
 
-        $groupSaving = $this->groupSavingService->addUsersToGroupSaving(
+        $response = $this->groupSavingUserService->addUsersToGroupSaving(
             request()->user(),
             $groupSavingId,
-            $dto->emails
+            $dto
         );
 
-        return ApiResponse::responseSuccess($groupSaving->toArray(), 'Group Savings');
+        if (!$response->status) {
+            return ApiResponse::responseError([], $response->message);
+        }
+
+        return ApiResponse::responseSuccess($response->data, $response->message);
+    }
+
+    public function update()
+    {
+    }
+
+    public function changeStatus(UpdateStatusRequest $request)
+    {
+        $dto = $request->convertToDto();
+        $response = $this->groupSavingUserService->acceptGroupSavingRequest(request()->user(), $dto);
+
+        if (!$response) {
+            return ApiResponse::responseError([], $response->message);
+        }
+
+        return ApiResponse::responseSuccess($response->data, $response->message);
     }
 }
