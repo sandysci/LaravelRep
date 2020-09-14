@@ -27,6 +27,7 @@ class GroupSavingUserService
     ) {
         $this->mailService = $mailService;
         $this->cardService = $cardService;
+        $this->groupSavingService = $groupSavingService;
     }
 
     public function store(

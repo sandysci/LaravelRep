@@ -8,7 +8,6 @@ use App\Models\GroupSavingUser;
 use App\Models\User;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Log;
 
 class GroupSavingService
 {
