@@ -93,7 +93,7 @@ class GroupSavingUserService
         $getGroupSavingUsersCount = GroupSavingUser::where(['group_saving_id' => $groupSaving->id])->count();
 
         if ($getGroupSavingUsersCount + count($dto->emails) > $noOfParticipants || $getGroupSavingUsersCount === $noOfParticipants) {
-            return new GroupSavingUserDto(false, [], 'You can only add ' . $noOfParticipants - $getGroupSavingUsersCount . ' participants');
+            return new GroupSavingUserDto(false, [], 'You can only add ' . ($noOfParticipants - $getGroupSavingUsersCount) . ' participants');
         }
 
         foreach ($dto->emails as $email) {
@@ -213,7 +213,7 @@ class GroupSavingUserService
             return new GroupSavingUserDto(false, [], 'Please add a valid payment card');
         }
 
-        if (!optional($user->userProfile)->bvn) {
+        if (!$user->userProfile->bvn_verified) {
             return new GroupSavingUserDto(false, [], 'You need to add a valid BVN, before you can join a group saving plan');
         }
         return new GroupSavingUserDto(true, [], 'Validation passed');

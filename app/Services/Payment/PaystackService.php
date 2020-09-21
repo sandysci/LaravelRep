@@ -115,4 +115,40 @@ class PaystackService implements CardInterface
         }
         return new PaystackResponseDto(true, $response->json(), 'Transfer recipient created');
     }
+
+    public function resolveBvn(string $bvn): PaymentProviderResponseDto
+    {
+        try {
+            $url = 'https://api.paystack.co/bank/resolve_bvn/' . $bvn;
+
+
+            $response = Http::withToken($this->paystackSecretKey)->get($url);
+
+            if ($response->failed()) {
+                return new PaystackResponseDto(
+                    false,
+                    $response->json(),
+                    $response->json()['message'] ?? "Unable to resolve BVN"
+                );
+            }
+            if (!$response->json()['status']) {
+                return new PaystackResponseDto(
+                    false,
+                    $response->json(),
+                    $response->json()['message'] ?? "Unable to resolve BVN"
+                );
+            }
+            $data = $response->json()['data'];
+            if (!$data) {
+                return new PaystackResponseDto(
+                    false,
+                    $response->json(),
+                    $response->json()['message'] ?? "Unable to resolve BVN"
+                );
+            }
+            return new PaystackResponseDto(true, $response->json()['data'], "BVN was resolved successfully");
+        } catch (\Exception $e) {
+            return new PaystackResponseDto(false, [], $e->getMessage());
+        }
+    }
 }

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddBankVerificationNumberColumnOnUserProfilesTable extends Migration
+class AddBvnColumnOnUserProfilesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,7 +14,10 @@ class AddBankVerificationNumberColumnOnUserProfilesTable extends Migration
     public function up()
     {
         Schema::table('user_profiles', function (Blueprint $table) {
-            $table->string('bank_verification_number')->after('avatar')->nullable();
+            $table->date('date_of_birth')->after('lastname')->nullable();
+            $table->string('bvn')->after('avatar')->unique()->nullable();
+            $table->boolean('bvn_verified')->after('bvn')->default(false);
+            
         });
     }
 
@@ -26,7 +29,7 @@ class AddBankVerificationNumberColumnOnUserProfilesTable extends Migration
     public function down()
     {
         Schema::table('user_profiles', function (Blueprint $table) {
-            $table->dropColumn('bank_verification_number');
+            $table->dropColumn(['date_of_birth','bvn', 'bvn_verified']);
         });
     }
 }

@@ -57,7 +57,7 @@ class OtpService
             $checkOtp->valid = false;
             $checkOtp->save();
 
-            return new OtpResponseDto(false, 'OTP Expired');
+            return new OtpResponseDto(false, 'OTP has Expired');
         }
 
         $checkOtp->valid = false;

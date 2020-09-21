@@ -95,7 +95,7 @@ class UserService
                 );
             } else {
                 $token = $user->createToken('authToken')->plainTextToken;
-                $mailStatus = $this->mailService->sendEmail(
+                $this->mailService->sendEmail(
                     $user->email,
                     "Verify your account",
                     [

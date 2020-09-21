@@ -56,6 +56,13 @@ use OwenIt\Auditing\Contracts\Auditable;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\GroupSaving withTrashed()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\GroupSaving withoutTrashed()
  * @mixin \Eloquent
+ * @property int $no_of_participants
+ * @property-read \Illuminate\Database\Eloquent\Collection|\OwenIt\Auditing\Models\Audit[] $audits
+ * @property-read int|null $audits_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\GroupSavingUser[] $groupSavingParticipants
+ * @property-read int|null $group_saving_participants_count
+ * @property-read \App\Models\User $owner
+ * @method static \Illuminate\Database\Eloquent\Builder|GroupSaving whereNoOfParticipants($value)
  */
 class GroupSaving extends Model implements Auditable
 {
