@@ -48,6 +48,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Withdrawal whereDestinationId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Withdrawal whereDestinationType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Withdrawal whereLastBalance($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Withdrawal filter(\App\Filters\BaseFilter $filter)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Withdrawal onlyTrashed()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Withdrawal withTrashed()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Withdrawal withoutTrashed()
  */
 class Withdrawal extends Model
 {

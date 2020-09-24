@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\GroupSavingUser;
 
+use App\Domain\Dto\Request\GroupSavingUser\CreateDto;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class RegisterRequest extends FormRequest
+class CreateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -26,21 +27,12 @@ class RegisterRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|indisposable|max:255|unique:users',
-            'phone' => 'required|phone|unique:users',
-            'phone_country' => 'required_with:phone',
-            'password' => 'required',
-            'callback_url' => 'required'
+            'emails' => 'required|array',
+            'emails.*' => 'required|string|email|indisposable|max:255',
+            'callbackUrl' => 'required|string'
         ];
     }
-    public function messages()
-    {
-        return [
-            'email.unique' => 'You already have an existing account, Please login',
-            'phone.unique' => 'This phone has been used, Please try another'
-        ];
-    }
+
 
     public function failedValidation(Validator $validator)
     {
@@ -48,6 +40,14 @@ class RegisterRequest extends FormRequest
         $error  = collect($message)->unique()->first();
         throw new HttpResponseException(
             response()->json(['status' => 'error', 'data' => $message, 'message' => $error], 422)
+        );
+    }
+
+    public function convertToDto(): CreateDto
+    {
+        return new CreateDto(
+            $this->emails,
+            $this->callbackUrl
         );
     }
 }

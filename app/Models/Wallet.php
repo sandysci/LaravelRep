@@ -27,6 +27,13 @@ use OwenIt\Auditing\Contracts\Auditable;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Wallet whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Wallet whereUserId($value)
  * @mixin \Eloquent
+ * @property-read \Illuminate\Database\Eloquent\Collection|\OwenIt\Auditing\Models\Audit[] $audits
+ * @property-read int|null $audits_count
+ * @property-read \App\Models\User $user
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Wallet filter(\App\Filters\BaseFilter $filter)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Wallet onlyTrashed()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Wallet withTrashed()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\Wallet withoutTrashed()
  */
 class Wallet extends Model implements Auditable
 {

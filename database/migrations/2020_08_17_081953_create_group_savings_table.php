@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateGroupSavingCyclesTable extends Migration
+class CreateGroupSavingsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,35 +13,32 @@ class CreateGroupSavingCyclesTable extends Migration
      */
     public function up()
     {
-        Schema::create('group_saving_cycles', function (Blueprint $table) {
+        Schema::create('group_savings', function (Blueprint $table) {
             $table->uuid('id')->primary();
 
             $table->string("name");
-
-            $table->uuid('user_id')->index();
+            $table->uuid('owner_id')->index();
 
             $table->decimal('amount', 19, 4)->default(0.0000);
 
             $table->enum('plan', ['daily', 'weekly', 'monthly']);
-
+           
             $table->integer('day_of_month')->nullable()->default(31);
             $table->integer('day_of_week')->nullable()->default(1);
             $table->integer('hour_of_day')->nullable()->default(24);
 
-            $table->uuidMorphs('payment_gateway');
+            $table->date('start_date')->nullable();
+            $table->date('end_date')->nullable();
+            
+            $table->integer('no_of_participants');
 
-            $table->date('start_date');
-            $table->date('end_date');
+            $table->enum('status', ['paused', 'active', 'deactivated', 'matured'])->default('paused');
 
-            $table->date('withdrawal_date')->nullable();
-
-            $table->enum('status', ['paused', 'active', 'deactivated']);
             $table->text("description")->nullable();
-
             $table->timestamps();
             $table->softDeletes();
 
-            $table->foreign('user_id')
+            $table->foreign('owner_id')
                 ->references('id')
                 ->on('users');
         });
@@ -54,6 +51,6 @@ class CreateGroupSavingCyclesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('group_saving_cycles');
+        Schema::dropIfExists('group_savings');
     }
 }

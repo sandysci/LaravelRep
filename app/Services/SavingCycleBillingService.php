@@ -15,7 +15,6 @@ class SavingCycleBillingService
     protected $cardService;
     protected $transactionService;
     protected $savingCycleHistoryService;
-    protected $bufferAccountService;
 
     public function __construct(
         SavingCycleService $savingCycleService,
@@ -23,8 +22,7 @@ class SavingCycleBillingService
         WalletService $walletService,
         MailService $mailService,
         CardService $cardService,
-        TransactionService $transactionService,
-        BufferAccountService $bufferAccountService
+        TransactionService $transactionService
     ) {
         $this->savingCycleService = $savingCycleService;
         $this->walletService = $walletService;
@@ -32,10 +30,9 @@ class SavingCycleBillingService
         $this->cardService = $cardService;
         $this->transactionService = $transactionService;
         $this->savingCycleHistoryService = $savingCycleHistoryService;
-        $this->bufferAccountService = $bufferAccountService;
     }
 
-    public function dailyBilling(int $hourOfDay)
+    public function dailyBilling(int $hourOfDay): void
     {
         $conditions = [
             'plan' => 'daily',
@@ -46,7 +43,7 @@ class SavingCycleBillingService
         $this->billUser($plans);
     }
 
-    public function weeklyBilling(int $hourOfDay, int $dayOfWeek)
+    public function weeklyBilling(int $hourOfDay, int $dayOfWeek): void
     {
         $conditions = [
             'plan' => 'weekly',
@@ -59,7 +56,7 @@ class SavingCycleBillingService
         $this->billUser($plans);
     }
 
-    public function monthlyBilling(int $hourOfDay, int $dayOfMonth)
+    public function monthlyBilling(int $hourOfDay, int $dayOfMonth): void
     {
         //TODO: Handle Febuary 27 / 30th and 31st conditions
         $conditions = [
@@ -72,7 +69,7 @@ class SavingCycleBillingService
         $this->billUser($plans);
     }
 
-    public function billUser(Collection $savingCycles)
+    public function billUser(Collection $savingCycles): bool
     {
         foreach ($savingCycles as $savingCycle) {
             //Check payment has been made that day
@@ -86,6 +83,7 @@ class SavingCycleBillingService
             $payload["email"] = $savingCycle->user->email;
 
             $cardResponse = $this->cardService->pay($payload, "paystack");
+
             $payload["description"] = "Saving cycle payment";
             $payload["payment_gateway"] = $savingCycle->paymentGateway;
             $payload["type"] = "credit";
@@ -93,52 +91,40 @@ class SavingCycleBillingService
 
             if (!$cardResponse->status) {
                 $payload["status"] = "failed";
-                Log::error('Card failed');
-                Log::info($cardResponse->message);
-                Log::info($cardResponse->data);
+             
                 $failedTransDto = (object) $payload;
                 $this->transactionService->store($failedTransDto, $savingCycle->user, $savingCycle);
                 continue;
             }
-            Log::info('Success');
+            
             $payload["status"] = "success";
             $successTransDto = (object) $payload;
+            
             //Create successful transaction entry
             $this->transactionService->store($successTransDto, $savingCycle->user, $savingCycle);
 
-            $this->fundWalletOrBufferAccount($savingCycle);
-
-            $data = [
-                "amount" => $savingCycle->amount,
-                "reference" => $reference,
-                "status" => "success",
-                "attempt" => 1,
-                "description" => ucfirst($savingCycle->plan) . " saving cycle payment"
-            ];
-            $this->savingCycleHistoryService->store($savingCycle->user, $savingCycle->id, $data);
-
+            $this->walletService->incrementBalance($savingCycle->user, $savingCycle->amount);
+            $this->storeSavingCycleHistory($savingCycle, $reference);
             $this->emailNotification($savingCycle);
+            
             return true;
         }
     }
 
-    public function fundWalletOrBufferAccount(SavingCycle $savingCycle): void
+    public function storeTransaction()
     {
-        // if (count($savingCycle->savingCycleHistories) > 0) {
-            $this->walletService->incrementBalance($savingCycle->user, $savingCycle->amount);
-        // } else {
-        //     $bufferAccountDto = [
-        //         "status" => "success",
-        //         "type" => "credit",
-        //         "description" => "First deduction from daily saving plan into buffer account"
-        //     ];
-        //     $this->bufferAccountService->store(
-        //         $savingCycle->user,
-        //         $savingCycle->amount,
-        //         $savingCycle,
-        //         $bufferAccountDto
-        //     );
-        // }
+    }
+
+    public function storeSavingCycleHistory(SavingCycle $savingCycle, string $reference): void
+    {
+        $data = [
+            "amount" => $savingCycle->amount,
+            "reference" => $reference,
+            "status" => "success",
+            "attempt" => 1,
+            "description" => ucfirst($savingCycle->plan) . " saving cycle payment"
+        ];
+        $this->savingCycleHistoryService->store($savingCycle->user, $savingCycle->id, $data);
     }
 
     public function emailNotification(SavingCycle $savingCycle): void

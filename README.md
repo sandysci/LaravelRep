@@ -14,3 +14,6 @@ Adashi is a web application
 - Create Saving Plan
 - Buffer Account
 - Solve  N + 1 issues 
+
+### Removed Plugins
+-- "beyondcode/laravel-query-detector": "^1.3",

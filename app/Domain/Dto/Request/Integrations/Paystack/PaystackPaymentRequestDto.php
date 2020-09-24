@@ -12,7 +12,7 @@ class PaystackPaymentRequestDto extends PaymentProviderRequestDto
     public function __construct(
         string $authorizationCode,
         string $reference,
-        int $amount,
+        float $amount,
         string $email
     ) {
         $this->authorizationCode = $authorizationCode;

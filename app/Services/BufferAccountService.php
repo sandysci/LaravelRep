@@ -8,14 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class BufferAccountService
 {
-    protected $bufferAccount;
-
-    public function __construct(BufferAccount $bufferAccount)
-    {
-        $this->bufferAccount = $bufferAccount;
-    }
-
-    public function store(User $user, $amount, Model $bufferable, array $payload): BufferAccount
+    public function store(User $user, float $amount, Model $bufferable, array $payload): BufferAccount
     {
         $bufferAccount = new BufferAccount();
         $bufferAccount->user_id = $user->id;

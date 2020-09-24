@@ -38,6 +38,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SavingCycleHistory whereAmount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SavingCycleHistory whereReference($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SavingCycleHistory whereUserId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\SavingCycleHistory filter(\App\Filters\BaseFilter $filter)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\SavingCycleHistory onlyTrashed()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\SavingCycleHistory withTrashed()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\SavingCycleHistory withoutTrashed()
  */
 class SavingCycleHistory extends Model
 {

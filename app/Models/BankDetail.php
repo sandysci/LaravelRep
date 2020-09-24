@@ -32,6 +32,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BankDetail whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BankDetail whereUserId($value)
  * @mixin \Eloquent
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\BankDetail filter(\App\Filters\BaseFilter $filter)
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\BankDetail onlyTrashed()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\BankDetail withTrashed()
+ * @method static \Illuminate\Database\Query\Builder|\App\Models\BankDetail withoutTrashed()
  */
 class BankDetail extends Model
 {

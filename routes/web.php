@@ -1,5 +1,6 @@
 <?php
 
+use App\Helpers\ApiResponse;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -19,10 +20,12 @@ Route::get('/', function () {
 
 
 Route::fallback(function () {
-    return response()->json([
-        'status' => 'error',
-        'Device Info' => request()->header('User-Agent') ?? '',
-        'Your IP' => request()->ip() ?? '',
-        'message' => 'Page Not Found. If error persists, contact developer@adashi.com'
-    ], 404);
+    return ApiResponse::responseError(
+        [
+            'Device Info' => request()->header('User-Agent') ?? '',
+            'Your IP' => request()->ip() ?? ''
+        ],
+        'Page Not Found. If error persists, contact developer@adasi.test',
+        404
+    );
 });

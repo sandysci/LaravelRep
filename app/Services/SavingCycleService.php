@@ -2,61 +2,62 @@
 
 namespace App\Services;
 
+use App\Domain\Dto\Request\SavingCycle\CreateDto;
 use App\Models\SavingCycle;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 
 class SavingCycleService
 {
-    protected $savingCycle;
+    protected $mailService;
 
-    public function __construct(SavingCycle $savingCycle)
+    public function __construct(MailService $mailService)
     {
-        $this->savingCycle = $savingCycle;
+        $this->mailService = $mailService;
     }
-
-    public function store(User $user, Request $payload, Model $paymentGateway): SavingCycle
+    public function store(User $user, CreateDto $request, Model $paymentGateway): SavingCycle
     {
-        return $this->savingCycle->create([
-            'name' => $payload->name,
+        $savingCycle = SavingCycle::create([
+            'name' => $request->name,
             'user_id' => $user->id,
-            'amount' => $payload->amount,
-            'plan' => $payload->plan,
-            'day_of_month' => $payload->day_of_month ?? 31,
-            'day_of_week' => $payload->day_of_week ?? 1,
-            'hour_of_day' => $payload->hour_of_day ?? 24,
+            'amount' => $request->amount,
+            'plan' => $request->plan,
+            'day_of_month' => $request->day_of_month ?? 31,
+            'day_of_week' => $request->day_of_week ?? 1,
+            'hour_of_day' => $request->hour_of_day ?? 24,
             'payment_gateway_type' => get_class($paymentGateway),
             'payment_gateway_id' => $paymentGateway->id,
-            'start_date' => $payload->start_date,
-            'end_date' => $payload->end_date,
-            'withdrawal_date' => $payload->withdrawal_date,
-            'status' => $payload->status,
-            'description' => $payload->description
+            'start_date' => $request->start_date,
+            'end_date' => $request->end_date,
+            'withdrawal_date' => $request->withdrawal_date,
+            'status' => "active",
+            'description' => $request->description
         ]);
+        $this->sendEmailToUser($savingCycle);
+        return $savingCycle;
     }
 
     public function getAllUserSavingCycles(): Collection
     {
-        return $this->savingCycle->where('user_id', request()->user())->with('savingCycleHistories')->get();
+        return SavingCycle::where('user_id', request()->user())->with('savingCycleHistories')->get();
     }
-  
+
     public function getSavingCycles(array $conditions, array $with = []): Collection
     {
         //Add with to avoid N + 1 issues
-        return $this->savingCycle->where($conditions)->with('savingCycleHistories')->get();
+        return SavingCycle::where($conditions)->with('savingCycleHistories')->get();
     }
 
 
     public function getAllSavingCycles(): Collection
     {
-        return $this->savingCycle->with('savingCycleHistories')->get();
+        return SavingCycle::with('savingCycleHistories')->get();
     }
 
     public function updateSavingCycleStatus(string $id): ?SavingCycle
     {
-        $savingCycle = $this->savingCycle->find($id);
+        $savingCycle = SavingCycle::find($id);
 
         if ($savingCycle) {
             $savingCycle->status = $id;
@@ -64,5 +65,18 @@ class SavingCycleService
         }
 
         return $savingCycle;
+    }
+
+    public function sendEmailToUser(SavingCycle $savingCycle): void
+    {
+        $this->mailService->sendEmail(
+            $savingCycle->user->email,
+            "You have created a new savings plan",
+            [
+                "introLines" => ["Kindly, You just created a new savings plan, you will be debited #" . $savingCycle->amount],
+                "content" =>   "Thanks, for using Adashi",
+                "greeting" => "Hello," . $savingCycle->user->name,
+            ]
+        );
     }
 }

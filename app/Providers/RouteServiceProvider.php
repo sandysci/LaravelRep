@@ -14,7 +14,7 @@ class RouteServiceProvider extends ServiceProvider
      *
      * @var string
      */
-    protected $namespace = 'App\Http\Controllers';
+    protected $namespace = null;
 
     /**
      * The path to the "home" route for your application.
@@ -75,10 +75,11 @@ class RouteServiceProvider extends ServiceProvider
         $this->mapApiRoute('/api/users.php', '/api/v1/users');
         $this->mapApiRoute('/api/user.php', '/api/v1/user');
         $this->mapApiRoute('/api/cards.php', '/api/v1/cards');
+        $this->mapApiRoute('/api/transactions.php', '/api/v1/transactions');
         $this->mapApiRoute('/api/saving-plans.php', '/api/v1/saving-plans');
         $this->mapApiRoute('/api/verify.php', '/api/v1/verify');
         $this->mapApiRoute('/api/password.php', '/api/v1/password');
-        $this->mapApiRoute('/api/group-saving-plans.php', '/api/v1/group-saving-plans');
+        $this->mapApiRoute('/api/group-savings.php', '/api/v1/group-savings');
 
         Route::prefix('api')
             ->middleware('api')
