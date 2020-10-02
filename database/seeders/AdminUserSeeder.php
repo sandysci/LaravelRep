@@ -19,6 +19,7 @@ class AdminUserSeeder extends Seeder
         $userAdmin = User::create([
             'name' => 'Admin',
             'email' => 'admin@adashi.com',
+            'phone_country' => 'NG',
             'phone' => '09012348990',
             'password' => Hash::make('admin1234'),
             'email_verified_at' => Date::now()

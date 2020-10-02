@@ -1,5 +1,6 @@
 /.git*
 /.idea*
+/.build
 /tools/*/vendor/
 storage/mysql-data
 vendor/

@@ -17,7 +17,6 @@ class CreateWalletsTable extends Migration
             $table->uuid('id')->primary();
             $table->uuid('user_id')->unique()->index();
 
-            
             $table->decimal('balance', 19, 4)->default(0.0000);
             
     

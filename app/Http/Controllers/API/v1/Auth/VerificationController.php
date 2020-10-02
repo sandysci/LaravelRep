@@ -36,15 +36,21 @@ class VerificationController extends Controller
     public function verify(Request $request): JsonResponse
     {
         try {
-            $user = User::find(request()->user()->id);
+            $user = User::where('email', $request->email)->with('verificationToken')->first();
             if (!$user) {
-                throw new \Exception("This activation token is invalid or has expired.");
+                throw new \Exception("Invalid Request.");
             }
 
             if ($user->email_verified_at) {
                 return ApiResponse::responseSuccess([], "Account already verified");
             }
-
+            if ($user->verificationToken->token !== $request->token) {
+                return ApiResponse::responseError([], 'Invalid Token');
+            }
+            if ($user->verificationToken->hasExpired()) {
+                throw new \Exception("Token has expired.");
+            }
+           
             $user->email_verified_at = Carbon::now()->timestamp;
             $user->save();
 

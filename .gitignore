@@ -1,6 +1,7 @@
 /.idea
 /.vscode
 /.vagrant
+/.build
 /node_modules
 /public/hot
 /public/storage

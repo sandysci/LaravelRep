@@ -95,6 +95,7 @@ class UserService
                 );
             } else {
                 $token = $user->createToken('authToken')->plainTextToken;
+                $token = 
                 $this->mailService->sendEmail(
                     $user->email,
                     "Verify your account",
@@ -110,12 +111,7 @@ class UserService
             }
             DB::commit();
 
-            $userInfo = User::where('id', $user->id)->with(
-                'userProfile',
-                'wallet',
-                'savingCycle',
-                'bankDetail'
-            )->first();
+            $userInfo = User::where('id', $user->id)->first();
 
             return new UserServiceResponseDto(true, "Account was created successfully", $userInfo->toArray());
         } catch (\Exception $e) {
@@ -191,12 +187,9 @@ class UserService
             return new UserServiceResponseDto(false, "User's doesn't exist on this platform");
         }
 
-        if ($user->email_verified_at) {
+        if (!is_null($user->email_verified_at)) {
             return new UserServiceResponseDto(false, "Account aleady verified");
         }
-
-        $user->email_verified_at = null;
-        $user->save();
 
         if ($request->type && $request->type == 'mobile') {
             $otp = $this->otpService->create(get_class($user), $user->email, 6, 30);

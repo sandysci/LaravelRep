@@ -140,7 +140,7 @@ class User extends Authenticatable implements Auditable
 
     public function setPhoneAttribute($value)
     {
-        $phoneCountry = $this->attributes['phone_country'];
+        $phoneCountry = $this->attributes['phone_country'] ?? 'NG';
         if (strlen($phoneCountry) !== 2) {
             return;
         }
@@ -150,5 +150,10 @@ class User extends Authenticatable implements Auditable
     public function transactions()
     {
         return $this->hasMany(Transaction::class);
+    }
+
+    public function verificationToken()
+    {
+        return $this->hasOne(VerificationToken::class);
     }
 }
