@@ -1,12 +1,12 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: adashi-service
+  name: backend-service
   labels:
-    app: adashi-service
+    app: backend-service
 spec:
   selector:
-    app: adashi-service
+    app: backend-service
   ports:
     - port: 80
       protocol: TCP
@@ -18,9 +18,9 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: adashi-service
+  name: backend-service
   labels:
-    app: adashi-service
+    app: backend-service
 spec:
   replicas: 1
   minReadySeconds: 10
@@ -31,14 +31,14 @@ spec:
       maxSurge: 1
   selector:
     matchLabels:
-      app: adashi-service
+      app: backend-service
   template:
     metadata:
       labels:
-        app: adashi-service
+        app: backend-service
     spec:
       containers:
-        - name: adashi-service
+        - name: backend-service
           image: registry.gitlab.com/tm30/adashi/backend:latest
           imagePullPolicy: Always
           ports:
