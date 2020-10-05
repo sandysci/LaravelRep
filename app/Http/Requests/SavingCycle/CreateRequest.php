@@ -29,6 +29,7 @@ class CreateRequest extends FormRequest
         return [
             'name' => 'required|string',
             'amount' => 'required|integer',
+            'target_amount' => 'integer',
             'plan' => 'required|in:daily,weekly,monthly',
             'hour_of_day' => 'required|integer|between:1,24',
             'payment_auth' => 'required|string',
@@ -67,6 +68,7 @@ class CreateRequest extends FormRequest
         return new CreateDto(
             $this->name,
             $this->amount,
+            $this->target_amount,
             $this->plan,
             $this->payment_auth,
             $this->start_date,

@@ -6,6 +6,7 @@ class CreateDto
 {
     public string $name;
     public float $amount;
+    public ?string $target_amount;
     public string $plan;
     public string $payment_auth;
     public string $start_date;
@@ -21,6 +22,7 @@ class CreateDto
     public function __construct(
         string $name,
         float $amount,
+        ?string $target_amount,
         string $plan,
         string $payment_auth,
         string $start_date,
@@ -34,6 +36,7 @@ class CreateDto
     ) {
         $this->name = $name;
         $this->amount = $amount;
+        $this->target_amount = $target_amount;
         $this->plan = $plan;
         $this->payment_auth = $payment_auth;
         $this->start_date = $start_date;

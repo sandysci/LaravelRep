@@ -149,7 +149,7 @@ class CardService
         $transaction->description = 'New Card added';
         $transaction->save();
 
-        return new CreateCardDto(true, "Card was created successfully");
+        return new CreateCardDto(true, "Card was created successfully", $paymentAuth->toArray());
     }
 
     public function getCard(string $id): ?Card

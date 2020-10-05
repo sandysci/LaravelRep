@@ -22,6 +22,7 @@ class SavingCycleService
             'name' => $request->name,
             'user_id' => $user->id,
             'amount' => $request->amount,
+            'target_amount' => $request->target_amount,
             'plan' => $request->plan,
             'day_of_month' => $request->day_of_month ?? 31,
             'day_of_week' => $request->day_of_week ?? 1,
