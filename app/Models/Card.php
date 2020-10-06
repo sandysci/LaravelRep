@@ -95,7 +95,10 @@ class Card extends Model
      * @var array
      */
     protected $hidden = [
-        'gw_authorization_code',
+        'reference',
+        'gw_customer_id',
+        'gw_customer_code',
+        'gw_authorization_code'
     ];
 
     public function user()

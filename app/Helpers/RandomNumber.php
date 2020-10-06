@@ -2,6 +2,8 @@
 
 namespace App\Helpers;
 
+use Illuminate\Support\Str;
+
 class RandomNumber
 {
 
@@ -43,5 +45,15 @@ class RandomNumber
         //generate most suitable transaction ref
         $ref = date("Ymd") . time() . mt_rand(10000, 99999);
         return $ref;
+    }
+
+     /**
+     * Generate the verification token.
+     *
+     * @return string|bool
+     */
+    public static function generateVerificationToken()
+    {
+        return hash_hmac('sha256', Str::random(40), config('app.key'));
     }
 }

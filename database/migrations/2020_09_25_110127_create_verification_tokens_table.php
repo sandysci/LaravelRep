@@ -14,7 +14,8 @@ class CreateVerificationTokensTable extends Migration
     public function up()
     {
         Schema::create('verification_tokens', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
+            
             $table->uuid('user_id')->unique()->index();
             $table->text('token');
             $table->timestamp('expires_at');

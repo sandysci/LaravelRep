@@ -2,11 +2,30 @@
 
 namespace App\Models;
 
+use App\Models\Traits\UsesUuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * App\Models\VerificationToken
+ *
+ * @property string $id
+ * @property string $user_id
+ * @property string $token
+ * @property \Illuminate\Support\Carbon $expires_at
+ * @property-read \App\Models\User $user
+ * @method static \Illuminate\Database\Eloquent\Builder|VerificationToken newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|VerificationToken newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|VerificationToken query()
+ * @method static \Illuminate\Database\Eloquent\Builder|VerificationToken whereExpiresAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|VerificationToken whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|VerificationToken whereToken($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|VerificationToken whereUserId($value)
+ * @mixin \Eloquent
+ */
 class VerificationToken extends Model
 {
+    use UsesUuid;
     use HasFactory;
 
      /**
@@ -35,18 +54,18 @@ class VerificationToken extends Model
         'expires_at'
     ];
 
-    /**
-     * The "booting" method of the model.
+     /**
+     * The attributes that should be hidden for arrays.
      *
-     * @return void
+     * @var array
      */
-    public static function boot()
-    {
-        static::creating(function ($token) {
-            optional($token->user->confirmationToken)->delete();
-        });
-    }
+    protected $hidden = [
+        'expires_at', 'token'
+    ];
+    
+    public const EXPIRED_AT = 30;
 
+  
     /**
      * Get the route key for the model.
      *

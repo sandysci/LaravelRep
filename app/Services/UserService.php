@@ -5,14 +5,15 @@ namespace App\Services;
 use App\Domain\Dto\Request\User\CreateDto;
 use App\Domain\Dto\Value\User\UserServiceResponseDto;
 use App\Helpers\PhoneNumber;
+use App\Helpers\RandomNumber;
 use App\Models\PasswordReset;
 use App\Models\User;
+use App\Models\VerificationToken;
 use Auth;
 use Carbon\Carbon;
 use DB;
 use Hash;
 use Illuminate\Http\Request;
-use Log;
 use Str;
 
 class UserService
@@ -51,7 +52,7 @@ class UserService
         // if ($user->email_verified_at === null) {
         //     return new UserServiceResponseDto(false, "Please verify your account");
         // }
-        
+
         $tokenResult = $user->createToken('authToken')->plainTextToken;
 
         if (!$user->hasAnyRole(['user', 'admin', 'super-admin'])) {
@@ -94,8 +95,9 @@ class UserService
                     "ADASHI"
                 );
             } else {
-                $token = $user->createToken('authToken')->plainTextToken;
-                $token = 
+                $verificationToken = new VerificationTokenService();
+                $token = $verificationToken->create($user);
+
                 $this->mailService->sendEmail(
                     $user->email,
                     "Verify your account",
@@ -207,7 +209,9 @@ class UserService
         }
 
         $callback_url = preg_replace('{/$}', '', $request->callback_url);
-        $token = $user->createToken('authToken')->plainTextToken;
+        
+        $verificationToken = new VerificationTokenService();
+        $token = $verificationToken->create($user);
 
         $this->mailService->sendEmail(
             $user->email,

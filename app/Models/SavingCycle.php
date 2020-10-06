@@ -63,6 +63,8 @@ use OwenIt\Auditing\Contracts\Auditable;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\SavingCycle onlyTrashed()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\SavingCycle withTrashed()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\SavingCycle withoutTrashed()
+ * @property string|null $target_amount
+ * @method static \Illuminate\Database\Eloquent\Builder|SavingCycle whereTargetAmount($value)
  */
 class SavingCycle extends Model implements Auditable
 {

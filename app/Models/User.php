@@ -64,6 +64,7 @@ use Spatie\Permission\Traits\HasRoles;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\User wherePhoneCountry($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\User withTrashed()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\User withoutTrashed()
+ * @property-read \App\Models\VerificationToken|null $verificationToken
  */
 class User extends Authenticatable implements Auditable
 {
@@ -150,6 +151,11 @@ class User extends Authenticatable implements Auditable
     public function transactions()
     {
         return $this->hasMany(Transaction::class);
+    }
+
+    public function hasVerificationToken()
+    {
+        return !is_null($this->verificationToken);
     }
 
     public function verificationToken()

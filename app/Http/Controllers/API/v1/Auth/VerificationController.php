@@ -41,18 +41,21 @@ class VerificationController extends Controller
                 throw new \Exception("Invalid Request.");
             }
 
-            if ($user->email_verified_at) {
+            if ($user->email_verified_at || !$user->hasVerificationToken()) {
                 return ApiResponse::responseSuccess([], "Account already verified");
             }
+
+
             if ($user->verificationToken->token !== $request->token) {
                 return ApiResponse::responseError([], 'Invalid Token');
             }
             if ($user->verificationToken->hasExpired()) {
                 throw new \Exception("Token has expired.");
             }
-           
+
             $user->email_verified_at = Carbon::now()->timestamp;
             $user->save();
+            $user->verificationToken->delete();
 
             $this->mailService->sendEmail(
                 $user->email,

@@ -9,6 +9,7 @@ use Illuminate\Auth\AuthenticationException;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\JsonResponse;
+use Propaganistas\LaravelPhone\Exceptions\NumberParseException;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Throwable;
 use TypeError;
@@ -107,6 +108,14 @@ class Handler extends ExceptionHandler
                 'Exception: ' . $exception->getMessage();
 
             return $this->exceptionError($exception, $message, 405);
+        }
+    
+        if ($exception instanceof NumberParseException) {
+            $message =  (env('APP_ENV') === 'production') ?
+                "Number does not match the provided country" :
+                'Exception: ' . $exception->getMessage();
+
+            return $this->exceptionError($exception, $message, 412);
         }
     
         if ($exception instanceof BindingResolutionException) {
