@@ -4,11 +4,8 @@ namespace App\Services;
 
 use App\Domain\Dto\Request\User\CreateDto;
 use App\Domain\Dto\Value\User\UserServiceResponseDto;
-use App\Helpers\PhoneNumber;
-use App\Helpers\RandomNumber;
 use App\Models\PasswordReset;
 use App\Models\User;
-use App\Models\VerificationToken;
 use Auth;
 use Carbon\Carbon;
 use DB;
