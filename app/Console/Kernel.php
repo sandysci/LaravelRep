@@ -15,7 +15,8 @@ class Kernel extends ConsoleKernel
     protected $commands = [
         Commands\SavingCycleDailyCharge::class,
         Commands\SavingCycleWeeklyCharge::class,
-        Commands\SavingCycleMonthlyCharge::class
+        Commands\SavingCycleMonthlyCharge::class,
+        Commands\TestCron::class
     ];
 
     /**
@@ -26,7 +27,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')->hourly();
+        $schedule->command('test-cron:email')->everyMinute();
         $schedule->command('saving-cycle:daily')->hourly();
         $schedule->command('saving-cycle:weekly')->hourly();
         $schedule->command('saving-cycle:monthly')->hourly();
