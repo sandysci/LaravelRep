@@ -5,7 +5,6 @@ namespace App\Services;
 use App\Helpers\RandomNumber;
 use App\Models\SavingCycle;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Log;
 
 class SavingCycleBillingService
 {
