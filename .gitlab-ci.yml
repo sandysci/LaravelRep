@@ -27,3 +27,16 @@ deploy-staging:
     - kubectl --kubeconfig=kubeconfig.yml -n staging apply -f kubernetes.yaml
   only:
     - staging
+
+deploy-master:
+  stage: deploy
+  script:
+    - printenv
+    - sed -i "s|{{image}}|$CI_REGISTRY_IMAGE:$CI_COMMIT_SHA|g" kubernetes.yaml
+    - echo $KUBE_CONFIG
+    - echo $KUBE_CONFIG | base64 -d > kubeconfig.yml
+    - cat kubeconfig.yml
+    - cat kubernetes.yaml
+    - kubectl --kubeconfig=kubeconfig.yml -n staging apply -f kubernetes.yaml
+  only:
+    - master
