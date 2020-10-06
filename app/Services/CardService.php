@@ -22,9 +22,6 @@ class CardService
     protected $transactionService;
     protected $walletService;
 
-
-    private $card;
-
     public function __construct(
         PaystackService $paystackService,
         TransactionService $transactionService,
