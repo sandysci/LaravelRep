@@ -27,7 +27,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('test-cron:email')->everyMinute();
+        // $schedule->command('test-cron:email')->everyMinute();
         $schedule->command('saving-cycle:daily')->hourly();
         $schedule->command('saving-cycle:weekly')->hourly();
         $schedule->command('saving-cycle:monthly')->hourly();
