@@ -24,7 +24,7 @@ deploy-staging:
     - echo $KUBE_CONFIG | base64 -d > kubeconfig.yml
     - cat kubeconfig.yml
     - cat kubernetes.yaml
-    - kubectl --kubeconfig=kubeconfig.yml -n staging apply -f kubernetes.yaml
+    - kubectl --kubeconfig=kubeconfig.yml -n adashi-staging apply -f kubernetes.yaml
   only:
     - staging
 
@@ -37,6 +37,6 @@ deploy-master:
     - echo $KUBE_CONFIG | base64 -d > kubeconfig.yml
     - cat kubeconfig.yml
     - cat kubernetes.yaml
-    - kubectl --kubeconfig=kubeconfig.yml -n staging apply -f kubernetes.yaml
+    - kubectl --kubeconfig=kubeconfig.yml -n adashi-live apply -f kubernetes.yaml
   only:
     - master
