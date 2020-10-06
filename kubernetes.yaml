@@ -14,7 +14,6 @@ spec:
       name: http
   type: ClusterIP
 ---
-
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -47,7 +46,6 @@ spec:
       imagePullSecrets:
         - name: gitlab-victor-cred
 ---
-
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
@@ -80,6 +78,8 @@ spec:
                   cpu: 100m
                   memory: 100M
           restartPolicy: Never
+          imagePullSecrets:
+            - name: gitlab-victor-cred
   schedule: "*/1 * * * *"
   startingDeadlineSeconds: 30
   successfulJobsHistoryLimit: 1
