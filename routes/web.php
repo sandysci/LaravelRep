@@ -1,6 +1,7 @@
 <?php
 
 use App\Helpers\ApiResponse;
+use App\Http\Controllers\Admin\AuthController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -18,6 +19,12 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::prefix('v1/phoenix')->group(function () {
+    Route::get('login', [AuthController::class, 'getLoginForm']);
+    Route::post('login', [AuthController::class, 'login'])->name('admin.login');
+    Route::group(['middleware' => ['web', 'role:admin']], function () {
+    });
+});
 
 Route::fallback(function () {
     return ApiResponse::responseError(
