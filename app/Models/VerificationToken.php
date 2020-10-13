@@ -50,6 +50,7 @@ class VerificationToken extends Model
      * @var array
      */
     protected $fillable = [
+        'user_id',
         'token',
         'expires_at'
     ];
@@ -62,10 +63,10 @@ class VerificationToken extends Model
     protected $hidden = [
         'expires_at', 'token'
     ];
-    
+
     public const EXPIRED_AT = 30;
 
-  
+
     /**
      * Get the route key for the model.
      *
