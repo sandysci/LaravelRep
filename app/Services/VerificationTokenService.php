@@ -20,11 +20,16 @@ class VerificationTokenService
             'token' => $token,
             'expires_at' => $expiredAt
         ]);
+
         return $verificationToken->token;
     }
 
     public function delete(User $user)
     {
-        return VerificationToken::where('user_id', $user->id)->delete();
+        try {
+            return VerificationToken::where('user_id', $user->id)->delete();
+        } catch (\Exception $e) {
+            return null;
+        }
     }
 }
