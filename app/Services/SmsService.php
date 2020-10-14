@@ -7,7 +7,7 @@ use App\Services\SmsMailer\TMNotifySMSService;
 
 class SmsService
 {
-    private $tMNotifySMSService;
+    private TMNotifySMSService $tMNotifySMSService;
 
     public function __construct(TMNotifySMSService $tMNotifySMSService)
     {

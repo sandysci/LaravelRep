@@ -9,13 +9,13 @@ use Illuminate\Support\Facades\Log;
 
 class GroupSavingBillingService
 {
-    protected $savingCycleService;
-    protected $walletService;
-    protected $mailService;
-    protected $cardService;
-    protected $transactionService;
-    protected $savingCycleHistoryService;
-    protected $bufferAccountService;
+    protected SavingCycleService $savingCycleService;
+    protected WalletService $walletService;
+    protected MailService $mailService;
+    protected CardService $cardService;
+    protected TransactionService $transactionService;
+    protected SavingCycleHistoryService $savingCycleHistoryService;
+    protected BufferAccountService $bufferAccountService;
 
     public function __construct(
         SavingCycleService $savingCycleService,
@@ -93,7 +93,7 @@ class GroupSavingBillingService
 
             if (!$cardResponse->status) {
                 $payload["status"] = "failed";
-                
+
                 $failedTransDto = (object) $payload;
                 $this->transactionService->store($failedTransDto, $savingCycle->user, $savingCycle);
                 continue;

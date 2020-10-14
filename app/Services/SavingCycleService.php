@@ -10,7 +10,7 @@ use Illuminate\Support\Collection;
 
 class SavingCycleService
 {
-    protected $mailService;
+    protected MailService $mailService;
 
     public function __construct(MailService $mailService)
     {

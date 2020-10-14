@@ -10,7 +10,7 @@ class MailService
     /**
      * @var TMNotifyService
      */
-    protected $tMNotifyService;
+    protected TMNotifyService $tMNotifyService;
 
     public function __construct(TMNotifyService $tMNotifyService)
     {

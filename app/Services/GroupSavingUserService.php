@@ -16,9 +16,9 @@ use Illuminate\Support\Facades\Log;
 
 class GroupSavingUserService
 {
-    protected $mailService;
-    protected $cardService;
-    protected $groupSavingService;
+    protected MailService $mailService;
+    protected CardService $cardService;
+    protected GroupSavingService $groupSavingService;
 
     public function __construct(
         MailService $mailService,
@@ -119,7 +119,7 @@ class GroupSavingUserService
             'group_saving_id' => $groupSaving->id,
             'participant_email' => $user->email
         ])->first();
-        
+
         $validation = $this->acceptGroupRequestValidation($dto, $user, $groupSavingUser);
 
         //Runs a validation

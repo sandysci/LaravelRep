@@ -12,8 +12,8 @@ use Illuminate\Http\Request;
 
 class GroupSavingUserController extends Controller
 {
-    protected $groupSavingUserService;
-    protected $groupSavingService;
+    protected GroupSavingUserService $groupSavingUserService;
+    protected GroupSavingService $groupSavingService;
 
     public function __construct(
         GroupSavingUserService $groupSavingUserService,

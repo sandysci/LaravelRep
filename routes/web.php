@@ -3,6 +3,7 @@
 use App\Helpers\ApiResponse;
 use App\Http\Controllers\Web\Admin\AuthController;
 use App\Http\Controllers\Web\Admin\HomeController;
+use App\Http\Controllers\Web\Admin\TransactionController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -25,6 +26,7 @@ Route::prefix('v1/phoenix')->group(function () {
     Route::post('login', [AuthController::class, 'login'])->name('admin.login');
     Route::group(['middleware' => ['web', 'role:admin']], function () {
         Route::get('dashboard', [HomeController::class, 'index'])->name('admin.dashboard');
+        Route::get('dashboard/transactions', [TransactionController::class, 'index'])->name('admin.get.transactions');
     });
 });
 

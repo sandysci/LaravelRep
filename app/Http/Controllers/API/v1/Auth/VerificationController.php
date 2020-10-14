@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API\v1\Auth;
 
 use App\Helpers\ApiResponse;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\User\VerificationRequest;
 use App\Models\User;
 use App\Services\MailService;
 use App\Services\OtpService;
@@ -16,10 +17,10 @@ use Illuminate\Support\Facades\Validator;
 
 class VerificationController extends Controller
 {
-    protected $userService;
-    protected $otpService;
-    protected $mailService;
-    protected $smsService;
+    protected UserService $userService;
+    protected OtpService $otpService;
+    protected MailService $mailService;
+    protected SmsService $smsService;
 
     public function __construct(
         UserService $userService,
@@ -33,10 +34,11 @@ class VerificationController extends Controller
         $this->smsService = $smsService;
     }
 
-    public function verify(Request $request): JsonResponse
+    public function verify(VerificationRequest $request): JsonResponse
     {
         try {
-            $user = User::where('email', $request->email)->with('verificationToken')->first();
+            $dto = $request->convertToDto();
+            $user = User::where('email', $dto->email)->with('verificationToken')->first();
             if (!$user) {
                 throw new \Exception("Invalid Request.");
             }
@@ -46,7 +48,7 @@ class VerificationController extends Controller
             }
 
 
-            if ($user->verificationToken->token !== $request->token) {
+            if ($user->verificationToken->token !== $dto->token) {
                 return ApiResponse::responseError([], 'Invalid Token');
             }
             if ($user->verificationToken->hasExpired()) {

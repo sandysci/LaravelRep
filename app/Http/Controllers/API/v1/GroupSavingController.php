@@ -11,8 +11,8 @@ use Illuminate\Http\Request;
 
 class GroupSavingController extends Controller
 {
-    protected $groupSavingService;
-    protected $mailService;
+    protected GroupSavingService $groupSavingService;
+    protected MailService $mailService;
 
     public function __construct(
         GroupSavingService $groupSavingService,

@@ -14,9 +14,9 @@ use Illuminate\Http\Request;
 
 class CardController extends Controller
 {
-    protected $cardService;
-    protected $transactionService;
-    protected $walletService;
+    protected CardService $cardService;
+    protected TransactionService $transactionService;
+    protected WalletService $walletService;
 
     public function __construct(
         CardService $cardService,

@@ -11,7 +11,7 @@ use App\Services\UserProfileService;
 
 class UserProfileController extends Controller
 {
-    protected $userProfileService;
+    protected UserProfileService $userProfileService;
 
     public function __construct(UserProfileService $userProfileService)
     {

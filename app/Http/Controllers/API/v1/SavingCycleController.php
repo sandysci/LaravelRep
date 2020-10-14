@@ -13,9 +13,9 @@ use Illuminate\Http\JsonResponse;
 
 class SavingCycleController extends Controller
 {
-    protected $savingCycleService;
-    protected $cardService;
-    protected $mailService;
+    protected SavingCycleService $savingCycleService;
+    protected CardService $cardService;
+    protected MailService $mailService;
 
     public function __construct(
         SavingCycleService $savingCycleService,
@@ -48,6 +48,10 @@ class SavingCycleController extends Controller
 
             if (!$paymentGateway->reusable) {
                 return ApiResponse::responseError([], "The card is not reusable");
+            }
+
+            if (is_null(request()->user()->email_verified_at)) {
+                return ApiResponse::responseError([], "Please verify your email");
             }
 
             $savingCycle = $this->savingCycleService->store(

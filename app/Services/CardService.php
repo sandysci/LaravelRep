@@ -19,8 +19,8 @@ use Illuminate\Support\Collection;
 class CardService
 {
     private PaystackService $paystackService;
-    protected $transactionService;
-    protected $walletService;
+    protected TransactionService $transactionService;
+    protected WalletService $walletService;
 
     public function __construct(
         PaystackService $paystackService,

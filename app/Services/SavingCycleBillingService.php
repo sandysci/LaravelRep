@@ -8,12 +8,12 @@ use Illuminate\Support\Collection;
 
 class SavingCycleBillingService
 {
-    protected $savingCycleService;
-    protected $walletService;
-    protected $mailService;
-    protected $cardService;
-    protected $transactionService;
-    protected $savingCycleHistoryService;
+    protected SavingCycleService $savingCycleService;
+    protected WalletService $walletService;
+    protected MailService $mailService;
+    protected CardService $cardService;
+    protected TransactionService $transactionService;
+    protected SavingCycleHistoryService $savingCycleHistoryService;
 
     public function __construct(
         SavingCycleService $savingCycleService,
@@ -90,22 +90,22 @@ class SavingCycleBillingService
 
             if (!$cardResponse->status) {
                 $payload["status"] = "failed";
-             
+
                 $failedTransDto = (object) $payload;
                 $this->transactionService->store($failedTransDto, $savingCycle->user, $savingCycle);
                 continue;
             }
-            
+
             $payload["status"] = "success";
             $successTransDto = (object) $payload;
-            
+
             //Create successful transaction entry
             $this->transactionService->store($successTransDto, $savingCycle->user, $savingCycle);
 
             $this->walletService->incrementBalance($savingCycle->user, $savingCycle->amount);
             $this->storeSavingCycleHistory($savingCycle, $reference);
             $this->emailNotification($savingCycle);
-            
+
             return true;
         }
     }

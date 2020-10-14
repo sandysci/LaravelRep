@@ -8,7 +8,7 @@ use Carbon\Carbon;
 
 class OtpService
 {
-    protected $otp;
+    protected Otp $otp;
 
     public function __construct(Otp $otp)
     {

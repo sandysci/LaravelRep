@@ -16,9 +16,9 @@ use Illuminate\Support\Facades\Redis;
 
 class UserProfileService
 {
-    protected $paystackService;
-    protected $otpService;
-    protected $smsService;
+    protected PaystackService $paystackService;
+    protected OtpService $otpService;
+    protected SmsService $smsService;
 
     public function __construct(
         PaystackService $paystackService,

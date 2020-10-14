@@ -9,7 +9,6 @@ class TMNotifySMSService implements SmsProviderInterface
 {
     //TODO: Convert to library
     private $clientId;
-    private $clientSecret;
     private $tmNotifyClient;
     private $from;
 

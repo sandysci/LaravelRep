@@ -11,8 +11,8 @@ use Illuminate\Support\Collection;
 
 class GroupSavingService
 {
-    protected $groupSavingUserService;
-    protected $mailService;
+    protected GroupSavingUserService $groupSavingUserService;
+    protected MailService $mailService;
 
     public function __construct(
         GroupSavingUserService $groupSavingUserService,
@@ -105,7 +105,7 @@ class GroupSavingService
         $groupSaving->save();
 
         //Send email to all participants
-        
+
         return $groupSaving;
     }
 

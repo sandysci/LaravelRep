@@ -9,13 +9,6 @@ use Illuminate\Support\Collection;
 
 class TransactionService
 {
-    protected $transaction;
-
-    public function __construct(Transaction $transaction)
-    {
-        $this->transaction = $transaction;
-    }
-
     public function store($request, User $user, ?Model $model): Transaction
     {
 
@@ -36,9 +29,13 @@ class TransactionService
         return $transaction;
     }
 
+    public function getAllTransactions(): Collection
+    {
+        return Transaction::with('transactionable')->get();
+    }
     public function getUserTransactions(User $user): Collection
     {
-        return $this->transaction->where('user_id', $user->id)->with('transactionable')->get();
+        return Transaction::where('user_id', $user->id)->with('transactionable')->get();
     }
 
     public function verifyTransaction()
@@ -47,6 +44,6 @@ class TransactionService
 
     public function findWhere(array $conds): ?Transaction
     {
-        return $this->transaction->where($conds)->first();
+        return Transaction::where($conds)->first();
     }
 }

@@ -15,9 +15,9 @@ use Str;
 
 class UserService
 {
-    protected $otpService;
-    protected $mailService;
-    protected $smsService;
+    protected OtpService $otpService;
+    protected MailService $mailService;
+    protected SmsService $smsService;
 
     public function __construct(
         OtpService $otpService,
@@ -206,7 +206,7 @@ class UserService
         }
 
         $callback_url = preg_replace('{/$}', '', $request->callback_url);
-        
+
         $verificationToken = new VerificationTokenService();
         $token = $verificationToken->create($user);
 

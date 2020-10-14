@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 
 class TransactionController extends Controller
 {
-    protected $transactionService;
+    protected TransactionService $transactionService;
     public function __construct(TransactionService $transactionService)
     {
         $this->transactionService = $transactionService;

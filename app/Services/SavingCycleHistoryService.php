@@ -7,8 +7,8 @@ use App\Models\User;
 
 class SavingCycleHistoryService
 {
-    protected $savingCycleService;
-    protected $savingCycleHistory;
+    protected SavingCycleService $savingCycleService;
+    protected SavingCycleHistory $savingCycleHistory;
 
     public function __construct(
         SavingCycleService $savingCycleService,
@@ -30,7 +30,7 @@ class SavingCycleHistoryService
         $savingCycleHistory->description = $payload["description"];
 
         $savingCycleHistory->save();
-        
+
         return $savingCycleHistory;
     }
 }
