@@ -11,7 +11,6 @@ use App\Models\User;
 use App\Models\UserProfile;
 use App\Services\Payment\PaystackService;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Redis;
 
 class UserProfileService
@@ -37,6 +36,17 @@ class UserProfileService
         if (is_null($userProfile)) {
             return new UpdateResponseDto(false, [], 'This profile doesn\'t exist');
         }
+        $userProfile->firstname = $dto->firstname ?? $userProfile->firstname;
+        $userProfile->lastname = $dto->lastname ?? $userProfile->lastname;
+        $userProfile->date_of_birth = Carbon::parse($dto->dateOfBirth) ?? $userProfile->date_of_birth;
+        $userProfile->address = $dto->address ?? $userProfile->address;
+        $userProfile->avatar = $dto->avatar ?? $userProfile->avatar;
+        $userProfile->next_of_kin_name = $dto->nextOfKinName ?? $userProfile->next_of_kin_name;
+        $userProfile->next_of_kin_number = $dto->nextOfKinNumber ?? $userProfile->next_of_kin_number;
+        $userProfile->meta = $dto->meta ?? $userProfile->meta;
+        $userProfile->save();
+
+        return new UpdateResponseDto(true, $userProfile->toArray(), 'Profile updated');
     }
 
     public function resolveBvn(ResolveBvnDto $dto, User $user)
@@ -96,7 +106,7 @@ class UserProfileService
             return new BvnVerificationResponseDto($otpValidation->status, $otpValidation->message);
         }
         //Check if BVN has been used by another user;
-        $checkIfBvnExist = UserProfile::where(['bvn' => $dto->bvn, 'bvn_verified' => $dto->bvn_verified])->first();
+        $checkIfBvnExist = UserProfile::where(['bvn' => $dto->bvn, 'bvn_verified' => true])->first();
         if ($checkIfBvnExist) {
             return new BvnVerificationResponseDto(false, 'BVN already verified by a user');
         }

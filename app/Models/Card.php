@@ -4,8 +4,10 @@ namespace App\Models;
 
 use App\Models\Traits\Filterable;
 use App\Models\Traits\UsesUuid;
+use Eloquent;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Carbon;
 
 /**
  * App\Models\Card
@@ -28,8 +30,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property int|null $reusable
  * @property string|null $signature
  * @property string|null $bank_number
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  * @property string|null $deleted_at
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Card newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Card newQuery()
@@ -55,8 +57,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Card whereSignature($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Card whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Card whereUserId($value)
- * @mixin \Eloquent
- * @property-read \App\Models\User $user
+ * @mixin Eloquent
+ * @property-read User $user
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Card filter(\App\Filters\BaseFilter $filter)
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Card onlyTrashed()
  * @method static \Illuminate\Database\Query\Builder|\App\Models\Card withTrashed()

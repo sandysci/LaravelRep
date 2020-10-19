@@ -7,6 +7,10 @@ use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
+/**
+ * Class UpdateRequest
+ * @package App\Http\Requests\UserProfile
+ */
 class UpdateRequest extends FormRequest
 {
     /**
@@ -34,6 +38,7 @@ class UpdateRequest extends FormRequest
             'bvn' => 'nullable|string',
             'nextOfKinName' => 'nullable|string',
             'nextOfKinNumber' => 'nullable|string',
+            'dateOfBirth' => 'nullable|date|before:13 years ago',
             'meta' => 'nullable',
         ];
     }
@@ -47,6 +52,9 @@ class UpdateRequest extends FormRequest
         );
     }
 
+    /**
+     * @return UpdateDto
+     */
     public function convertToDto(): UpdateDto
     {
         return new UpdateDto(
@@ -57,6 +65,7 @@ class UpdateRequest extends FormRequest
             $this->bvn,
             $this->nextOfKinName,
             $this->nextOfKinNumber,
+            $this->dateOfBirth,
             $this->meta
         );
     }
