@@ -3,7 +3,6 @@
 namespace App\Http\Requests\UserProfile;
 
 use App\Domain\Dto\Request\UserProfile\ResolveBvnDto;
-use App\Domain\Dto\Request\UserProfile\UpdateDto;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
