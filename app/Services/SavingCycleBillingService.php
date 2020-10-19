@@ -58,9 +58,9 @@ class SavingCycleBillingService
     public function monthlyBilling(int $hourOfDay, int $dayOfMonth): void
     {
         //TODO: Handle Febuary 27 / 30th and 31st conditions
-        if($dayOfMonth ) {
+        // if($dayOfMonth ) {
 
-        }
+        // }
         $conditions = [
             'plan' => 'monthly',
             'status' => 'active',
