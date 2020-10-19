@@ -4,9 +4,12 @@ namespace App\Models;
 
 use App\Models\Traits\Filterable;
 use App\Models\Traits\UsesUuid;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Carbon;
 use OwenIt\Auditing\Contracts\Auditable;
+use OwenIt\Auditing\Models\Audit;
 
 /**
  * App\Models\GroupSaving
@@ -24,14 +27,14 @@ use OwenIt\Auditing\Contracts\Auditable;
  * @property string $no_of_participant
  * @property string $status
  * @property string|null $description
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property \Illuminate\Support\Carbon|null $deleted_at
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\GroupSavingHistory[] $groupSavingHistories
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property Carbon|null $deleted_at
+ * @property-read Collection|GroupSavingHistory[] $groupSavingHistories
  * @property-read int|null $group_saving_histories_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\GroupSavingUser[] $groupSavingUser
+ * @property-read Collection|GroupSavingUser[] $groupSavingUser
  * @property-read int|null $group_saving_user_count
- * @property-read \App\Models\User $user
+ * @property-read User $user
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\GroupSaving filter(\App\Filters\BaseFilter $filter)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\GroupSaving newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\GroupSaving newQuery()
@@ -57,11 +60,11 @@ use OwenIt\Auditing\Contracts\Auditable;
  * @method static \Illuminate\Database\Query\Builder|\App\Models\GroupSaving withoutTrashed()
  * @mixin \Eloquent
  * @property int $no_of_participants
- * @property-read \Illuminate\Database\Eloquent\Collection|\OwenIt\Auditing\Models\Audit[] $audits
+ * @property-read Collection|Audit[] $audits
  * @property-read int|null $audits_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\GroupSavingUser[] $groupSavingParticipants
+ * @property-read Collection|GroupSavingUser[] $groupSavingParticipants
  * @property-read int|null $group_saving_participants_count
- * @property-read \App\Models\User $owner
+ * @property-read User $owner
  * @method static \Illuminate\Database\Eloquent\Builder|GroupSaving whereNoOfParticipants($value)
  */
 class GroupSaving extends Model implements Auditable

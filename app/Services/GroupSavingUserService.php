@@ -6,27 +6,21 @@ use App\Domain\Dto\Request\GroupSavingUser\CreateDto;
 use App\Domain\Dto\Request\GroupSavingUser\EditGroupSavingUserStatusDto;
 use App\Domain\Dto\Value\Card\CardValidationResponseDto;
 use App\Domain\Dto\Value\GroupSavingUser\GroupSavingUserDto;
-use App\Helpers\ApiResponse;
 use App\Models\GroupSaving;
 use App\Models\GroupSavingUser;
 use App\Models\User;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Exception;
 
 class GroupSavingUserService
 {
-    protected MailService $mailService;
-    protected CardService $cardService;
     protected GroupSavingService $groupSavingService;
 
     public function __construct(
-        MailService $mailService,
-        CardService $cardService,
         GroupSavingService $groupSavingService
     ) {
-        $this->mailService = $mailService;
-        $this->cardService = $cardService;
         $this->groupSavingService = $groupSavingService;
     }
 
@@ -40,8 +34,7 @@ class GroupSavingUserService
             $getGroupSaving = GroupSavingUser::where('group_saving_id', $groupSaving->id)->count();
 
             $noOfParticipants = (int) $groupSaving->no_of_participants;
-            if (
-                $getGroupSaving === $noOfParticipants &&
+            if ($getGroupSaving === $noOfParticipants &&
                 $groupSaving->owner->email !== $participantEmail
             ) {
                 return new GroupSavingUserDto(false, [], 'No Group Saving available');
@@ -61,7 +54,7 @@ class GroupSavingUserService
             } else {
                 return new GroupSavingUserDto(false, [], 'You can only add ' . $noOfParticipants . ' participants');
             }
-        } catch (\Exception $ex) {
+        } catch (Exception $ex) {
             DB::rollback();
 
             Log::debug('Exception: ' . $ex->getMessage());
@@ -92,8 +85,14 @@ class GroupSavingUserService
 
         $getGroupSavingUsersCount = GroupSavingUser::where(['group_saving_id' => $groupSaving->id])->count();
 
-        if ($getGroupSavingUsersCount + count($dto->emails) > $noOfParticipants || $getGroupSavingUsersCount === $noOfParticipants) {
-            return new GroupSavingUserDto(false, [], 'You can only add ' . ($noOfParticipants - $getGroupSavingUsersCount) . ' participants');
+        if ($getGroupSavingUsersCount + count($dto->emails) > $noOfParticipants ||
+            $getGroupSavingUsersCount === $noOfParticipants
+        ) {
+            return new GroupSavingUserDto(
+                false,
+                [],
+                'You can only add ' . ($noOfParticipants - $getGroupSavingUsersCount) . ' participants'
+            );
         }
 
         foreach ($dto->emails as $email) {
@@ -166,7 +165,7 @@ class GroupSavingUserService
             return new GroupSavingUserDto(false, [], 'Sorry, this user don\'t belong to this group');
         }
         if ($groupSavingUser->status === 'approved') {
-            return new GroupSavingUserDto(false, [], 'This reqest can\'t be approve twice');
+            return new GroupSavingUserDto(false, [], 'This request can\'t be approve twice');
         }
 
         $groupSavingUser->status = 'disapproved';
@@ -177,8 +176,9 @@ class GroupSavingUserService
 
     protected function sendEmailToGroupParticipant(GroupSaving $groupSaving, string $email, string $callbackUrl): void
     {
+        $mailService = app(MailService::class);
 
-        $this->mailService->sendEmail(
+        $mailService->sendEmail(
             $email,
             "You have been added to a new group savings plan",
             [
@@ -196,13 +196,16 @@ class GroupSavingUserService
         );
     }
 
-    protected function acceptGroupRequestValidation(EditGroupSavingUserStatusDto $dto, User $user, ?GroupSavingUser $groupSavingUser)
-    {
+    protected function acceptGroupRequestValidation(
+        EditGroupSavingUserStatusDto $dto,
+        User $user,
+        ?GroupSavingUser $groupSavingUser
+    ) {
         if (!$groupSavingUser) {
             return new GroupSavingUserDto(false, [], 'Sorry, this user don\'t belong to this group');
         }
         if ($groupSavingUser->status === 'approved') {
-            return new GroupSavingUserDto(false, [], 'This reqest can\'t be approve twice');
+            return new GroupSavingUserDto(false, [], 'This request can\'t be approve twice');
         }
 
         if ($groupSavingUser->group_owner_approval === 'approved') {
@@ -214,7 +217,11 @@ class GroupSavingUserService
         }
 
         if (!$user->userProfile->bvn_verified) {
-            return new GroupSavingUserDto(false, [], 'You need to add a valid BVN, before you can join a group saving plan');
+            return new GroupSavingUserDto(
+                false,
+                [],
+                'You need to add a valid BVN, before you can join a group saving plan'
+            );
         }
         return new GroupSavingUserDto(true, [], 'Validation passed');
     }
@@ -225,31 +232,38 @@ class GroupSavingUserService
         GroupSaving $groupSaving
     ): CardValidationResponseDto {
         // Check if payment gateway exists
-        $paymentDetail = $this->cardService->getUserCard($user, $paymentAuth);
+        $cardService = app(CardService::class);
+        $paymentDetail = $cardService->getUserCard($user, $paymentAuth);
         // Check if reusable
         if (!$paymentDetail->reusable) {
             return new CardValidationResponseDto(false, null, 'This card is not reusable');
         }
         $cardExpiredDate = Carbon::createFromDate($paymentDetail->exp_year, $paymentDetail->exp_month, 1);
 
+        $cardValidationDate = Carbon::now();
         //Check card duration
         if ($groupSaving->plan === "monthly") {
-            $cardValidationDate = Carbon::now()
-                ->addMonths($groupSaving->no_of_participants  + GroupSavingUser::MONTHLY_PLAN_CARD_VALIDATION);
+            $cardValidationDate = $cardValidationDate
+                    ->addMonths($groupSaving->no_of_participants  + GroupSavingUser::MONTHLY_PLAN_CARD_VALIDATION);
         }
 
         if ($groupSaving->plan === "weekly") {
-            $cardValidationDate = Carbon::now()
+            $cardValidationDate = $cardValidationDate
                 ->addWeeks($groupSaving->no_of_participants  + GroupSavingUser::WEEKLY_PLAN_CARD_VALIDATION);
         }
 
         if ($groupSaving->plan === "daily") {
-            $cardValidationDate = Carbon::now()
+            $cardValidationDate = $cardValidationDate
                 ->addDays($groupSaving->no_of_participants  + GroupSavingUser::DAILY_PLAN_CARD_VALIDATION);
         }
 
         if ($cardValidationDate->isAfter($cardExpiredDate)) {
-            return new CardValidationResponseDto(false, null, 'Sorry, this card can\'t be used for this transaction, as it will expire before the end of the group saving plan');
+            return new CardValidationResponseDto(
+                false,
+                null,
+                'Sorry, this card can\'t be used for this transaction,
+                as it will expire before the end of the group saving plan'
+            );
         }
 
         return new CardValidationResponseDto(true, $paymentDetail, 'Value Card');

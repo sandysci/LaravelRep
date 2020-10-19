@@ -11,17 +11,6 @@ use Illuminate\Support\Collection;
 
 class GroupSavingService
 {
-    protected GroupSavingUserService $groupSavingUserService;
-    protected MailService $mailService;
-
-    public function __construct(
-        GroupSavingUserService $groupSavingUserService,
-        MailService $mailService
-    ) {
-        $this->groupSavingUserService = $groupSavingUserService;
-        $this->mailService = $mailService;
-    }
-
     public function store(CreateDto $dto, User $user): GroupSaving
     {
         $groupSaving =  GroupSaving::create([
@@ -38,25 +27,9 @@ class GroupSavingService
 
         $this->sendEmailToGroupOwner($groupSaving);
 
-        $this->groupSavingUserService->store($groupSaving, $user->email, $dto->callbackUrl);
+        $groupSavingUserService = app(GroupSavingUserService::class);
+        $groupSavingUserService->store($groupSaving, $user->email, $dto->callbackUrl);
 
-        return $groupSaving;
-    }
-
-    public function addUsersToGroupSaving(User $user, string $groupSavingId, array $emails): GroupSaving
-    {
-        $groupSaving = GroupSaving::with('groupSavingParticipants')->where([
-            'owner_id' => $user->id,
-            'id' => $groupSavingId
-        ])->first();
-
-        if (!$groupSaving) {
-            return collect([]);
-        }
-
-        foreach ($emails as $email) {
-            $this->groupSavingUserService->store($groupSaving, $email);
-        }
         return $groupSaving;
     }
 
@@ -111,7 +84,9 @@ class GroupSavingService
 
     protected function sendEmailToGroupOwner(GroupSaving $groupSaving): void
     {
-        $this->mailService->sendEmail(
+        $mailService = app(MailService::class);
+
+        $mailService->sendEmail(
             $groupSaving->owner->email,
             "You have created a new group savings plan",
             [

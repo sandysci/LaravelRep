@@ -12,15 +12,13 @@ use Illuminate\Http\Request;
 class GroupSavingController extends Controller
 {
     protected GroupSavingService $groupSavingService;
-    protected MailService $mailService;
 
     public function __construct(
-        GroupSavingService $groupSavingService,
-        MailService $mailService
+        GroupSavingService $groupSavingService
     ) {
         $this->groupSavingService = $groupSavingService;
-        $this->mailService = $mailService;
     }
+
     public function index()
     {
         $groupSavingPlans = $this->groupSavingService->getAllUserGroupSavings(request()->user());
