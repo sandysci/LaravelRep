@@ -80,6 +80,7 @@ class RouteServiceProvider extends ServiceProvider
         $this->mapApiRoute('/api/verify.php', '/api/v1/verify');
         $this->mapApiRoute('/api/password.php', '/api/v1/password');
         $this->mapApiRoute('/api/group-savings.php', '/api/v1/group-savings');
+        $this->mapApiRoute('/api/images.php', '/api/v1/images');
 
         Route::prefix('api')
             ->middleware('api')
