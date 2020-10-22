@@ -52,6 +52,10 @@ use OwenIt\Auditing\Contracts\Auditable;
  * @method static \Illuminate\Database\Eloquent\Builder|UserProfile whereBvn($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserProfile whereBvnVerified($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserProfile whereDateOfBirth($value)
+ * @property string|null $next_of_kin_email
+ * @property string|null $next_of_kin_relationship
+ * @method static \Illuminate\Database\Eloquent\Builder|UserProfile whereNextOfKinEmail($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|UserProfile whereNextOfKinRelationship($value)
  */
 class UserProfile extends Model implements Auditable
 {
