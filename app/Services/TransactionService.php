@@ -35,7 +35,11 @@ class TransactionService
     }
     public function getUserTransactions(User $user): Collection
     {
-        return Transaction::where('user_id', $user->id)->with('transactionable')->get();
+        $transaction = Transaction::where('user_id', $user->id)->with('transactionable');
+        if (request()->query->has('page')) {
+            $transaction->jsonPaginate();
+        }
+        return $transaction->get();
     }
 
     public function verifyTransaction()
