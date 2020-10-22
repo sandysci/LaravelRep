@@ -4,30 +4,19 @@ namespace App\Http\Controllers\API\v1\Auth;
 
 use App\Helpers\ApiResponse;
 use App\Http\Controllers\Controller;
-use App\Models\PasswordReset;
-use App\Models\User;
-use App\Services\MailService;
-use App\Services\OtpService;
-use App\Services\SmsService;
+use App\Services\UserService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use Str;
 
 class ForgotPasswordController extends Controller
 {
-    protected $mailService;
-    protected $smsService;
-    protected $otpService;
+    protected UserService $userService;
 
     public function __construct(
-        MailService $mailService,
-        SmsService $smsService,
-        OtpService $otpService
+        UserService $userService
     ) {
-        $this->mailService = $mailService;
-        $this->smsService = $smsService;
-        $this->otpService = $otpService;
+        $this->userService = $userService;
     }
     /**
      * Create token password reset
