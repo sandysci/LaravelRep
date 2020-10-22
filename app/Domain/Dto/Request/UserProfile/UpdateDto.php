@@ -39,6 +39,14 @@ class UpdateDto
     /**
      * @var string|null
      */
+    public ?string $nextOfKinEmail;
+    /**
+     * @var string|null
+     */
+    public ?string $nextOfKinRelationship;
+    /**
+     * @var string|null
+     */
     public ?string $dateOfBirth;
     /**
      * @var string|null
@@ -54,6 +62,8 @@ class UpdateDto
      * @param string|null $bvn
      * @param string|null $nextOfKinName
      * @param string|null $nextOfKinNumber
+     * @param string|null $nextOfKinEmail
+     * @param string|null $nextOfKinRelationship
      * @param string|null $dateOfBirth
      * @param string|null $meta
      */
@@ -65,6 +75,8 @@ class UpdateDto
         ?string $bvn,
         ?string $nextOfKinName,
         ?string $nextOfKinNumber,
+        ?string $nextOfKinEmail,
+        ?string $nextOfKinRelationship,
         ?string $dateOfBirth,
         ?string $meta
     ) {
@@ -75,6 +87,8 @@ class UpdateDto
         $this->bvn = $bvn;
         $this->nextOfKinName = $nextOfKinName;
         $this->nextOfKinNumber = $nextOfKinNumber;
+        $this->nextOfKinEmail = $nextOfKinEmail;
+        $this->nextOfKinRelationship = $nextOfKinRelationship;
         $this->dateOfBirth = $dateOfBirth;
         $this->meta = $meta;
     }

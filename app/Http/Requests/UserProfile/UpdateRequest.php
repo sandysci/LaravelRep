@@ -13,6 +13,7 @@ use Illuminate\Http\Exceptions\HttpResponseException;
  */
 class UpdateRequest extends FormRequest
 {
+
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -38,6 +39,8 @@ class UpdateRequest extends FormRequest
             'bvn' => 'nullable|string',
             'nextOfKinName' => 'nullable|string',
             'nextOfKinNumber' => 'nullable|string',
+            'nextOfKinEmail' => 'nullable|string',
+            'nextOfKinRelationship' => 'nullable|string',
             'dateOfBirth' => 'nullable|date|before:13 years ago',
             'meta' => 'nullable',
         ];
@@ -65,6 +68,8 @@ class UpdateRequest extends FormRequest
             $this->bvn,
             $this->nextOfKinName,
             $this->nextOfKinNumber,
+            $this->nextOfKinEmail,
+            $this->nextOfKinRelationship,
             $this->dateOfBirth,
             $this->meta
         );

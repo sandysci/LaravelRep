@@ -43,6 +43,8 @@ class UserProfileService
         $userProfile->avatar = $dto->avatar ?? $userProfile->avatar;
         $userProfile->next_of_kin_name = $dto->nextOfKinName ?? $userProfile->next_of_kin_name;
         $userProfile->next_of_kin_number = $dto->nextOfKinNumber ?? $userProfile->next_of_kin_number;
+        $userProfile->next_of_kin_email = $dto->nextOfKinEmail ?? $userProfile->next_of_kin_email;
+        $userProfile->next_of_kin_relationship = $dto->nextOfKinRelationship ?? $userProfile->next_of_kin_relationship;
         $userProfile->meta = $dto->meta ?? $userProfile->meta;
         $userProfile->save();
 
