@@ -4,7 +4,10 @@ namespace App\Services;
 
 use App\Helpers\RandomNumber;
 use App\Models\SavingCycle;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class SavingCycleBillingService
 {
@@ -33,13 +36,19 @@ class SavingCycleBillingService
 
     public function dailyBilling(int $hourOfDay): void
     {
+        $today = Carbon::now();
         $conditions = [
             'plan' => 'daily',
             'status' => 'active',
             'hour_of_day' => $hourOfDay
         ];
-        $plans = $this->savingCycleService->getSavingCycles($conditions, []);
-        $this->billUser($plans);
+        $plans = SavingCycle::with('savingCycleHistories')
+            ->whereRaw('(date(now()) BETWEEN saving_cycles.start_date AND DATE_SUB(saving_cycles.end_date, INTERVAL 0 DAY))')
+            ->where($conditions)
+            ->get();
+        $validPlans = $this->validatePlans($plans);
+
+        $this->billUser($validPlans);
     }
 
     public function weeklyBilling(int $hourOfDay, int $dayOfWeek): void
@@ -51,7 +60,11 @@ class SavingCycleBillingService
             'day_of_week' => $dayOfWeek
         ];
 
-        $plans = $this->savingCycleService->getSavingCycles($conditions, []);
+        $plans = SavingCycle::with('savingCycleHistories')
+                            ->whereRaw('(date(now()) BETWEEN saving_cycles.start_date AND DATE_SUB(saving_cycles.end_date, INTERVAL 0 DAY))')
+                            ->where($conditions)
+                            ->get();
+
         $this->billUser($plans);
     }
 
@@ -67,14 +80,43 @@ class SavingCycleBillingService
             'hour_of_day' => $hourOfDay,
             'day_of_month' => $dayOfMonth
         ];
-        $plans = $this->savingCycleService->getSavingCycles($conditions, []);
+
+        $plans = SavingCycle::with('savingCycleHistories')
+                            ->whereRaw('(date(now()) BETWEEN saving_cycles.start_date AND DATE_SUB(saving_cycles.end_date, INTERVAL 0 DAY))')
+                            ->where($conditions)
+                            ->get();
+
         $this->billUser($plans);
+    }
+
+    public function validatePlans(Collection $plans)
+    {
+//        $newPlans = collect();
+//        foreach ($plans as $plan) {
+//            if ($plan->savingCycleHistories->isEmpty()) {
+//                continue;
+//            }
+//
+//            foreach ($plan->savingCycleHistories as $savingCycleHistory) {
+//                if ($savingCycleHistory->created_at->isToday() && $savingCycleHistory->status === 'success') {
+//                    Log::error('Payment has been made already');
+//                    continue;
+//                }
+//            }
+//            $newPlans->push($plan);
+//        }
+////        dd($newPlans);
+        return $plans;
     }
 
     public function billUser(Collection $savingCycles): bool
     {
+        if ($savingCycles->isEmpty()) {
+            return false;
+        }
+
         foreach ($savingCycles as $savingCycle) {
-            //Check payment has been made that day
+            //Validate Saving Cycle
             $prefix = strtoupper($savingCycle->plan[0] . "SC");
             $reference = $prefix . '-' . RandomNumber::generateTransactionRef();
             // Charge user
@@ -108,9 +150,8 @@ class SavingCycleBillingService
             $this->walletService->incrementBalance($savingCycle->user, $savingCycle->amount);
             $this->storeSavingCycleHistory($savingCycle, $reference);
             $this->emailNotification($savingCycle);
-
-            return true;
         }
+        return true;
     }
 
     public function storeTransaction()

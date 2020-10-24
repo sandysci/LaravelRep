@@ -23,11 +23,12 @@ class SavingCycleDailyCharge extends Command
      */
     protected $description = 'Automatically charge users on a daily basic';
 
-    protected $savingCycleBillingService;
+    protected SavingCycleBillingService $savingCycleBillingService;
+
     /**
      * Create a new command instance.
      *
-     * @return void
+     * @param SavingCycleBillingService $savingCycleBillingService
      */
     public function __construct(SavingCycleBillingService $savingCycleBillingService)
     {
@@ -39,15 +40,15 @@ class SavingCycleDailyCharge extends Command
     /**
      * Execute the console command.
      *
-     * @return int
+     * @return void
      */
     public function handle()
     {
         Log::info('Starting saving-cycle:daily command');
         //Get current hour
         $hour = (int) Carbon::now()->format('H');
+        Log::info('Current Hour:'. $hour);
         $this->savingCycleBillingService->dailyBilling($hour);
         Log::info('Done with saving-cycle:daily command');
-        return;
     }
 }

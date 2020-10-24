@@ -37,11 +37,30 @@ class TransactionService
     {
         $transaction = Transaction::where('user_id', $user->id)->with('transactionable');
         if (request()->query->has('page')) {
-            $transaction->jsonPaginate();
+            return $this->paginateDate($transaction->jsonPaginate());
         }
         return $transaction->get();
     }
 
+    public function paginateDate($paginatedData)
+    {
+         $transformedData = $paginatedData->getCollection()
+                            ->map(function ($item) {
+                                return $item;
+                            });
+         dd($paginatedData);
+//       return collect([
+//            $transformedData,
+//            $paginatedData->total(),
+//            $paginatedData->perPage(),
+//            $paginatedData->currentPage(), [
+//                'path' => \Request::url(),
+//                'query' => [
+//                    'page' => $paginatedData->currentPage()
+//                ]
+//            ]
+//        ]);
+    }
     public function verifyTransaction()
     {
     }

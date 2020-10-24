@@ -23,11 +23,12 @@ class SavingCycleMonthlyCharge extends Command
      */
     protected $description = 'Automatically charge users on a monthly basic';
 
-    protected $savingCycleBillingService;
+    protected SavingCycleBillingService $savingCycleBillingService;
+
     /**
      * Create a new command instance.
      *
-     * @return void
+     * @param SavingCycleBillingService $savingCycleBillingService
      */
     public function __construct(SavingCycleBillingService $savingCycleBillingService)
     {
@@ -38,7 +39,7 @@ class SavingCycleMonthlyCharge extends Command
     /**
      * Execute the console command.
      *
-     * @return int
+     * @return void
      */
     public function handle()
     {
@@ -49,6 +50,5 @@ class SavingCycleMonthlyCharge extends Command
 
         $this->savingCycleBillingService->monthlyBilling($hour, $day);
         Log::info('Done with saving-cycle:monthly command');
-        return;
     }
 }
