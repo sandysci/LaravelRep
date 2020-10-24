@@ -71,17 +71,15 @@ class UserService
     {
         DB::beginTransaction();
         try {
-            $callback_url = preg_replace('{/$}', '', $request->callback_url);
+            $callbackUrl = preg_replace('{/$}', '', $request->callbackUrl);
 
-            $user = new User();
-
-            $user->name = $request->name;
-            $user->email = $request->email;
-            $user->phone_country = $request->phone_country;
-            $user->phone = $request->phone;
-            $user->password = Hash::make($request->password);
-            $user->save();
-
+            $user = User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'phone_country' => $request->phone_country,
+                'phone' => $request->phone,
+                'password' => Hash::make($request->password)
+            ]);
             $user->assignRole('user');
 
             if ($request->type && $request->type == 'mobile') {
@@ -103,7 +101,7 @@ class UserService
                         "content" =>   "Thanks, for using Adashi",
                         "greeting" => "Hello",
                         "level" => "primary",
-                        "actionUrl" => $callback_url . "?token=" . $token,
+                        "actionUrl" => $callbackUrl . "?token=" . $token,
                         "actionText" => "Click to verify your account"
                     ]
                 );

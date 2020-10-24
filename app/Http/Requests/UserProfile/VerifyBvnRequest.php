@@ -7,6 +7,12 @@ use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
+/**
+ * Class VerifyBvnRequest
+ * @package App\Http\Requests\UserProfile
+ * @property string bvn
+ * @property string otp
+ */
 class VerifyBvnRequest extends FormRequest
 {
     /**

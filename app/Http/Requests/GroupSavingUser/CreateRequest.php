@@ -7,6 +7,13 @@ use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
+/**
+ * Class CreateRequest
+ * @package App\Http\Requests\GroupSavingUser
+ * @property string callback_url
+ * @property array emails
+
+ */
 class CreateRequest extends FormRequest
 {
     /**
@@ -29,7 +36,7 @@ class CreateRequest extends FormRequest
         return [
             'emails' => 'required|array',
             'emails.*' => 'required|string|email|indisposable|max:255',
-            'callbackUrl' => 'required|string'
+            'callback_url' => 'required|string'
         ];
     }
 
@@ -47,7 +54,7 @@ class CreateRequest extends FormRequest
     {
         return new CreateDto(
             $this->emails,
-            $this->callbackUrl
+            $this->callback_url
         );
     }
 }

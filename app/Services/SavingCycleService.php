@@ -16,24 +16,24 @@ class SavingCycleService
     {
         $this->mailService = $mailService;
     }
-    public function store(User $user, CreateDto $request, Model $paymentGateway): SavingCycle
+    public function store(User $user, CreateDto $dto, Model $paymentGateway): SavingCycle
     {
         $savingCycle = SavingCycle::create([
-            'name' => $request->name,
+            'name' => $dto->name,
             'user_id' => $user->id,
-            'amount' => $request->amount,
-            'target_amount' => $request->target_amount,
-            'plan' => $request->plan,
-            'day_of_month' => $request->day_of_month < 0 ? 31 : $request->day_of_month,
-            'day_of_week' => $request->day_of_week < 0 ? 1 : $request->day_of_week,
-            'hour_of_day' => $request->hour_of_day < 0 ? 24 : $request->hour_of_day,
+            'amount' => $dto->amount,
+            'target_amount' => $dto->targetAmount,
+            'plan' => $dto->plan,
+            'day_of_month' => $dto->dayOfMonth < 0 ? 31 : $dto->dayOfMonth,
+            'day_of_week' => $dto->dayOfWeek < 0 ? 1 : $dto->dayOfWeek,
+            'hour_of_day' => $dto->hourOfDay < 0 ? 24 : $dto->hourOfDay,
             'payment_gateway_type' => get_class($paymentGateway),
             'payment_gateway_id' => $paymentGateway->id,
-            'start_date' => $request->start_date,
-            'end_date' => $request->end_date,
-            'withdrawal_date' => $request->withdrawal_date,
+            'start_date' => $dto->startDate,
+            'end_date' => $dto->endDate,
+            'withdrawal_date' => $dto->withdrawalDate,
             'status' => "active",
-            'description' => $request->description
+            'description' => $dto->description
         ]);
         $this->sendEmailToUser($savingCycle);
         return $savingCycle;

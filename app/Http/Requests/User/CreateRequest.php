@@ -10,6 +10,17 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
 use Propaganistas\LaravelPhone\PhoneNumber;
 
+/**
+ * Class CreateRequest
+ * @package App\Http\Requests\User
+ * @property string name
+ * @property string email
+ * @property string phone
+ * @property string phone_country
+ * @property string password
+ * @property string callback_url
+ * @property string|null type
+ */
 class CreateRequest extends FormRequest
 {
 

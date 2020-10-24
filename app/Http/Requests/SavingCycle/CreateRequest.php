@@ -7,6 +7,23 @@ use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
+/**
+ * Class CreateRequest
+ * @package App\Http\Requests\SavingCycle
+ * @property string name
+ * @property float amount
+ * @property string|null target_amount,
+ * @property string plan,
+ * @property string payment_auth,
+ * @property string start_date,
+ * @property string end_date,
+ * @property integer|null hour_of_day,
+ * @property integer|null day_of_week,
+ * @property integer|null day_of_month,
+ * @property string|null withdrawal_date,
+ * @property string|null description,
+ * @property string|null status
+ */
 class CreateRequest extends FormRequest
 {
     /**

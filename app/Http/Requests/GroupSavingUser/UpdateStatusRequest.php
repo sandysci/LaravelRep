@@ -7,6 +7,14 @@ use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
+/**
+ * Class UpdateStatusRequest
+ * @package App\Http\Requests\GroupSavingUser
+ * @property boolean status
+ * @property string group_saving_id
+ * @property string payment_auth
+
+ */
 class UpdateStatusRequest extends FormRequest
 {
     /**
@@ -28,8 +36,8 @@ class UpdateStatusRequest extends FormRequest
     {
         return [
             'status' => 'required|boolean',
-            'groupSavingId' => 'required|string',
-            'paymentAuth' => 'string'
+            'group_saving_id' => 'required|string',
+            'payment_auth' => 'string'
         ];
     }
 
@@ -47,8 +55,8 @@ class UpdateStatusRequest extends FormRequest
     {
         return new EditGroupSavingUserStatusDto(
             $this->status,
-            $this->groupSavingId,
-            $this->paymentAuth
+            $this->group_saving_id,
+            $this->payment_auth
         );
     }
 }

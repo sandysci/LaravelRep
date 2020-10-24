@@ -10,6 +10,17 @@ use Illuminate\Http\Exceptions\HttpResponseException;
 /**
  * Class UpdateRequest
  * @package App\Http\Requests\UserProfile
+ * @property string|null firstname
+ * @property string|null lastname
+ * @property string|null address
+ * @property string|null avatar
+ * @property string|null bvn
+ * @property string|null next_of_kin_name
+ * @property string|null next_of_kin_number
+ * @property string|null next_of_kin_email
+ * @property string|null date_of_birth
+ * @property string|null next_of_kin_relationship
+ * @property string|null meta
  */
 class UpdateRequest extends FormRequest
 {
@@ -37,11 +48,11 @@ class UpdateRequest extends FormRequest
             'address' => 'nullable|string',
             'avatar' => 'nullable|string',
             'bvn' => 'nullable|string',
-            'nextOfKinName' => 'nullable|string',
-            'nextOfKinNumber' => 'nullable|string',
-            'nextOfKinEmail' => 'nullable|string',
-            'nextOfKinRelationship' => 'nullable|string',
-            'dateOfBirth' => 'nullable|date|before:13 years ago',
+            'next_of_kin_name' => 'nullable|string',
+            'next_of_kin_number' => 'nullable|string',
+            'next_of_kin_email' => 'nullable|string',
+            'next_of_kin_relationship' => 'nullable|string',
+            'date_of_birth' => 'nullable|date|before:13 years ago',
             'meta' => 'nullable',
         ];
     }
@@ -66,11 +77,11 @@ class UpdateRequest extends FormRequest
             $this->address,
             $this->avatar,
             $this->bvn,
-            $this->nextOfKinName,
-            $this->nextOfKinNumber,
-            $this->nextOfKinEmail,
-            $this->nextOfKinRelationship,
-            $this->dateOfBirth,
+            $this->next_of_kin_name,
+            $this->next_of_kin_number,
+            $this->next_of_kin_email,
+            $this->next_of_kin_relationship,
+            $this->date_of_birth,
             $this->meta
         );
     }

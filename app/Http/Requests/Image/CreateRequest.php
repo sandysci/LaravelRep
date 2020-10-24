@@ -5,6 +5,11 @@ namespace App\Http\Requests\Image;
 use App\Domain\Dto\Request\Image\CreateDto;
 use Illuminate\Foundation\Http\FormRequest;
 
+/**
+ * Class CreateRequest
+ * @package App\Http\Requests\Image
+ * @property mixed image
+ */
 class CreateRequest extends FormRequest
 {
     /**

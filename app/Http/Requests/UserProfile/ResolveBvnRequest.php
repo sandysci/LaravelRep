@@ -7,6 +7,11 @@ use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
+/**
+ * Class ResolveBvnRequest
+ * @package App\Http\Requests\UserProfile
+ * @property string bvn
+ */
 class ResolveBvnRequest extends FormRequest
 {
     /**
@@ -31,6 +36,9 @@ class ResolveBvnRequest extends FormRequest
         ];
     }
 
+    /**
+     * @param Validator $validator
+     */
     public function failedValidation(Validator $validator)
     {
         $message = $validator->errors()->all();

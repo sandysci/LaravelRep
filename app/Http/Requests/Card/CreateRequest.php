@@ -7,6 +7,12 @@ use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
+/**
+ * Class CreateRequest
+ * @package App\Http\Requests\Card
+ * @property string reference
+ * @property string channel
+ */
 class CreateRequest extends FormRequest
 {
     /**

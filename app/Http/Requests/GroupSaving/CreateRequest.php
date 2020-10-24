@@ -7,8 +7,22 @@ use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
+/**
+ * Class CreateRequest
+ * @package App\Http\Requests\GroupSaving
+ * @property string name
+ * @property float amount
+ * @property string plan
+ * @property integer no_of_participants
+ * @property string callback_url
+ * @property integer hour_of_day
+ * @property integer day_of_week
+ * @property integer day_of_month
+ * @property string description
+ */
 class CreateRequest extends FormRequest
 {
+
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -30,10 +44,10 @@ class CreateRequest extends FormRequest
             'name' => 'required|string',
             'amount' => 'required|integer',
             'plan' => 'required|in:daily,weekly,monthly',
-            'noOfParticipants' => 'required|integer|min:2',
-            'hourOfDay' => 'required|integer|between:1,24',
+            'no_of_participants' => 'required|integer|min:2',
+            'hour_of_day' => 'required|integer|between:1,24',
             'description' => 'string',
-            'callbackUrl' => 'required|string'
+            'callback_url' => 'required|string'
         ];
     }
 
@@ -68,11 +82,11 @@ class CreateRequest extends FormRequest
             $this->name,
             $this->amount,
             $this->plan,
-            $this->noOfParticipants,
-            $this->callbackUrl,
-            $this->hourOfDay,
-            $this->dayOfWeek,
-            $this->dayOfMonth,
+            $this->no_of_participants,
+            $this->callback_url,
+            $this->hour_of_day,
+            $this->day_of_week,
+            $this->day_of_month,
             $this->description
         );
     }
