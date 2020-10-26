@@ -31,24 +31,29 @@ class UserProfileService
 
     public function update(UpdateDto $dto, User $user): UpdateResponseDto
     {
-        $userProfile = UserProfile::where('user_id', $user->id)->with('user')->first();
+        $currentUser = User::where('id', $user->id)->with('userProfile')->first();
 
-        if (is_null($userProfile)) {
+        if (is_null($currentUser->userProfile)) {
             return new UpdateResponseDto(false, [], 'This profile doesn\'t exist');
         }
-        $userProfile->firstname = $dto->firstname ?? $userProfile->firstname;
-        $userProfile->lastname = $dto->lastname ?? $userProfile->lastname;
-        $userProfile->date_of_birth = Carbon::parse($dto->dateOfBirth) ?? $userProfile->date_of_birth;
-        $userProfile->address = $dto->address ?? $userProfile->address;
-        $userProfile->avatar = $dto->avatar ?? $userProfile->avatar;
-        $userProfile->next_of_kin_name = $dto->nextOfKinName ?? $userProfile->next_of_kin_name;
-        $userProfile->next_of_kin_number = $dto->nextOfKinNumber ?? $userProfile->next_of_kin_number;
-        $userProfile->next_of_kin_email = $dto->nextOfKinEmail ?? $userProfile->next_of_kin_email;
-        $userProfile->next_of_kin_relationship = $dto->nextOfKinRelationship ?? $userProfile->next_of_kin_relationship;
-        $userProfile->meta = $dto->meta ?? $userProfile->meta;
-        $userProfile->save();
+        $currentUser->userProfile->firstname = $dto->firstname ?? $currentUser->userProfile->firstname;
+        $currentUser->userProfile->lastname = $dto->lastname ??  $currentUser->userProfile->lastname;
+        $currentUser->userProfile->date_of_birth = Carbon::parse($dto->dateOfBirth) ??
+                                                    $currentUser->userProfile->date_of_birth;
+        $currentUser->userProfile->address = $dto->address ?? $currentUser->userProfile->address;
+        $currentUser->userProfile->avatar = $dto->avatar ?? $currentUser->userProfile->avatar;
+        $currentUser->userProfile->next_of_kin_name = $dto->nextOfKinName ??
+                                                        $currentUser->userProfile->next_of_kin_name;
+        $currentUser->userProfile->next_of_kin_number = $dto->nextOfKinNumber ??
+                                                        $currentUser->userProfile->next_of_kin_number;
+        $currentUser->userProfile->next_of_kin_email = $dto->nextOfKinEmail ??
+                                                        $currentUser->userProfile->next_of_kin_email;
+        $currentUser->userProfile->next_of_kin_relationship = $dto->nextOfKinRelationship ??
+                                                                $currentUser->userProfile->next_of_kin_relationship;
+        $currentUser->userProfile->meta = $dto->meta ?? $currentUser->userProfile->meta;
+        $currentUser->userProfile->save();
 
-        return new UpdateResponseDto(true, $userProfile->toArray(), 'Profile updated');
+        return new UpdateResponseDto(true, $currentUser->toArray(), 'Profile updated');
     }
 
     public function resolveBvn(ResolveBvnDto $dto, User $user)
