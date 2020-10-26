@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\API\v1\HomeController;
+use App\Http\Controllers\API\v1\UserController;
 use App\Http\Controllers\API\v1\UserProfileController;
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
@@ -8,4 +9,5 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/', [UserProfileController::class, 'update']);
     Route::post('/bvn', [UserProfileController::class, 'storeBvn']);
     Route::post('/bvn/verify', [UserProfileController::class, 'verifyBvn']);
+    Route::put('/password', [UserController::class, 'updatePassword']);
 });

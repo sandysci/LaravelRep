@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Domain\Dto\Request\User\CreateDto;
+use App\Domain\Dto\Request\User\UpdatePasswordDto;
 use App\Domain\Dto\Value\User\UserServiceResponseDto;
 use App\Models\PasswordReset;
 use App\Models\User;
@@ -132,9 +133,9 @@ class UserService
     }
 
 
-    public function findOne($conds): UserServiceResponseDto
+    public function findOne($conditions): UserServiceResponseDto
     {
-        $user = User::where($conds)
+        $user = User::where($conditions)
             ->with(
                 'userProfile',
                 'wallet',
@@ -264,5 +265,29 @@ class UserService
             return new UserServiceResponseDto(true, 'We have e-mailed your password reset link!');
         }
         return new UserServiceResponseDto(false, 'Unreachable error!');
+    }
+
+    public function changePassword(UpdatePasswordDto $dto, User $user): UserServiceResponseDto
+    {
+        $user = User::findOrFail($user->id);
+        if (!$user) {
+            return new UserServiceResponseDto(false, 'Unable to get user information', []);
+        }
+        if (!Hash::check($dto->oldPassword, $user->password)) {
+            return new UserServiceResponseDto(false, 'Incorrect password', []);
+        }
+        $user->password = Hash::make($dto->newPassword);
+        $user->save();
+
+        $this->mailService->sendEmail(
+            $user->email,
+            "Password Updated",
+            [
+                "introLines" => ["You have successfully updated your password"],
+                "content" =>   "Thanks, for using Adashi",
+                "greeting" => "Hello"
+            ]
+        );
+        return new UserServiceResponseDto(true, 'Password changed successfully', []);
     }
 }

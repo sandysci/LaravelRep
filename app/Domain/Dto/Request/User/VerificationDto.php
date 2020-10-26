@@ -10,8 +10,8 @@ class VerificationDto
 
     /**
      * VerificationDto constructor.
-     * @param string $email
-     * @param string $token
+     * @param string email
+     * @param string token
      */
     public function __construct(
         string $email,

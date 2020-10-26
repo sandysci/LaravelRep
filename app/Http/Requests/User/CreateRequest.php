@@ -51,7 +51,7 @@ class CreateRequest extends FormRequest
                     return $query->where('phone', PhoneNumber::make($this->phone, $this->phone_country)->formatE164());
                 })
             ],
-            'password' => 'required',
+            'password' => 'required|min:6',
             'callback_url' => 'required'
         ];
     }

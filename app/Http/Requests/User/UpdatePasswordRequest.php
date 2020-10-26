@@ -2,18 +2,18 @@
 
 namespace App\Http\Requests\User;
 
-use App\Domain\Dto\Request\User\VerificationDto;
+use App\Domain\Dto\Request\User\UpdatePasswordDto;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
 /**
- * Class VerificationRequest
- * @property string email
- * @property string token
+ * Class UpdatePasswordRequest
+ * @property string old_password
+ * @property string new_password
  * @package App\Http\Requests\User
  */
-class VerificationRequest extends FormRequest
+class UpdatePasswordRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -33,8 +33,8 @@ class VerificationRequest extends FormRequest
     public function rules()
     {
         return [
-            'email' => 'required|email',
-            'token' => 'required'
+            'old_password' => 'password:api',
+            'new_password' => 'required|min:6|confirmed'
         ];
     }
 
@@ -47,11 +47,11 @@ class VerificationRequest extends FormRequest
         );
     }
 
-    public function convertToDto(): VerificationDto
+    public function convertToDto(): UpdatePasswordDto
     {
-        return new VerificationDto(
-            $this->email,
-            $this->token
+        return new UpdatePasswordDto(
+            $this->old_password,
+            $this->new_password
         );
     }
 }
