@@ -65,8 +65,8 @@ class TransactionService
     {
     }
 
-    public function findWhere(array $conds): ?Transaction
+    public function findWhere(array $conditions): ?Transaction
     {
-        return Transaction::where($conds)->first();
+        return Transaction::where($conditions)->first();
     }
 }

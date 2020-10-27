@@ -10,8 +10,8 @@ use Illuminate\Support\Facades\Http;
 class PaystackService implements CardInterface
 {
 
-    protected $paystackSecretKey;
-    protected $paystackPublicKey;
+    protected string $paystackSecretKey;
+    protected string $paystackPublicKey;
 
     public function __construct()
     {
@@ -147,6 +147,42 @@ class PaystackService implements CardInterface
                 );
             }
             return new PaystackResponseDto(true, $response->json()['data'], "BVN was resolved successfully");
+        } catch (\Exception $e) {
+            return new PaystackResponseDto(false, [], $e->getMessage());
+        }
+    }
+
+    public function resolveAccountNumber(string $accountNumber, string $bankCode): PaymentProviderResponseDto
+    {
+        try {
+            $url = 'https://api.paystack.co/bank/resolve?account_number='.$accountNumber.'&bank_code='.$bankCode;
+
+            $response = Http::withToken($this->paystackSecretKey)->get($url);
+
+            if ($response->failed()) {
+                return new PaystackResponseDto(
+                    false,
+                    $response->json(),
+                    $response->json()['message'] ?? "Unable to resolve account "
+                );
+            }
+
+            if (!$response->json()['status']) {
+                return new PaystackResponseDto(
+                    false,
+                    $response->json(),
+                    $response->json()['message'] ?? "Unable to resolve account"
+                );
+            }
+            $data = $response->json()['data'];
+            if (!$data) {
+                return new PaystackResponseDto(
+                    false,
+                    $response->json(),
+                    $response->json()['message'] ?? "Unable to resolve account"
+                );
+            }
+            return new PaystackResponseDto(true, $response->json()['data'], "Account was resolved successfully");
         } catch (\Exception $e) {
             return new PaystackResponseDto(false, [], $e->getMessage());
         }

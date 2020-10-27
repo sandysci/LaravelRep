@@ -42,7 +42,7 @@ class CardController extends Controller
             $cards = $cards->toArray();
         }
         return ApiResponse::responseSuccess($cards, "User's cards");
-    }
+    } 
 
     public function store(CreateRequest $request)
     {
