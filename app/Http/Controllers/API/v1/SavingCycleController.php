@@ -41,7 +41,8 @@ class SavingCycleController extends Controller
     {
         try {
             //Find Payment Gateway
-            $paymentGateway = $this->cardService->getCard($request->convertToDto()->payment_auth);
+            $dto = $request->convertToDto();
+            $paymentGateway = $this->cardService->getCard($dto->paymentAuth);
             if (!$paymentGateway) {
                 return ApiResponse::responseError([], "The payment card is not in our system");
             }
@@ -56,7 +57,7 @@ class SavingCycleController extends Controller
 
             $savingCycle = $this->savingCycleService->store(
                 request()->user(),
-                $request->convertToDto(),
+                $dto,
                 $paymentGateway
             );
 
