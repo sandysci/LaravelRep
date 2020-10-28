@@ -44,8 +44,8 @@ class BankDetailController extends Controller
     public function store(CreateRequest $request)
     {
         //Check if profile is verified
-        if(!request()->user()->userProfile->bvn_verified && $request->bvn) {
-            return ApiResponse::responseError([],'Please verify your BVN, or add a ');
+        if (!request()->user()->userProfile->bvn_verified && $request->bvn) {
+            return ApiResponse::responseError([], 'Please add your BVN to verify your account');
         }
         return ApiResponse::responseSuccess();
     }
